@@ -21,7 +21,7 @@ export function Document({ w, customer, settings, children }) {
     <article className="doc">
       <div className="doc-head">
         <div><div className="doc-type num">{DOC_TYPE[g]} · {ref(w)}</div><h2>{w.title}</h2></div>
-        <div className="doc-biz"><b>{settings?.businessName}</b><br />{settings?.address}{settings?.vatNumber ? <><br />VAT {settings.vatNumber}</> : null}</div>
+        <div className="doc-biz">{settings?.logoUrl && <img className="doc-logo" src={settings.logoUrl} alt={settings.businessName} />}<b>{settings?.businessName}</b><br />{settings?.address}{settings?.vatNumber ? <><br />VAT {settings.vatNumber}</> : null}</div>
       </div>
       <div className="doc-meta">
         <div><small>Customer</small>{customer?.name || '—'}</div>

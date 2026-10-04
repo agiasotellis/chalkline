@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import LogoUpload from '../components/LogoUpload.jsx';
 import { useData } from '../lib/data.jsx';
 import { useAuth } from '../lib/auth.jsx';
 import { useToast } from '../lib/toast.jsx';
@@ -12,7 +13,14 @@ export default function Settings() {
   const toast = useToast();
   const [f, setF] = useState(settings || {});
   const [busy, setBusy] = useState(false);
-  useEffect(() => { if (settings) setF(settings); }, [settings]);
+  const nav = useNavigate();
+  // Logo and tour changes save on their own; don't wipe unsaved edits in the form.
+  useEffect(() => { if (settings) setF(prev => ({ ...prev, logoUrl: settings.logoUrl, tourDone: settings.tourDone })); }, [settings]);
+  const replayTour = async () => {
+    try { localStorage.removeItem(`chalkline.tourDone.${user?.id}`); } catch { /* ignore */ }
+    await saveSettings({ tourDone: false }).catch(() => {});
+    nav('/');
+  };
   const inp = (k, label, props = {}) => (
     <div className="field"><label htmlFor={`s-${k}`}>{label}</label><input className="inp" id={`s-${k}`} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: e.target.value })} {...props} /></div>
   );
@@ -29,6 +37,7 @@ export default function Settings() {
       <form onSubmit={save} style={{ display: 'flex', flexDirection: 'column', gap: 16 }} noValidate>
         <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="panel-h" style={{ marginBottom: 0 }}><h2>Business</h2></div>
+          <LogoUpload />
           <div className="grid2">{inp('businessName', 'Business name')}{inp('ownerName', 'Your name')}</div>
           <div className="grid2">{inp('email', 'Email', { type: 'email' })}{inp('phone', 'Phone', { type: 'tel' })}</div>
           <div className="grid2">{inp('address', 'Business address')}{inp('vatNumber', 'VAT number')}</div>
@@ -47,6 +56,7 @@ export default function Settings() {
       <section className="panel">
         <ul className="rows">
           <li><Link className="row" to="/prices"><span className="r-t">Price list</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Saved items for faster quotes</span></Link></li>
+          <li><button type="button" className="row" onClick={replayTour} style={{ width: '100%', border: 0, background: 'none', textAlign: 'left', cursor: 'pointer' }}><span className="r-t">Dashboard tour</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Show the quick walkthrough again</span></button></li>
           <li><Link className="row" to="/customers"><span className="r-t">Customers</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Contacts and job history</span></Link></li>
         </ul>
       </section>

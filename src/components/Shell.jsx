@@ -8,12 +8,12 @@ import { useToast } from '../lib/toast.jsx';
 
 const NAV = [
   { to: '/', label: 'Home', icon: 'home', end: true },
-  { to: '/quotes', label: 'Quotes', icon: 'quote' },
-  { to: '/jobs', label: 'Jobs', icon: 'job' },
-  { to: '/invoices', label: 'Invoices', icon: 'invoice' },
+  { to: '/quotes', label: 'Quotes', icon: 'quote', tour: 'flow' },
+  { to: '/jobs', label: 'Jobs', icon: 'job', tour: 'flow' },
+  { to: '/invoices', label: 'Invoices', icon: 'invoice', tour: 'flow' },
   { to: '/customers', label: 'Customers', icon: 'users' },
   { to: '/prices', label: 'Price list', icon: 'tag' },
-  { to: '/settings', label: 'Settings', icon: 'cog' }
+  { to: '/settings', label: 'Settings', icon: 'cog', tour: 'settings' }
 ];
 
 export default function Shell() {
@@ -27,7 +27,10 @@ export default function Shell() {
     '/invoices': work.filter(isOverdue).length
   };
   const name = settings?.businessName || 'My business';
-  const doReset = async () => { await reset(); toast('Example data restored'); nav('/'); };
+  const doReset = async () => {
+    try { localStorage.removeItem(`chalkline.tourDone.${user?.id}`); } catch { /* ignore */ }
+    await reset(); toast('Example data restored'); nav('/');
+  };
 
   return (
     <>
@@ -36,13 +39,13 @@ export default function Shell() {
           <NavLink to="/" className="brand"><Logo />Chalkline</NavLink>
           <nav className="side-nav" aria-label="Main">
             {NAV.map(n => (
-              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `nav-a${isActive ? ' active' : ''}`}>
+              <NavLink key={n.to} to={n.to} end={n.end} data-tour={n.tour} className={({ isActive }) => `nav-a${isActive ? ' active' : ''}`}>
                 <Icon name={n.icon} />{n.label}{badge[n.to] ? <span className="nav-badge num">{badge[n.to]}</span> : null}
               </NavLink>
             ))}
           </nav>
           <div className="side-foot">
-            <div className="who"><span className="av">{name[0]?.toUpperCase()}</span><div><b>{name}</b><small>{user?.email}</small></div></div>
+            <div className="who">{settings?.logoUrl ? <span className="av av-img"><img src={settings.logoUrl} alt="" /></span> : <span className="av">{name[0]?.toUpperCase()}</span>}<div><b>{name}</b><small>{user?.email}</small></div></div>
             <div className="side-actions">
               <ThemeButton />
               {!isDemo && <button className="icon-btn" type="button" aria-label="Sign out" onClick={signOut}><Icon name="out" /></button>}
@@ -53,7 +56,7 @@ export default function Shell() {
         <header className="topbar">
           <NavLink to="/" className="brand"><Logo />Chalkline</NavLink>
           <span style={{ flex: 1 }} />
-          <NavLink to="/settings" className="icon-btn" aria-label="Settings"><Icon name="cog" /></NavLink>
+          <NavLink to="/settings" className="icon-btn" aria-label="Settings" data-tour="settings"><Icon name="cog" /></NavLink>
           <ThemeButton />
         </header>
 
@@ -64,7 +67,7 @@ export default function Shell() {
 
         <nav className="bottom-nav" aria-label="Main">
           {NAV.slice(0, 5).map(n => (
-            <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => (isActive ? 'active' : '')}>
+            <NavLink key={n.to} to={n.to} end={n.end} data-tour={n.tour} className={({ isActive }) => (isActive ? 'active' : '')}>
               <Icon name={n.icon} />{n.label}{badge[n.to] ? <span className="dotb" aria-label={`${badge[n.to]} need attention`} /> : null}
             </NavLink>
           ))}

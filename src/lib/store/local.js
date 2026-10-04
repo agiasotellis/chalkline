@@ -21,6 +21,10 @@ export const localStore = {
   getSettings: () => tick(load().settings),
   saveSettings: s => { load().settings = { ...db.settings, ...s }; persist(); return tick(db.settings); },
 
+  // Demo: keep the (already resized) logo as a data URL.
+  uploadLogo: blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('Couldn’t read that image.')); r.readAsDataURL(blob); }),
+  removeLogo: () => tick(true),
+
   listWork: () => tick(load().work),
   getWork: id => tick(load().work.find(w => w.id === id) || null),
   createWork(data) {
@@ -59,7 +63,7 @@ export const localStore = {
     const c = d.customers.find(x => x.id === w.customerId) || {};
     const s = d.settings;
     return tick({ ...w, customer: { name: c.name, address: c.address },
-      business: { name: s.businessName, email: s.email, phone: s.phone, address: s.address, vatNumber: s.vatNumber, bank: s.bankDetails, validDays: s.quoteValidDays } });
+      business: { logo: s.logoUrl, name: s.businessName, email: s.email, phone: s.phone, address: s.address, vatNumber: s.vatNumber, bank: s.bankDetails, validDays: s.quoteValidDays } });
   },
   approvePublicQuote(token, name) {
     const w = load().work.find(x => x.token === token && x.stage === 'sent');

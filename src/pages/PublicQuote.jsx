@@ -39,7 +39,7 @@ export default function PublicQuote() {
     <div className="public">
       {isDemo && <div className="demo-banner" style={{ borderRadius: 12 }}>Customer view (demo). <a href="#/" style={{ fontWeight: 700 }}>Back to your dashboard</a></div>}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <span className="av" style={{ width: 44, height: 44, fontSize: 20 }}>{b.name?.[0]}</span>
+        {b.logo ? <span className="av av-img" style={{ width: 52, height: 52 }}><img src={b.logo} alt="" /></span> : <span className="av" style={{ width: 44, height: 44, fontSize: 20 }}>{b.name?.[0]}</span>}
         <div style={{ minWidth: 0, flex: 1 }}><b style={{ fontSize: 17 }}>{b.name}</b><div className="note">{[b.phone, b.email].filter(Boolean).join(' · ')}</div></div>
         <ThemeButton />
       </div>

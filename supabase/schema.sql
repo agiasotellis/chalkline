@@ -18,8 +18,14 @@ create table if not exists public.settings (
   payment_terms_days int not null default 14,
   bank_details text default '',
   quote_valid_days int not null default 30,
+  logo_url text default '',
+  tour_done boolean not null default false,
   updated_at timestamptz not null default now()
 );
+
+-- columns added after the first release (safe to re-run on existing projects)
+alter table public.settings add column if not exists logo_url text default '';
+alter table public.settings add column if not exists tour_done boolean not null default false;
 
 -- ---------- customers ----------
 create table if not exists public.customers (
@@ -108,7 +114,7 @@ returns json language sql security definer set search_path = public stable as $$
     'sentAt', w.sent_at, 'approvedAt', w.approved_at, 'approvedBy', w.approved_by,
     'invoicedAt', w.invoiced_at, 'dueAt', w.due_at, 'paidAt', w.paid_at, 'changeRequest', w.change_request,
     'customer', json_build_object('name', c.name, 'address', c.address),
-    'business', json_build_object('name', s.business_name, 'email', s.email, 'phone', s.phone,
+    'business', json_build_object('logo', s.logo_url, 'name', s.business_name, 'email', s.email, 'phone', s.phone,
                                   'address', s.address, 'vatNumber', s.vat_number, 'bank', s.bank_details,
                                   'validDays', s.quote_valid_days)
   )
@@ -142,3 +148,21 @@ end $$;
 grant execute on function public.get_public_quote(uuid) to anon, authenticated;
 grant execute on function public.approve_public_quote(uuid, text) to anon, authenticated;
 grant execute on function public.request_quote_change(uuid, text) to anon, authenticated;
+
+
+-- ---------- logo storage ----------
+-- Public bucket: logos appear on quotes customers open without logging in.
+-- Each user can only write inside a folder named after their user id.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('logos', 'logos', true, 2097152, array['image/png', 'image/jpeg', 'image/webp'])
+on conflict (id) do update set public = true, file_size_limit = 2097152, allowed_mime_types = array['image/png', 'image/jpeg', 'image/webp'];
+
+do $$ begin
+  create policy "logos are public" on storage.objects for select using (bucket_id = 'logos');
+  create policy "upload own logo" on storage.objects for insert to authenticated
+    with check (bucket_id = 'logos' and (storage.foldername(name))[1] = auth.uid()::text);
+  create policy "update own logo" on storage.objects for update to authenticated
+    using (bucket_id = 'logos' and (storage.foldername(name))[1] = auth.uid()::text);
+  create policy "delete own logo" on storage.objects for delete to authenticated
+    using (bucket_id = 'logos' and (storage.foldername(name))[1] = auth.uid()::text);
+exception when duplicate_object then null; end $$;

@@ -26,6 +26,24 @@ export const supabaseStore = {
     return num(fromRow(ok(await supabase.from('settings').upsert(toRow(rest)).select().single())), ['vatRate']);
   },
 
+  async uploadLogo(blob) {
+    const { data: { user } } = await supabase.auth.getUser();
+    const ext = blob.type === 'image/webp' ? 'webp' : 'png';
+    const path = `${user.id}/logo-${Date.now()}.${ext}`;
+    ok(await supabase.storage.from('logos').upload(path, blob, { contentType: blob.type, cacheControl: '31536000', upsert: false }));
+    // Remove older logos for this user.
+    const files = ok(await supabase.storage.from('logos').list(user.id));
+    const old = files.filter(f => `${user.id}/${f.name}` !== path).map(f => `${user.id}/${f.name}`);
+    if (old.length) await supabase.storage.from('logos').remove(old);
+    return supabase.storage.from('logos').getPublicUrl(path).data.publicUrl;
+  },
+  async removeLogo() {
+    const { data: { user } } = await supabase.auth.getUser();
+    const files = ok(await supabase.storage.from('logos').list(user.id));
+    if (files.length) ok(await supabase.storage.from('logos').remove(files.map(f => `${user.id}/${f.name}`)));
+    return true;
+  },
+
   async listWork() { return ok(await supabase.from('work').select('*').order('no', { ascending: false })).map(r => num(fromRow(r), ['vat'])); },
   async getWork(id) { return num(fromRow(ok(await supabase.from('work').select('*').eq('id', id).maybeSingle())), ['vat']); },
   async createWork(data) { return num(fromRow(ok(await supabase.from('work').insert(toRow({ no: 0, ...strip(data) })).select().single())), ['vat']); },

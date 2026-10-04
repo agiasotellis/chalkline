@@ -58,6 +58,7 @@ export function seedData() {
   const settings = {
     businessName: 'Reed Plumbing & Heating', ownerName: 'Alex Reed', email: 'hello@reedplumbing.example', phone: '+30 690 000 0100',
     address: '5 Harbour Road', vatNumber: 'EL123456789', vatRate: 24, paymentTermsDays: 14, quoteValidDays: 30,
+    tourDone: false, logoUrl: '',
     bankDetails: 'IBAN GR00 0000 0000 0000 0000 0000 000 · Reed Plumbing'
   };
   return { customers, work, prices, settings };

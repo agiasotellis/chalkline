@@ -50,7 +50,11 @@ export function DataProvider({ children }) {
     async deleteCustomer(id) { await store.deleteCustomer(id); setState(s => ({ ...s, customers: s.customers.filter(c => c.id !== id) })); },
     async savePrice(p) { const n = await store.savePrice(p); setState(s => ({ ...s, prices: replace(s.prices, n) })); return n; },
     async deletePrice(id) { await store.deletePrice(id); setState(s => ({ ...s, prices: s.prices.filter(p => p.id !== id) })); },
-    async saveSettings(v) { const n = await store.saveSettings(v); setState(s => ({ ...s, settings: n })); return n; }
+    async saveSettings(v) { const n = await store.saveSettings(v); setState(s => ({ ...s, settings: n })); return n; },
+    async setLogo(blob) {
+      const logoUrl = blob ? await store.uploadLogo(blob) : (await store.removeLogo(), '');
+      return actions.saveSettings({ logoUrl });
+    }
   }), [load]);
 
   const customerById = useMemo(() => Object.fromEntries(state.customers.map(c => [c.id, c])), [state.customers]);

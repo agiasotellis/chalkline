@@ -1,4 +1,7 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Tour, { DASHBOARD_STEPS } from '../components/Tour.jsx';
+import { useAuth } from '../lib/auth.jsx';
 import { useData } from '../lib/data.jsx';
 import { DAY, ago, eur, fmtShort } from '../lib/format.js';
 import { isOverdue, ref, totals } from '../lib/workflow.js';
@@ -45,7 +48,17 @@ function RevenueChart({ work }) {
 }
 
 export default function Dashboard() {
-  const { work, customerById, settings } = useData();
+  const { work, customerById, settings, saveSettings } = useData();
+  const nav = useNavigate();
+  const { user } = useAuth();
+  const tourKey = `chalkline.tourDone.${user?.id}`;
+  const seen = (() => { try { return localStorage.getItem(tourKey) === '1'; } catch { return false; } })();
+  const [tour, setTour] = useState(() => !!settings && !settings.tourDone && !seen);
+  const endTour = () => {
+    setTour(false);
+    try { localStorage.setItem(tourKey, '1'); } catch { /* ignore */ }
+    saveSettings({ tourDone: true }).catch(() => {});
+  };
   const sent = work.filter(w => w.stage === 'sent');
   const booked = work.filter(w => ['approved', 'job', 'done'].includes(w.stage));
   const unpaid = work.filter(w => w.stage === 'invoiced');
@@ -62,10 +75,10 @@ export default function Dashboard() {
     <div className="page">
       <div className="page-head">
         <div><h1>{hi}{first ? `, ${first}` : ''}</h1><p>{att.length ? `${att.length} thing${att.length > 1 ? 's' : ''} need${att.length > 1 ? '' : 's'} your attention.` : 'Nothing waiting on you. Nice.'}</p></div>
-        <div className="head-actions"><Link className="btn btn-chalk" to="/quotes/new"><Icon name="plus" />New quote</Link></div>
+        <div className="head-actions"><Link className="btn btn-chalk" to="/quotes/new" data-tour="new-quote"><Icon name="plus" />New quote</Link></div>
       </div>
 
-      <div className="kpis">
+      <div className="kpis" data-tour="kpis">
         <Link className="kpi" to="/quotes?f=sent"><small>Awaiting approval</small><b className="num">{eur(sum(sent))}</b><span>{sent.length} quote{sent.length === 1 ? '' : 's'}</span></Link>
         <Link className="kpi" to="/jobs"><small>Work booked</small><b className="num">{eur(sum(booked))}</b><span>{booked.length} job{booked.length === 1 ? '' : 's'}</span></Link>
         <Link className={`kpi${overdue.length ? ' k-bad' : ''}`} to="/invoices?f=invoiced"><small>Unpaid</small><b className="num">{eur(sum(unpaid))}</b><span>{overdue.length ? `${overdue.length} overdue` : `${unpaid.length} invoice${unpaid.length === 1 ? '' : 's'}`}</span></Link>
@@ -74,7 +87,7 @@ export default function Dashboard() {
 
       <div className="dash">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 }}>
-          <section className="panel">
+          <section className="panel" data-tour="attention">
             <div className="panel-h"><h2>Needs attention</h2></div>
             {att.length ? (
               <div className="attn">
@@ -125,6 +138,7 @@ export default function Dashboard() {
           </section>
         </div>
       </div>
+      {tour && <Tour steps={DASHBOARD_STEPS} onFinish={endTour} onPrimaryEnd={() => nav('/quotes/new')} />}
     </div>
   );
 }
