@@ -44,8 +44,9 @@
   --shadow:0 1px 0 rgba(0,0,0,.2),0 16px 36px -18px rgba(0,0,0,.7);color-scheme:dark}
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.55;font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background-color .4s,color .4s}
+html{scroll-behavior:smooth;overflow-x:clip;-webkit-text-size-adjust:100%}
+@supports not (overflow:clip){html{overflow-x:hidden}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.55;font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;overflow-x:clip;margin:0;transition:background-color .4s,color .4s}
 h1,h2,h3{text-wrap:balance;margin:0;line-height:1.02}
 p{margin:0}
 a{color:inherit}
@@ -108,6 +109,7 @@ button,input,select{font:inherit;color:inherit}
 .hl-line:nth-child(3) .hl-inner{animation-delay:.24s}
 .hl-line:nth-child(3){color:var(--chalk)}
 @keyframes rise{from{transform:translateY(102%)}to{transform:none}}
+.w{display:inline-block;white-space:nowrap}
 .ch{display:inline-block;transition:font-variation-settings .35s cubic-bezier(.2,.8,.2,1);font-variation-settings:"wdth" 125,"wght" 780}
 .snap-wrap{position:relative;height:48px;margin-block:4px 18px;max-width:900px;cursor:pointer}
 .snap-wrap svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -138,6 +140,8 @@ section{scroll-margin-top:80px}
 .story{padding-block:clamp(64px,10vw,120px) 40px}
 .story-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);gap:clamp(24px,5vw,72px)}
 .steps{display:flex;flex-direction:column}
+.story-grid>*,.hero-sub>*,.sec-head>*,.close-row>*{min-width:0}
+.story,.hero{overflow-x:clip}
 .step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;gap:12px;padding-block:24px;color:var(--muted);transition:color .4s}
 .step.on{color:var(--ink)}
 .step-n{display:inline-flex;width:36px;height:36px;border-radius:50%;align-items:center;justify-content:center;font-weight:700;box-shadow:inset 0 0 0 1.5px var(--line);transition:background .4s,color .4s,box-shadow .4s}
@@ -145,7 +149,7 @@ section{scroll-margin-top:80px}
 .step h3{font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:740;letter-spacing:-.02em;font-variation-settings:"wdth" 115}
 .step p{max-width:28em;font-size:1.06rem}
 .stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);height:min(640px,calc(100vh - 120px));display:flex;align-items:center;justify-content:center}
-.sheet{width:min(100%,460px);background:var(--paper);border-radius:6px;box-shadow:var(--shadow);padding:clamp(20px,3vw,32px);position:relative;transform:rotate(-1.2deg);transition:transform .8s cubic-bezier(.2,.8,.2,1);border:1px solid var(--line)}
+.sheet{width:min(100%,460px);overflow:hidden;background:var(--paper);border-radius:6px;box-shadow:var(--shadow);padding:clamp(20px,3vw,32px);position:relative;transform:rotate(-1.2deg);transition:transform .8s cubic-bezier(.2,.8,.2,1);border:1px solid var(--line)}
 .sheet[data-s="1"]{transform:rotate(.6deg)}
 .sheet[data-s="2"]{transform:rotate(-.4deg)}
 .sh-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:2px solid var(--ink)}
@@ -165,8 +169,8 @@ section{scroll-margin-top:80px}
 .sh-row.done .rdesc{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
 .sh-tot{display:flex;justify-content:space-between;align-items:baseline;padding-top:14px;font-weight:700}
 .sh-tot span:last-child{font-size:1.6rem;font-variation-settings:"wdth" 112;letter-spacing:-.01em}
-.sh-foot{margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--muted);min-height:38px}
-.stamp{position:absolute;right:20px;top:42%;padding:6px 14px;border:3px solid currentColor;border-radius:6px;font-weight:850;font-variation-settings:"wdth" 120;font-size:1.5rem;letter-spacing:.04em;transform:rotate(-14deg) scale(2.2);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s;pointer-events:none;mix-blend-mode:multiply}
+.sh-foot{margin-top:14px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--muted);min-height:38px}
+.stamp{position:absolute;right:20px;top:42%;padding:6px 14px;border:3px solid currentColor;border-radius:6px;font-weight:850;font-variation-settings:"wdth" 120;font-size:1.5rem;letter-spacing:.04em;transform:rotate(-14deg) scale(1.6);opacity:0;max-width:calc(100% - 24px);transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s;pointer-events:none;mix-blend-mode:multiply}
 :root[data-theme="dark"] .stamp{mix-blend-mode:normal}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stamp{mix-blend-mode:normal}}
 .stamp small{display:block;font-size:11px;font-weight:600;letter-spacing:0}
@@ -178,9 +182,13 @@ section{scroll-margin-top:80px}
 @media (max-width:860px){
   .story-grid{grid-template-columns:1fr}
   .stage{order:-1;top:calc(env(safe-area-inset-top,0px) + 78px);height:auto;z-index:2;padding-block:8px;background:linear-gradient(var(--bg) 85%,transparent)}
-  .sheet{width:min(100%,400px);font-size:13px;padding:16px}
-  .sheet .sh-row{padding-block:6px}
-  .step{min-height:56vh}
+  .sheet{width:min(100%,400px);font-size:12.5px;padding:14px 16px;transform:none!important}
+  .sheet .sh-row{padding-block:5px}
+  .sh-type{font-size:1.25rem}.sh-no b{font-size:15px}.sh-cust{padding-block:8px}
+  .sh-tot{padding-top:8px}.sh-tot span:last-child{font-size:1.25rem}.sh-foot{margin-top:8px;min-height:30px}
+  .stamp{font-size:1.15rem;right:14px}
+  .step{min-height:62vh;padding-block:16px}
+  .step:last-child{min-height:72vh}
 }
 
 /* ---------- workspace app ---------- */
@@ -235,7 +243,7 @@ section{scroll-margin-top:80px}
 .flow li.on::before{background:var(--chalk)}
 .flow li.cur::before{background:linear-gradient(90deg,var(--chalk) 0 50%,var(--line) 50%) ;background-size:200% 100%;animation:fillbar 1.4s ease-in-out infinite alternate}
 @keyframes fillbar{from{background-position:100% 0}to{background-position:0 0}}
-.doc{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:clamp(16px,2.4vw,26px);position:relative;animation:docIn .5s cubic-bezier(.2,.8,.2,1)}
+.doc{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:clamp(16px,2.4vw,26px);position:relative;animation:docIn .5s cubic-bezier(.2,.8,.2,1)}
 @keyframes docIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
 .doc-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:14px;border-bottom:2px solid var(--ink)}
 .doc-head h3{font-size:clamp(1.3rem,2.6vw,1.75rem);font-weight:760;font-variation-settings:"wdth" 112;letter-spacing:-.01em;overflow-wrap:anywhere}
@@ -362,7 +370,7 @@ dialog[open] .dlg{animation:dlgIn .4s cubic-bezier(.2,.9,.2,1)}
 @media (max-width:400px){
   .cta-long{display:none}.cta-short{display:inline}
   .logo{font-size:17px}
-  .headline{font-size:clamp(2.6rem,13.4vw,3.4rem)}
+  .headline{font-size:clamp(2.4rem,12.2vw,3.2rem)}
   .tab .ct{display:none}
   .kpi{padding:12px}
   .card{padding:11px 10px}
@@ -564,7 +572,7 @@ const fmtD = t => new Date(t).toLocaleDateString('en-GB', {day: 'numeric', month
 
 /* ---------------- hero: split letters + variable-font hover ---------------- */
 $$('[data-split]').forEach(el => {
-  el.innerHTML = [...el.textContent].map(c => c === ' ' ? ' ' : `<span class="ch">${c}</span>`).join('');
+  el.innerHTML = el.textContent.split(' ').map(w => `<span class="w">${[...w].map(c => `<span class="ch">${c}</span>`).join('')}</span>`).join(' ');
 });
 const chars = $$('.ch');
 const hl = $('#hl');
@@ -583,6 +591,19 @@ if (!reduce && matchMedia('(hover:hover)').matches) {
   hl.addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; if (!raf) raf = requestAnimationFrame(paint); });
   hl.addEventListener('pointerleave', () => { mx = my = -1e4; if (!raf) raf = requestAnimationFrame(paint); });
 }
+
+/* touch screens: letters ripple through width and weight */
+function wave() {
+  if (reduce) return;
+  chars.forEach((c, i) => {
+    c.animate([
+      {fontVariationSettings: '"wdth" 125, "wght" 780'},
+      {fontVariationSettings: '"wdth" 72, "wght" 900', offset: .45},
+      {fontVariationSettings: '"wdth" 125, "wght" 780'}
+    ], {duration: 900, delay: i * 45, easing: 'cubic-bezier(.4,0,.2,1)'});
+  });
+}
+if (!matchMedia('(hover:hover)').matches) { setTimeout(wave, 1500); hl.addEventListener('click', wave); }
 
 /* ---------------- chalk line snap ---------------- */
 const snap = $('#snap'), path = $('#snapPath');
@@ -668,7 +689,7 @@ function setStage(s, sub) {
   const want = s === 0 ? 'q' : s === 1 ? 'j' : 'i';
   if (foot.dataset.k !== want) {
     foot.dataset.k = want;
-    foot.innerHTML = s === 0 ? `<span>Sent to helen.carter@example.com</span><span class="pill p-sent">Awaiting approval</span>`
+    foot.innerHTML = s === 0 ? `<span>Sent to Helen by email</span><span class="pill p-sent">Awaiting approval</span>`
       : s === 1 ? `<span class="num" id="shPct">0 of 5 done</span><span class="meter"><i id="shMeter"></i></span>`
       : `<span>VAT 24% included</span><span class="pill p-invoiced" id="shPay">Unpaid</span>`;
   }
@@ -685,11 +706,15 @@ function onScroll() {
   const doc = document.documentElement;
   const max = doc.scrollHeight - innerHeight;
   tapeFill.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
-  if (!reduce && scrollY < innerHeight * 1.2) lines.forEach(l => l.style.transform = `translateX(${-scrollY * l.dataset.depth}px)`);
+  const pf = innerWidth < 640 ? .35 : 1;
+  if (!reduce && scrollY < innerHeight * 1.5) lines.forEach(l => l.style.transform = `translate3d(${-scrollY * l.dataset.depth * pf}px,0,0)`);
   const r = story.getBoundingClientRect();
   const stepsEl = $('.steps');
   const sr = stepsEl.getBoundingClientRect();
-  const p = Math.min(.9999, Math.max(0, (innerHeight * .55 - sr.top) / sr.height));
+  const stage = $('.stage'), stR = stage.getBoundingClientRect();
+  const stacked = getComputedStyle(stage).order === '-1' && getComputedStyle(stage).position === 'sticky';
+  const refY = stacked ? stR.bottom + (innerHeight - stR.bottom) * .45 : innerHeight * .55;
+  const p = Math.min(.9999, Math.max(0, (refY - sr.top) / sr.height));
   const s = Math.floor(p * 3);
   setStage(s, p * 3 - s);
 }
