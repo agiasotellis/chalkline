@@ -174,20 +174,24 @@ section{scroll-margin-top:80px}
 .stamp.show{opacity:.9;transform:rotate(-14deg) scale(1)}
 .stamp.ok{color:var(--ok)}
 .stamp.chalk{color:var(--chalk)}
+.msheet{display:none}
 .meter{height:6px;background:var(--line);border-radius:6px;overflow:hidden;flex:1;max-width:160px}
 .meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .4s}
 @media (max-width:860px){
   .story-grid{grid-template-columns:1fr}
-  .stage{order:-1;position:relative;top:auto;height:auto;padding-block:8px 4px}
-  .sheet{width:min(100%,400px);font-size:12.5px;padding:14px 16px 58px;transform:none!important}
+  .stage{display:none}
+  .sheet{width:100%;font-size:12.5px;padding:14px 16px 58px;transform:none!important}
   .sheet .sh-row{padding-block:5px}
   .sh-type{font-size:1.25rem}.sh-no b{font-size:15px}.sh-cust{padding-block:8px}
   .sh-tot{padding-top:8px}.sh-tot span:last-child{font-size:1.25rem}.sh-foot{margin-top:8px;min-height:30px}
   .sheet .stamp{font-size:1rem;right:14px;top:auto;bottom:10px;padding:3px 10px;border-width:2px;transform:rotate(-4deg) scale(1.3)}
   .sheet .stamp.show{padding:3px 10px;transform:rotate(-4deg) scale(1)}
   .stamp small{font-size:10px}
-  .step{min-height:0;padding-block:18px;color:var(--ink)}
+  .step{min-height:0;padding-block:22px 30px;color:var(--ink)}
   .step:last-child{min-height:0}
+  .msheet{display:block;margin-top:10px;box-shadow:0 18px 40px -24px rgba(22,32,42,.35)}
+  .msheet .sh-row .tick{transition:background .25s,box-shadow .25s}
+  .msheet .rdesc{transition:color .3s}
 }
 
 /* ---------- app showcase ---------- */
@@ -239,8 +243,16 @@ section{scroll-margin-top:80px}
   .phone{width:38%;border-radius:24px;padding:6px;right:-4px}
   .p-screen{border-radius:19px}.p-notch{top:10px;height:11px}.p-screen .shot{top:16px;height:calc(100% - 16px)}
   .show-stage{padding-bottom:56px}
-  .browser,.phone{transform:none!important;will-change:auto}
-  #showHold{display:none}
+  .browser,.phone{will-change:auto}
+  .browser{transform:none!important}
+  .phone{transform:translateY(0)!important}
+  .show{--dur:8s}
+  /* one-time reveal as things come on screen */
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv-d1{transition-delay:.12s}.rv-d2{transition-delay:.24s}
+  .show-stage.rv .phone{opacity:0;transform:translateY(40px)!important;transition:opacity .7s .35s,transform .8s .35s cubic-bezier(.2,.8,.2,1)}
+  .show-stage.rv.in .phone{opacity:1;transform:translateY(0)!important}
   .show-cap{grid-template-columns:1fr}
   .cap-actions{width:100%}.cap-actions .btn-chalk{flex:1}
 }
@@ -780,24 +792,71 @@ function onScroll() {
 addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, {passive: true});
 onScroll();
 
-/* On phones the quote card stays put and steps through quote, job and paid on its own while it is on screen,
-   so the text never moves under it. */
-const STORY = [[0, 0, 2600], [1, 0, 1300], [1, .2, 450], [1, .37, 450], [1, .54, 450], [1, .7, 450], [1, .9, 1800], [2, 0, 1400], [2, .9, 2600]];
-let storyT = 0, storyI = 0, storyOn = false;
-function storyTick() {
-  const [s, sub, ms] = STORY[storyI];
-  setStage(s, sub);
-  storyI = (storyI + 1) % STORY.length;
-  storyT = setTimeout(storyTick, ms);
+/* ---------------- phones: one card per step, each plays when you reach it ---------------- */
+const NOS = ['Q-1042', 'J-1042', 'INV-1042'];
+const mSeen = new Set();
+function mSheetHTML(s) {
+  const rows = D.shItems.map(([d, p]) => `<div class="sh-row${s === 2 ? ' done' : ''}"><span class="tick"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9.2 10 3"/></svg></span><span class="rdesc">${d}</span><span class="num">${p ? money(p) : D.incl}</span></div>`).join('');
+  const foot = s === 0 ? `<span>${D.shSent}</span><span class="pill p-sent">${D.awaiting}</span>`
+    : s === 1 ? `<span class="num m-pct">${D.ofDone(0)}</span><span class="meter"><i></i></span>`
+    : `<span>${D.taxIncl}</span><span class="pill p-invoiced m-pay">${D.unpaid}</span>`;
+  const stamp = s === 0 ? `<div class="stamp ok"><span>${D.stApproved}</span><small>${D.stApprovedS}</small></div>`
+    : s === 2 ? `<div class="stamp chalk"><span>${D.stPaid}</span><small>${D.stPaidS}</small></div>` : '';
+  return `<div class="sh-top"><div class="sh-type">${D.shTypes[s]}</div><div class="sh-no"><span>${D.shBiz}</span><b class="num">${NOS[s]}</b></div></div>
+    <div class="sh-cust"><span>${D.shFor} <b>${D.shCust}</b></span><span>${D.shDates[s]}</span></div>
+    <div class="sh-rows">${rows}</div>
+    <div class="sh-tot"><span>${s === 2 ? D.shDue : D.shTotal}</span><span class="num">${money(D.shSum)}</span></div>
+    <div class="sh-foot">${foot}</div>${stamp}`;
 }
-function storyPlay(on) {
-  on = on && phone.matches && !reduce;
-  if (on === storyOn) return;
-  storyOn = on; clearTimeout(storyT);
-  if (on) storyTick();
+// Final state of a card, shown at once (no motion, or already seen).
+function mFinish(el, s) {
+  const rows = el.querySelectorAll('.sh-row');
+  if (s === 1) { rows.forEach(r => r.classList.add('done')); el.querySelector('.m-pct').textContent = D.ofDone(5); el.querySelector('.meter i').style.width = '100%'; }
+  const st = el.querySelector('.stamp'); if (st) st.classList.add('show');
+  const pay = el.querySelector('.m-pay'); if (pay) { pay.className = 'pill p-paid m-pay'; pay.textContent = D.paid; }
 }
-if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => storyPlay(en.isIntersecting), {threshold: .4}).observe(sheet);
-phone.addEventListener('change', () => { if (!phone.matches) storyPlay(false); onScroll(); });
+// Play a card: quote gets approved, job lines tick off one by one, invoice gets paid.
+function mPlay(el, s) {
+  if (reduce) return mFinish(el, s);
+  if (s === 0) return setTimeout(() => el.querySelector('.stamp').classList.add('show'), 700);
+  if (s === 1) {
+    const rows = el.querySelectorAll('.sh-row'), pct = el.querySelector('.m-pct'), bar = el.querySelector('.meter i');
+    rows.forEach((r, i) => setTimeout(() => { r.classList.add('done'); pct.textContent = D.ofDone(i + 1); bar.style.width = (i + 1) / 5 * 100 + '%'; }, 500 + i * 380));
+    return;
+  }
+  setTimeout(() => { el.querySelector('.stamp').classList.add('show'); mFinish(el, s); }, 800);
+}
+let mIO = null;
+function buildMobileSheets() {
+  steps.forEach((step, s) => {
+    let el = step.querySelector('.msheet');
+    if (!el) { el = document.createElement('div'); el.className = 'sheet msheet'; el.dataset.s = s; el.setAttribute('aria-hidden', 'true'); step.appendChild(el); }
+    el.innerHTML = mSheetHTML(s);
+    if (mSeen.has(s)) mFinish(el, s);
+  });
+  if (!mIO && 'IntersectionObserver' in window) {
+    mIO = new IntersectionObserver(ens => ens.forEach(en => {
+      if (!en.isIntersecting || !phone.matches) return;
+      const el = en.target, s = +el.dataset.s;
+      steps.forEach((st, i) => st.classList.toggle('on', i === s));
+      if (mSeen.has(s)) return;
+      mSeen.add(s); mPlay(el, s);
+    }), {threshold: .6});
+    $$('.msheet').forEach(el => mIO.observe(el));
+  } else if (!mIO) $$('.msheet').forEach(el => mFinish(el, +el.dataset.s));
+}
+buildMobileSheets();
+
+/* phones: headings, cards and the app preview ease in once as they come on screen */
+if (phone.matches && !reduce && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver(ens => ens.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), {threshold: .15, rootMargin: '0px 0px -8% 0px'});
+  const add = (sel, d) => $$(sel).forEach(el => { el.classList.add('rv'); if (d) el.classList.add(d); io.observe(el); });
+  add('.sec-head h2'); add('.sec-head p', 'rv-d1');
+  add('.step h3'); add('.step p', 'rv-d1'); add('.msheet', 'rv-d2');
+  add('.show-tabs'); add('#showStage', 'rv-d1'); add('.show-cap');
+  add('.plan'); add('.close-row > *');
+}
+phone.addEventListener('change', onScroll);
 
 /* ---------------- app showcase ---------------- */
 const SHOW_URLS = ['dashboard', 'quotes/new', 'quotes/Q-1043', 'jobs/J-1041', 'invoices/INV-1040'];
@@ -826,7 +885,7 @@ stTabs.forEach(t => {
 });
 show.addEventListener('animationend', e => { if (e.animationName === 'stfill') setShow(cur + 1); });
 if (!reduce && 'IntersectionObserver' in window) {
-  new IntersectionObserver(([en]) => show.classList.toggle('playing', en.isIntersecting && !phone.matches), {threshold: .35}).observe($('#showStage'));
+  new IntersectionObserver(([en]) => show.classList.toggle('playing', en.isIntersecting), {threshold: .35}).observe($('#showStage'));
   const pause = on => show.classList.toggle('paused', on);
   $('#showStage').addEventListener('pointerenter', () => pause(true));
   $('#showStage').addEventListener('pointerleave', () => pause(false));
@@ -892,7 +951,7 @@ function applyLang(l, first) {
   $('#langShort').textContent = D.short;
   splitHero();
   buildMarquee();
-  buildSheet(); curS = -1; onScroll();
+  buildSheet(); curS = -1; onScroll(); buildMobileSheets();
   const names = [D.tab1, D.tab2, D.tab3, D.tab4, D.tab5];
   shots.forEach(im => {
     im.src = im.getAttribute('src').replace(/showcase\/(en|el)\//, `showcase/${l}/`);
