@@ -1,0 +1,957 @@
+<title>Chalkline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap">
+<style>
+/* Layout: site-board grid. Left-aligned editorial hero, sticky scroll story, working pipeline app, ruled price table. */
+:root{
+  --bg:#ECEFED;          /* poured concrete */
+  --surface:#F7F8F6;
+  --paper:#FFFFFF;
+  --ink:#16202A;         /* slate */
+  --muted:#58636E;
+  --line:#D2D8D4;
+  --chalk:#2456D3;       /* blue line chalk */
+  --chalk-soft:#DAE3FA;
+  --on-chalk:#FFFFFF;
+  --tape:#F2C230;        /* tape-measure yellow */
+  --on-tape:#2A2100;
+  --ok:#1B7F4E; --ok-soft:#DDF1E6;
+  --warn:#9A5B00; --warn-soft:#FBEBCF;
+  --bad:#B4302A; --bad-soft:#F8DEDC;
+  --shadow:0 1px 0 rgba(22,32,42,.04),0 12px 32px -18px rgba(22,32,42,.35);
+  --f:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r:10px;
+  --gutter:clamp(16px,4vw,48px);
+  --max:1200px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F141B;--surface:#161D26;--paper:#1B2430;--ink:#E6EBEF;--muted:#94A0AB;--line:#2A3542;
+  --chalk:#7FA1F6;--chalk-soft:#1D2B49;--on-chalk:#0B1320;--tape:#F2C230;--on-tape:#2A2100;
+  --ok:#4CC38A;--ok-soft:#14301F;--warn:#E3A240;--warn-soft:#33260F;--bad:#F07067;--bad-soft:#3A1A18;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 16px 36px -18px rgba(0,0,0,.7);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F141B;--surface:#161D26;--paper:#1B2430;--ink:#E6EBEF;--muted:#94A0AB;--line:#2A3542;
+  --chalk:#7FA1F6;--chalk-soft:#1D2B49;--on-chalk:#0B1320;--tape:#F2C230;--on-tape:#2A2100;
+  --ok:#4CC38A;--ok-soft:#14301F;--warn:#E3A240;--warn-soft:#33260F;--bad:#F07067;--bad-soft:#3A1A18;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 16px 36px -18px rgba(0,0,0,.7);color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.55;font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.02}
+p{margin:0}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--chalk);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--max);margin-inline:auto;padding-inline:var(--gutter)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px) saturate(1.2);-webkit-backdrop-filter:blur(12px) saturate(1.2)}
+.bar-in{display:flex;align-items:center;gap:20px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:19px;font-variation-settings:"wdth" 118;letter-spacing:-.01em}
+.logo svg{width:28px;height:28px}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{text-decoration:none;padding:8px 12px;border-radius:999px;color:var(--muted);font-weight:500;transition:color .2s,background .2s}
+.nav a:hover{color:var(--ink);background:var(--surface)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;text-decoration:none;font-weight:650;border-radius:999px;padding:12px 20px;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s,box-shadow .25s,color .2s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-chalk{background:var(--chalk);color:var(--on-chalk);box-shadow:0 8px 20px -10px var(--chalk)}
+.btn-chalk:hover{transform:translateY(-2px);box-shadow:0 14px 26px -12px var(--chalk)}
+.btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn-tape{background:var(--tape);color:var(--on-tape)}
+.btn-tape:hover{transform:translateY(-2px)}
+.btn-sm{padding:8px 14px;font-size:14px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.bar .btn{padding:10px 16px;font-size:14px}
+
+/* tape measure progress */
+.tape{height:12px;position:relative;background:
+  repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 10px) bottom/100% 5px no-repeat,
+  repeating-linear-gradient(90deg,var(--muted) 0 1px,transparent 1px 50px) bottom/100% 9px no-repeat;
+  border-bottom:1px solid var(--line)}
+.tape-fill{position:absolute;inset:0 auto 0 0;width:0;background:
+  repeating-linear-gradient(90deg,rgba(42,33,0,.5) 0 1px,transparent 1px 10px) bottom/100% 5px no-repeat,
+  repeating-linear-gradient(90deg,rgba(42,33,0,.85) 0 1px,transparent 1px 50px) bottom/100% 9px no-repeat,var(--tape)}
+.tape-fill::after{content:"";position:absolute;right:-1px;top:-3px;bottom:-3px;width:3px;background:var(--bad);border-radius:2px}
+
+/* ---------- hero ---------- */
+.hero{padding-block:clamp(48px,9vw,112px) clamp(32px,6vw,72px);position:relative}
+.hero-kicker{display:inline-flex;align-items:center;gap:10px;font-weight:550;color:var(--muted);margin-bottom:clamp(20px,3vw,32px)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
+.headline{font-size:clamp(3.1rem,12.5vw,9.4rem);font-weight:780;letter-spacing:-.035em;line-height:.9;font-variation-settings:"wdth" 125;cursor:default;user-select:none}
+.hl-line{display:block;overflow:hidden;padding-bottom:.06em;will-change:transform}
+.hl-inner{display:inline-block;animation:rise 1s cubic-bezier(.16,1,.3,1) both}
+.hl-line:nth-child(2) .hl-inner{animation-delay:.12s}
+.hl-line:nth-child(3) .hl-inner{animation-delay:.24s}
+.hl-line:nth-child(3){color:var(--chalk)}
+@keyframes rise{from{transform:translateY(102%)}to{transform:none}}
+.ch{display:inline-block;transition:font-variation-settings .35s cubic-bezier(.2,.8,.2,1);font-variation-settings:"wdth" 125,"wght" 780}
+.snap-wrap{position:relative;height:48px;margin-block:4px 18px;max-width:900px;cursor:pointer}
+.snap-wrap svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.reel{position:absolute;left:-6px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--tape);box-shadow:inset 0 0 0 3px var(--on-tape)}
+.peg{position:absolute;right:-4px;top:50%;width:8px;height:8px;margin-top:-4px;background:var(--ink);transform:rotate(45deg)}
+.dust{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--chalk);pointer-events:none}
+.hero-sub{display:grid;grid-template-columns:minmax(0,1.1fr) auto;gap:24px 48px;align-items:end}
+.hero-sub p{font-size:clamp(1.08rem,1.6vw,1.3rem);max-width:34em;color:var(--muted)}
+.hero-sub p strong{color:var(--ink);font-weight:650}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:760px){.hero-sub{grid-template-columns:1fr}.nav{display:none}.bar .btn{margin-left:auto}}
+
+.marquee{border-block:1px solid var(--line);overflow:hidden;padding-block:16px;background:var(--surface)}
+.mq-track{display:flex;gap:40px;width:max-content;animation:mq 38s linear infinite;font-weight:650;font-variation-settings:"wdth" 112;font-size:clamp(1rem,1.7vw,1.25rem);color:var(--muted)}
+.marquee:hover .mq-track{animation-play-state:paused}
+.mq-track span{display:inline-flex;align-items:center;gap:40px}
+.mq-track span::after{content:"";width:22px;height:2px;background:var(--chalk);opacity:.6}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ---------- sections ---------- */
+section{scroll-margin-top:80px}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:16px 48px;align-items:end;margin-bottom:clamp(28px,4vw,48px)}
+.sec-head h2{font-size:clamp(2.1rem,5.4vw,4.2rem);font-weight:760;letter-spacing:-.03em;font-variation-settings:"wdth" 118}
+.sec-head p{color:var(--muted);max-width:32em;font-size:1.08rem}
+@media (max-width:760px){.sec-head{grid-template-columns:1fr}}
+
+/* ---------- story ---------- */
+.story{padding-block:clamp(64px,10vw,120px) 40px}
+.story-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);gap:clamp(24px,5vw,72px)}
+.steps{display:flex;flex-direction:column}
+.step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;gap:12px;padding-block:24px;color:var(--muted);transition:color .4s}
+.step.on{color:var(--ink)}
+.step-n{display:inline-flex;width:36px;height:36px;border-radius:50%;align-items:center;justify-content:center;font-weight:700;box-shadow:inset 0 0 0 1.5px var(--line);transition:background .4s,color .4s,box-shadow .4s}
+.step.on .step-n{background:var(--chalk);color:var(--on-chalk);box-shadow:none}
+.step h3{font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:740;letter-spacing:-.02em;font-variation-settings:"wdth" 115}
+.step p{max-width:28em;font-size:1.06rem}
+.stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);height:min(640px,calc(100vh - 120px));display:flex;align-items:center;justify-content:center}
+.sheet{width:min(100%,460px);background:var(--paper);border-radius:6px;box-shadow:var(--shadow);padding:clamp(20px,3vw,32px);position:relative;transform:rotate(-1.2deg);transition:transform .8s cubic-bezier(.2,.8,.2,1);border:1px solid var(--line)}
+.sheet[data-s="1"]{transform:rotate(.6deg)}
+.sheet[data-s="2"]{transform:rotate(-.4deg)}
+.sh-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:2px solid var(--ink)}
+.sh-type{font-weight:800;font-variation-settings:"wdth" 125;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:.01em;line-height:1}
+.sh-no{font-weight:600;color:var(--muted);text-align:right;font-size:14px;line-height:1.3}
+.sh-no b{display:block;color:var(--chalk);font-size:18px}
+.flip{display:inline-block;animation:flip .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes flip{from{transform:translateY(60%) rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.sh-cust{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding-block:12px;color:var(--muted)}
+.sh-cust b{color:var(--ink);font-weight:650}
+.sh-rows{display:flex;flex-direction:column;font-size:14px}
+.sh-row{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;padding-block:9px;border-bottom:1px dashed var(--line)}
+.tick{width:18px;height:18px;border-radius:5px;box-shadow:inset 0 0 0 1.5px var(--line);display:grid;place-items:center;transition:background .3s,box-shadow .3s}
+.tick svg{width:12px;height:12px;stroke:var(--on-chalk);stroke-width:3;fill:none;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s .1s}
+.sh-row.done .tick{background:var(--ok);box-shadow:none}
+.sh-row.done .tick svg{stroke-dashoffset:0;stroke:#fff}
+.sh-row.done .rdesc{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+.sh-tot{display:flex;justify-content:space-between;align-items:baseline;padding-top:14px;font-weight:700}
+.sh-tot span:last-child{font-size:1.6rem;font-variation-settings:"wdth" 112;letter-spacing:-.01em}
+.sh-foot{margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--muted);min-height:38px}
+.stamp{position:absolute;right:20px;top:42%;padding:6px 14px;border:3px solid currentColor;border-radius:6px;font-weight:850;font-variation-settings:"wdth" 120;font-size:1.5rem;letter-spacing:.04em;transform:rotate(-14deg) scale(2.2);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s;pointer-events:none;mix-blend-mode:multiply}
+:root[data-theme="dark"] .stamp{mix-blend-mode:normal}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stamp{mix-blend-mode:normal}}
+.stamp small{display:block;font-size:11px;font-weight:600;letter-spacing:0}
+.stamp.show{opacity:.9;transform:rotate(-14deg) scale(1)}
+.stamp.ok{color:var(--ok)}
+.stamp.chalk{color:var(--chalk)}
+.meter{height:6px;background:var(--line);border-radius:6px;overflow:hidden;flex:1;max-width:160px}
+.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .4s}
+@media (max-width:860px){
+  .story-grid{grid-template-columns:1fr}
+  .stage{order:-1;top:calc(env(safe-area-inset-top,0px) + 78px);height:auto;z-index:2;padding-block:8px;background:linear-gradient(var(--bg) 85%,transparent)}
+  .sheet{width:min(100%,400px);font-size:13px;padding:16px}
+  .sheet .sh-row{padding-block:6px}
+  .step{min-height:56vh}
+}
+
+/* ---------- workspace app ---------- */
+.work{padding-block:clamp(64px,10vw,120px)}
+.app{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.app-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px clamp(14px,2vw,22px);border-bottom:1px solid var(--line)}
+.biz{display:flex;align-items:center;gap:10px;min-width:0}
+.biz-av{width:36px;height:36px;border-radius:9px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:800;font-variation-settings:"wdth" 125;flex:none}
+.biz b{display:block;line-height:1.2}
+.biz small{color:var(--muted)}
+.app-top .btn{margin-left:auto}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.kpi{padding:14px clamp(14px,2vw,22px);border-right:1px solid var(--line);min-width:0}
+.kpi:last-child{border-right:0}
+.kpi small{color:var(--muted);font-size:13px;display:block}
+.kpi b{font-size:clamp(1.15rem,2.2vw,1.5rem);font-variation-settings:"wdth" 110;letter-spacing:-.01em;font-weight:720}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi:nth-child(2){border-right:0}.kpi:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+.app-body{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);min-height:560px}
+@media (max-width:900px){.app-body{grid-template-columns:1fr}}
+.list-col{border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+@media (max-width:900px){.list-col{border-right:0;border-bottom:1px solid var(--line)}}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);padding:10px;gap:4px;position:relative}
+.tab{position:relative;z-index:1;border:0;background:none;padding:10px 6px;border-radius:9px;font-weight:620;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:7px;transition:color .25s}
+.tab[aria-selected="true"]{color:var(--ink)}
+.tab .ct{font-size:12px;min-width:20px;padding:1px 6px;border-radius:999px;background:var(--line);color:var(--ink)}
+.tab-ind{position:absolute;top:10px;bottom:10px;left:10px;border-radius:9px;background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.08),inset 0 0 0 1px var(--line);transition:transform .45s cubic-bezier(.2,.9,.2,1),width .45s}
+.list{list-style:none;margin:0;padding:4px 10px 14px;display:flex;flex-direction:column;gap:6px;overflow:auto;max-height:620px}
+.card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 14px;border-radius:11px;cursor:pointer;border:1px solid transparent;transition:background .2s,border-color .2s,transform .25s;animation:cardIn .45s cubic-bezier(.2,.8,.2,1) both;text-align:left;width:100%;background:none}
+.card:hover{background:var(--paper)}
+.card[aria-current="true"]{background:var(--paper);border-color:var(--chalk);box-shadow:0 0 0 3px var(--chalk-soft)}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card .c-no{font-size:12.5px;color:var(--muted);font-weight:600}
+.card .c-t{font-weight:640;line-height:1.3;grid-column:1;overflow-wrap:anywhere}
+.card .c-who{font-size:13.5px;color:var(--muted);grid-column:1}
+.card .c-amt{grid-column:2;grid-row:2;font-weight:700;text-align:right}
+.card .pill{grid-column:2;grid-row:1;justify-self:end}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-draft{background:var(--line);color:var(--muted)}
+.p-sent{background:var(--warn-soft);color:var(--warn)}
+.p-approved,.p-job{background:var(--chalk-soft);color:var(--chalk)}
+.p-done,.p-paid{background:var(--ok-soft);color:var(--ok)}
+.p-invoiced{background:var(--warn-soft);color:var(--warn)}
+.p-overdue{background:var(--bad-soft);color:var(--bad)}
+.empty{padding:28px 14px;color:var(--muted);text-align:center}
+
+.detail{padding:clamp(16px,2.4vw,28px);min-width:0;display:flex;flex-direction:column;gap:18px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;list-style:none;margin:0;padding:0}
+.flow li{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600}
+.flow li::before{content:"";height:4px;border-radius:4px;background:var(--line);transition:background .5s}
+.flow li.on{color:var(--ink)}
+.flow li.on::before{background:var(--chalk)}
+.flow li.cur::before{background:linear-gradient(90deg,var(--chalk) 0 50%,var(--line) 50%) ;background-size:200% 100%;animation:fillbar 1.4s ease-in-out infinite alternate}
+@keyframes fillbar{from{background-position:100% 0}to{background-position:0 0}}
+.doc{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:clamp(16px,2.4vw,26px);position:relative;animation:docIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes docIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+.doc-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:14px;border-bottom:2px solid var(--ink)}
+.doc-head h3{font-size:clamp(1.3rem,2.6vw,1.75rem);font-weight:760;font-variation-settings:"wdth" 112;letter-spacing:-.01em;overflow-wrap:anywhere}
+.doc-type{font-weight:800;font-variation-settings:"wdth" 125;color:var(--chalk);font-size:14px;letter-spacing:.06em}
+.doc-meta{text-align:right;font-size:13.5px;color:var(--muted);line-height:1.5}
+.doc-meta b{color:var(--ink)}
+.doc-cust{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding-block:14px;font-size:14px}
+.doc-cust small{display:block;color:var(--muted);font-size:12.5px}
+.tbl-wrap{overflow-x:auto}
+table.items{width:100%;border-collapse:collapse;font-size:14px;min-width:440px}
+table.items th{text-align:left;font-weight:600;color:var(--muted);font-size:12.5px;padding:8px 6px;border-bottom:1px solid var(--line)}
+table.items td{padding:10px 6px;border-bottom:1px dashed var(--line);vertical-align:top}
+table.items .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.totals{display:grid;grid-template-columns:auto auto;justify-content:end;gap:4px 28px;padding-top:12px;font-size:14px}
+.totals .grand{font-size:1.35rem;font-weight:760;font-variation-settings:"wdth" 110;padding-top:6px;border-top:2px solid var(--ink);margin-top:4px}
+.totals span:nth-child(even){text-align:right;font-variant-numeric:tabular-nums}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.note{font-size:13.5px;color:var(--muted)}
+.tasks{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.task{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:8px;cursor:pointer;transition:background .2s}
+.task:hover{background:var(--surface)}
+.task input{appearance:none;width:22px;height:22px;border-radius:6px;box-shadow:inset 0 0 0 1.5px var(--muted);margin:0;display:grid;place-items:center;cursor:pointer;flex:none;transition:background .25s,box-shadow .25s}
+.task input:checked{background:var(--ok);box-shadow:none}
+.task input:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px);animation:pop .3s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:rotate(45deg) scale(0)}}
+.task input:checked + span{color:var(--muted);text-decoration:line-through}
+.prog{display:flex;align-items:center;gap:12px;font-size:13.5px;color:var(--muted)}
+.prog .meter{max-width:none}
+.doc .stamp{top:auto;bottom:24%;right:8%}
+
+/* dialogs */
+dialog{border:0;padding:0;background:transparent;max-width:min(680px,calc(100vw - 24px));width:100%;color:var(--ink)}
+dialog::backdrop{background:rgba(10,15,22,.55);backdrop-filter:blur(3px)}
+dialog[open] .dlg{animation:dlgIn .4s cubic-bezier(.2,.9,.2,1)}
+@keyframes dlgIn{from{opacity:0;transform:translateY(24px) scale(.98)}}
+.dlg{background:var(--paper);border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow);max-height:calc(100vh - 32px);overflow:auto}
+.dlg-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper);z-index:1}
+.dlg-head h3{font-size:1.25rem;font-weight:720;font-variation-settings:"wdth" 110}
+.x{border:0;background:var(--surface);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;flex:none}
+.dlg-body{padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+.dlg-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:13px;font-weight:600;color:var(--muted)}
+.inp{width:100%;padding:10px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);transition:border-color .2s,box-shadow .2s;min-width:0}
+.inp:focus{outline:none;border-color:var(--chalk);box-shadow:0 0 0 3px var(--chalk-soft)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.li-row{display:grid;grid-template-columns:minmax(0,1fr) 64px 76px 90px 34px;gap:6px;align-items:center;animation:cardIn .3s both}
+.li-head{font-size:12px;color:var(--muted);font-weight:600}
+@media (max-width:560px){.li-row{grid-template-columns:1fr 1fr 1fr 34px}.li-row .desc{grid-column:1/-1}.li-head{display:none}}
+.rm{border:0;background:none;color:var(--muted);cursor:pointer;width:34px;height:34px;border-radius:8px;font-size:18px}
+.rm:hover{background:var(--bad-soft);color:var(--bad)}
+.err{color:var(--bad);font-size:13.5px;font-weight:600}
+.cust-brand{display:flex;align-items:center;gap:12px}
+.approve-box{background:var(--surface);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+
+.toasts{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:100;width:max-content;max-width:calc(100vw - 32px)}
+.toast{background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;font-size:14.5px;box-shadow:var(--shadow);animation:tIn .4s cubic-bezier(.2,.9,.2,1)}
+.toast.out{animation:tOut .3s forwards}
+@keyframes tIn{from{opacity:0;transform:translateY(16px) scale(.96)}}
+@keyframes tOut{to{opacity:0;transform:translateY(10px)}}
+
+/* ---------- pricing ---------- */
+.pricing{padding-block:clamp(64px,10vw,120px)}
+.bill{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:28px;position:relative}
+.bill button{border:0;background:none;padding:8px 16px;border-radius:999px;cursor:pointer;font-weight:620;color:var(--muted);position:relative;z-index:1;transition:color .25s}
+.bill button[aria-pressed="true"]{color:var(--on-chalk)}
+.bill-ind{position:absolute;top:4px;bottom:4px;left:4px;border-radius:999px;background:var(--chalk);transition:transform .4s cubic-bezier(.2,.9,.2,1),width .4s}
+.save{font-size:12px;background:var(--tape);color:var(--on-tape);padding:1px 7px;border-radius:999px;margin-left:6px}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--ink)}
+.plan{padding:28px clamp(16px,2.4vw,32px) 32px;display:flex;flex-direction:column;gap:16px;border-right:1px solid var(--line);position:relative;transition:background .3s}
+.plan:last-child{border-right:0}
+.plan:hover{background:var(--surface)}
+.plan.hot{background:var(--surface)}
+.plan.hot::before{content:"";position:absolute;left:0;right:0;top:-2px;height:5px;background:var(--tape)}
+.plan h3{font-size:1.5rem;font-weight:740;font-variation-settings:"wdth" 118}
+.plan .who{color:var(--muted);font-size:15px;min-height:3em}
+.price{display:flex;align-items:baseline;gap:6px}
+.price b{font-size:clamp(3rem,6vw,4.4rem);font-weight:800;font-variation-settings:"wdth" 125;letter-spacing:-.04em;line-height:1;display:inline-block}
+.price span{color:var(--muted)}
+.price-note{font-size:13px;color:var(--muted);min-height:1.3em;margin-top:-10px}
+.feat{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;font-size:15px}
+.feat li{display:grid;grid-template-columns:18px 1fr;gap:10px}
+.feat li::before{content:"";width:14px;height:2px;background:var(--chalk);margin-top:.72em}
+.plan .btn{margin-top:auto}
+.hot-tag{font-size:12.5px;font-weight:700;color:var(--on-tape);background:var(--tape);padding:2px 9px;border-radius:999px;align-self:flex-start}
+@media (max-width:860px){.plans{grid-template-columns:1fr}.plan{border-right:0;border-bottom:1px solid var(--line)}}
+
+/* ---------- closing ---------- */
+.close{padding-block:clamp(64px,10vw,120px);border-top:1px solid var(--line)}
+.close h2{font-size:clamp(2.4rem,8vw,6.4rem);font-weight:800;font-variation-settings:"wdth" 125;letter-spacing:-.04em;line-height:.92;max-width:12ch}
+.close-row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.foot{padding-block:28px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.theme-t{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .mq-track{animation:none}
+}
+</style>
+
+<header class="bar" id="top">
+  <div class="wrap bar-in">
+    <a class="logo" href="#top" aria-label="Chalkline home">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="1" y="6" width="16" height="16" rx="4" fill="var(--tape)"/><circle cx="9" cy="14" r="3.2" fill="var(--ink)"/><path d="M17 14H27" stroke="var(--chalk)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="3 2.5"/></svg>
+      Chalkline
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#workspace">Workspace</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <a class="btn btn-chalk" href="#pricing">Start free trial</a>
+  </div>
+  <div class="tape" aria-hidden="true"><div class="tape-fill" id="tapeFill"></div></div>
+</header>
+
+<main>
+  <section class="hero wrap" aria-labelledby="hl">
+    <div class="hero-kicker"><span class="dot"></span>Quotes, jobs and invoices for tradespeople</div>
+    <h1 class="headline" id="hl" aria-label="Quote it. Do it. Get paid.">
+      <span class="hl-line" data-depth="0.10"><span class="hl-inner" data-split>Quote it.</span></span>
+      <span class="hl-line" data-depth="0.18"><span class="hl-inner" data-split>Do it.</span></span>
+      <span class="hl-line" data-depth="0.26"><span class="hl-inner" data-split>Get paid.</span></span>
+    </h1>
+    <div class="snap-wrap" id="snap" title="Snap the line again" aria-hidden="true">
+      <span class="reel"></span><span class="peg"></span>
+      <svg id="snapSvg" preserveAspectRatio="none"><path id="snapPath" fill="none" stroke="var(--chalk)" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 2 1.5 2"/></svg>
+    </div>
+    <div class="hero-sub">
+      <p>Send a quote from the van. Your customer <strong>approves it online</strong>, it becomes a job with a checklist, and when you tick the last box the <strong>invoice writes itself</strong>. One number follows the work from first visit to paid.</p>
+      <div class="cta-row">
+        <a class="btn btn-chalk" href="#workspace">Try the workspace</a>
+        <a class="btn btn-ghost" href="#pricing">See pricing</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-label="Built for plumbers, electricians, joiners, roofers, tilers, plasterers, gas engineers, landscapers, decorators and HVAC fitters">
+    <div class="mq-track" aria-hidden="true" id="mq"></div>
+  </div>
+
+  <section class="story wrap" id="how" aria-labelledby="how-h">
+    <div class="sec-head">
+      <h2 id="how-h">One job number, start to finish</h2>
+      <p>No retyping the same line items three times. Q-1042 becomes J-1042, then INV-1042, and everyone can see where it stands.</p>
+    </div>
+    <div class="story-grid">
+      <div class="steps">
+        <article class="step on" data-step="0">
+          <span class="step-n">1</span>
+          <h3>Quote on site, approved by lunch</h3>
+          <p>Build the quote from your saved price list while you're still at the customer's door. They get a link, read it on their phone and approve with their name. You get a notification and a timestamp you can point to later.</p>
+        </article>
+        <article class="step" data-step="1">
+          <span class="step-n">2</span>
+          <h3>The quote turns into the job sheet</h3>
+          <p>Every approved line becomes a task. Tick them off as you go, add photos and materials, and see at a glance which jobs are half done and which are ready to bill.</p>
+        </article>
+        <article class="step" data-step="2">
+          <span class="step-n">3</span>
+          <h3>Last tick, invoice sent</h3>
+          <p>Mark the job complete and the invoice is ready with the same prices, VAT worked out and payment terms filled in. Unpaid invoices chase themselves with polite reminders.</p>
+        </article>
+      </div>
+      <div class="stage">
+        <div class="sheet" id="sheet" data-s="0">
+          <div class="sh-top">
+            <div class="sh-type" id="shType">QUOTE</div>
+            <div class="sh-no">Reed Plumbing &amp; Heating<b class="num" id="shNo">Q-1042</b></div>
+          </div>
+          <div class="sh-cust"><span>For <b>Helen Carter</b></span><span id="shDate">Valid 30 days</span></div>
+          <div class="sh-rows" id="shRows"></div>
+          <div class="sh-tot"><span id="shTotL">Total inc. VAT</span><span class="num">€708.04</span></div>
+          <div class="sh-foot" id="shFoot"></div>
+          <div class="stamp ok" id="stApproved">APPROVED<small>Helen Carter · 09:14</small></div>
+          <div class="stamp chalk" id="stPaid">PAID<small>Card · same day</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="work wrap" id="workspace" aria-labelledby="ws-h">
+    <div class="sec-head">
+      <h2 id="ws-h">Try the workspace</h2>
+      <p>This is a working demo loaded with example jobs. Send a quote, approve it as the customer, tick off the job and raise the invoice. Changes are kept in this browser.</p>
+    </div>
+    <div class="app" id="app">
+      <div class="app-top">
+        <div class="biz"><span class="biz-av">R</span><div><b>Reed Plumbing &amp; Heating</b><small>Example business</small></div></div>
+        <button class="btn btn-ghost btn-sm" id="resetBtn" type="button">Reset examples</button>
+        <button class="btn btn-chalk btn-sm" id="newBtn" type="button" style="margin-left:0">New quote</button>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="app-body">
+        <div class="list-col">
+          <div class="tabs" role="tablist" aria-label="Stage">
+            <span class="tab-ind" id="tabInd"></span>
+            <button class="tab" role="tab" data-tab="quotes" id="tab-quotes" aria-selected="true">Quotes <span class="ct num"></span></button>
+            <button class="tab" role="tab" data-tab="jobs" id="tab-jobs" aria-selected="false">Jobs <span class="ct num"></span></button>
+            <button class="tab" role="tab" data-tab="invoices" id="tab-invoices" aria-selected="false">Invoices <span class="ct num"></span></button>
+          </div>
+          <ul class="list" id="list" role="tabpanel"></ul>
+        </div>
+        <div class="detail" id="detail" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing wrap" id="pricing" aria-labelledby="pr-h">
+    <div class="sec-head">
+      <h2 id="pr-h">Priced like a tool, not a contract</h2>
+      <p>Every plan includes unlimited quotes, online approval and invoices. Try any plan free for 14 days. No card needed, cancel from your phone.</p>
+    </div>
+    <div class="bill" role="group" aria-label="Billing period">
+      <span class="bill-ind" id="billInd"></span>
+      <button type="button" data-bill="m" aria-pressed="true">Monthly</button>
+      <button type="button" data-bill="y" aria-pressed="false">Yearly<span class="save">2 months free</span></button>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Solo</h3>
+        <p class="who">One person, one van. Everything you need to quote and get paid.</p>
+        <div class="price"><b class="num" data-m="15" data-y="12.50">€15</b><span>/ month</span></div>
+        <p class="price-note" data-note></p>
+        <ul class="feat"><li>Unlimited quotes, jobs and invoices</li><li>Online approval with signature</li><li>Job checklists from quote lines</li><li>VAT and payment terms filled in</li></ul>
+        <a class="btn btn-ghost" href="#workspace">Start free trial</a>
+      </div>
+      <div class="plan hot">
+        <span class="hot-tag">Most popular</span>
+        <h3>Trade</h3>
+        <p class="who">For busy sole traders who want payments and reminders on autopilot.</p>
+        <div class="price"><b class="num" data-m="22" data-y="18.33">€22</b><span>/ month</span></div>
+        <p class="price-note" data-note></p>
+        <ul class="feat"><li>Everything in Solo</li><li>Card payments and deposits on approval</li><li>Automatic overdue reminders</li><li>Saved price list and job photos</li><li>Export to Xero and QuickBooks</li></ul>
+        <a class="btn btn-tape" href="#workspace">Start free trial</a>
+      </div>
+      <div class="plan">
+        <h3>Crew</h3>
+        <p class="who">Up to 5 people. Hand out jobs and see who's where.</p>
+        <div class="price"><b class="num" data-m="30" data-y="25">€30</b><span>/ month</span></div>
+        <p class="price-note" data-note></p>
+        <ul class="feat"><li>Everything in Trade</li><li>Up to 5 team members</li><li>Assign jobs and tasks</li><li>Weekly schedule board</li><li>Profit per job</li></ul>
+        <a class="btn btn-ghost" href="#workspace">Start free trial</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="close wrap" aria-labelledby="cl-h">
+    <div class="close-row">
+      <h2 id="cl-h">Straight line from quote to paid.</h2>
+      <a class="btn btn-chalk" href="#workspace">Send your first quote</a>
+    </div>
+  </section>
+</main>
+<footer class="wrap foot">
+  <span>Chalkline · built for the trades</span>
+  <button class="theme-t" id="themeT" type="button">Switch theme</button>
+</footer>
+
+<dialog id="dlgEdit" aria-labelledby="edH"></dialog>
+<dialog id="dlgCust" aria-labelledby="cuH"></dialog>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(() => {
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const eur = n => new Intl.NumberFormat('en-IE', {style: 'currency', currency: 'EUR'}).format(n);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const day = 864e5;
+const fmtD = t => new Date(t).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'});
+
+/* ---------------- hero: split letters + variable-font hover ---------------- */
+$$('[data-split]').forEach(el => {
+  el.innerHTML = [...el.textContent].map(c => c === ' ' ? ' ' : `<span class="ch">${c}</span>`).join('');
+});
+const chars = $$('.ch');
+const hl = $('#hl');
+if (!reduce && matchMedia('(hover:hover)').matches) {
+  let raf = 0, mx = -1e4, my = -1e4;
+  const paint = () => {
+    raf = 0;
+    for (const c of chars) {
+      const r = c.getBoundingClientRect();
+      const d = Math.hypot(mx - (r.left + r.width / 2), my - (r.top + r.height / 2));
+      const k = Math.max(0, 1 - d / 260);
+      const w = 125 - k * 55, g = 780 + k * 120;
+      c.style.fontVariationSettings = `"wdth" ${w.toFixed(1)}, "wght" ${g.toFixed(0)}`;
+    }
+  };
+  hl.addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; if (!raf) raf = requestAnimationFrame(paint); });
+  hl.addEventListener('pointerleave', () => { mx = my = -1e4; if (!raf) raf = requestAnimationFrame(paint); });
+}
+
+/* ---------------- chalk line snap ---------------- */
+const snap = $('#snap'), path = $('#snapPath');
+let snapping = false;
+function snapLine() {
+  if (snapping) return; snapping = true;
+  const W = snap.clientWidth, H = snap.clientHeight, mid = H / 2;
+  const set = off => path.setAttribute('d', `M0 ${mid} Q ${W / 2} ${mid + off * 2} ${W} ${mid}`);
+  if (reduce) { set(0); snapping = false; return; }
+  const len = W + 40;
+  path.style.strokeDasharray = `${len}`; path.style.strokeDashoffset = `${len}`;
+  const t0 = performance.now(), pull = 900, lift = -16;
+  const frame = now => {
+    const t = now - t0;
+    if (t < pull) {
+      const k = 1 - Math.pow(1 - t / pull, 3);
+      set(lift * Math.min(1, t / (pull * .6)));
+      path.style.strokeDashoffset = `${len * (1 - k)}`;
+      requestAnimationFrame(frame);
+    } else {
+      if (path.style.strokeDasharray !== '') { path.style.strokeDasharray = ''; path.style.strokeDashoffset = ''; dust(W, mid); }
+      const s = t - pull;
+      const off = -lift * Math.exp(-s / 110) * Math.cos(s / 16) * -1;
+      set(off);
+      if (s < 900) requestAnimationFrame(frame); else { set(0); snapping = false; }
+    }
+  };
+  requestAnimationFrame(frame);
+}
+function dust(W, mid) {
+  for (let i = 0; i < 34; i++) {
+    const d = document.createElement('span');
+    d.className = 'dust';
+    const x = Math.random() * W;
+    d.style.left = x + 'px'; d.style.top = mid - 2 + 'px';
+    const s = .5 + Math.random() * 1.2;
+    d.style.width = d.style.height = (2 + Math.random() * 4) + 'px';
+    snap.appendChild(d);
+    d.animate([
+      {transform: 'translate(0,0) scale(1)', opacity: .9},
+      {transform: `translate(${(Math.random() - .5) * 40}px, ${(Math.random() - .5) * 46}px) scale(${s})`, opacity: 0}
+    ], {duration: 700 + Math.random() * 600, easing: 'cubic-bezier(.2,.8,.2,1)'}).onfinish = () => d.remove();
+  }
+}
+const initSnap = () => { const W = snap.clientWidth, H = snap.clientHeight; path.setAttribute('d', `M0 ${H/2} L ${W} ${H/2}`); };
+initSnap();
+setTimeout(snapLine, reduce ? 0 : 700);
+snap.addEventListener('click', snapLine);
+hl.addEventListener('click', snapLine);
+addEventListener('resize', () => { if (!snapping) initSnap(); });
+
+/* ---------------- marquee ---------------- */
+const trades = ['Plumbers','Electricians','Joiners','Roofers','Tilers','Plasterers','Gas engineers','Landscapers','Decorators','HVAC fitters','Kitchen fitters','Locksmiths'];
+const mqHtml = trades.map(t => `<span>${t}</span>`).join('');
+$('#mq').innerHTML = mqHtml + mqHtml;
+
+/* ---------------- scroll: tape progress, hero parallax, story ---------------- */
+const tapeFill = $('#tapeFill');
+const lines = $$('.hl-line');
+const story = $('#how'), steps = $$('.step'), sheet = $('#sheet');
+const SH_ITEMS = [
+  ['Call-out and first hour', 85], ['Remove old basin and trap', 60], ['15mm copper run, 6 m', 186],
+  ['Fit new basin and mixer tap', 240], ['Pressure test and clean up', 0]
+];
+$('#shRows').innerHTML = SH_ITEMS.map(([d, p]) => `<div class="sh-row"><span class="tick"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9.2 10 3"/></svg></span><span class="rdesc">${d}</span><span class="num">${p ? eur(p) : 'Incl.'}</span></div>`).join('');
+const shRows = $$('.sh-row');
+let curS = -1;
+function setStage(s, sub) {
+  if (s !== curS) {
+    curS = s;
+    sheet.dataset.s = s;
+    steps.forEach((el, i) => el.classList.toggle('on', i === s));
+    const T = ['QUOTE', 'JOB SHEET', 'INVOICE'][s], N = ['Q-1042', 'J-1042', 'INV-1042'][s];
+    $('#shType').innerHTML = `<span class="flip">${T}</span>`;
+    $('#shNo').innerHTML = `<span class="flip">${N}</span>`;
+    $('#shDate').textContent = ['Valid 30 days', 'Starts Tue 6 Oct', 'Due in 14 days'][s];
+    $('#shTotL').textContent = s === 2 ? 'Amount due' : 'Total inc. VAT';
+    $('#stApproved').classList.toggle('show', s === 1);
+  }
+  const done = s === 0 ? 0 : s === 2 ? 5 : Math.min(5, Math.floor(sub * 6));
+  shRows.forEach((r, i) => r.classList.toggle('done', i < done));
+  const foot = $('#shFoot');
+  const want = s === 0 ? 'q' : s === 1 ? 'j' : 'i';
+  if (foot.dataset.k !== want) {
+    foot.dataset.k = want;
+    foot.innerHTML = s === 0 ? `<span>Sent to helen.carter@example.com</span><span class="pill p-sent">Awaiting approval</span>`
+      : s === 1 ? `<span class="num" id="shPct">0 of 5 done</span><span class="meter"><i id="shMeter"></i></span>`
+      : `<span>VAT 24% included</span><span class="pill p-invoiced" id="shPay">Unpaid</span>`;
+  }
+  if (s === 1) { $('#shPct').textContent = `${done} of 5 done`; $('#shMeter').style.width = done / 5 * 100 + '%'; }
+  const paid = s === 2 && sub > .55;
+  $('#stPaid').classList.toggle('show', paid);
+  const pay = $('#shPay'); if (pay) { pay.className = 'pill ' + (paid ? 'p-paid' : 'p-invoiced'); pay.textContent = paid ? 'Paid' : 'Unpaid'; }
+}
+setStage(0, 0);
+
+let ticking = false;
+function onScroll() {
+  ticking = false;
+  const doc = document.documentElement;
+  const max = doc.scrollHeight - innerHeight;
+  tapeFill.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  if (!reduce && scrollY < innerHeight * 1.2) lines.forEach(l => l.style.transform = `translateX(${-scrollY * l.dataset.depth}px)`);
+  const r = story.getBoundingClientRect();
+  const stepsEl = $('.steps');
+  const sr = stepsEl.getBoundingClientRect();
+  const p = Math.min(.9999, Math.max(0, (innerHeight * .55 - sr.top) / sr.height));
+  const s = Math.floor(p * 3);
+  setStage(s, p * 3 - s);
+}
+addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, {passive: true});
+onScroll();
+
+/* ---------------- workspace data ---------------- */
+const KEY = 'chalkline.v1';
+const now = Date.now();
+const mk = (no, name, email, addr, title, stage, items, extra = {}) => ({
+  no, title, stage, vat: 24, created: now - (1050 - no) * 0 - day * 2,
+  customer: {name, email, addr},
+  items: items.map(([desc, qty, unit, rate]) => ({desc, qty, unit, rate})),
+  tasks: null, ...extra
+});
+function seed() {
+  const t = it => it.map(i => ({t: i[0], done: false}));
+  const list = [
+    mk(1043, 'Daniel Moss', 'dan.moss@example.com', '7 Orchard Way', 'Outside garden tap with isolator', 'draft',
+      [['Supply & fit outdoor tap kit', 1, 'ea', 68], ['Labour', 1.5, 'hr', 45]]),
+    mk(1042, 'Helen Carter', 'helen.carter@example.com', '22 Mill Lane', 'Bathroom: replace basin and copper run', 'sent',
+      [['Call-out and first hour', 1, 'ea', 85], ['Remove old basin and trap', 1, 'ea', 60], ['15mm copper pipe, supply & fit', 6, 'm', 31], ['Fit new basin and mixer tap', 1, 'ea', 240]], {sent: now - day * .6}),
+    mk(1041, 'Priya Shah', 'priya@example.com', 'Flat 3, 9 Station Rd', 'Replace leaking cylinder valve', 'approved',
+      [['Pressure relief valve', 1, 'ea', 42], ['Labour', 2, 'hr', 45]], {approvedBy: 'Priya Shah', approvedAt: now - day * 1.2}),
+    mk(1040, 'Northgate Café', 'owner@northgate.example', '1 Northgate', 'Commercial kitchen: new sink and grease trap', 'job',
+      [['Stainless double sink', 1, 'ea', 390], ['Grease trap, 25 L', 1, 'ea', 310], ['Waste pipework 40mm', 8, 'm', 14], ['Labour', 6, 'hr', 45]], {approvedBy: 'Sam Patel', approvedAt: now - day * 5}),
+    mk(1039, 'Tom & Ana Ruiz', 'ruiz.home@example.com', '48 Elm Street', 'Boiler service and radiator flush', 'invoiced',
+      [['Annual boiler service', 1, 'ea', 95], ['Power flush, 9 radiators', 1, 'ea', 420], ['Inhibitor', 1, 'ea', 18]], {approvedBy: 'Ana Ruiz', approvedAt: now - day * 20, invoicedAt: now - day * 9, due: now + day * 5}),
+    mk(1038, 'Marcus Lee', 'marcus.lee@example.com', '3 Quarry Close', 'Emergency leak under kitchen sink', 'invoiced',
+      [['Emergency call-out', 1, 'ea', 120], ['Compression fittings', 3, 'ea', 6.5]], {approvedBy: 'Marcus Lee', approvedAt: now - day * 26, invoicedAt: now - day * 19, due: now - day * 5}),
+    mk(1037, 'Grace Okafor', 'grace.o@example.com', '12 Riverside', 'Replace toilet cistern internals', 'paid',
+      [['Dual-flush valve kit', 1, 'ea', 38], ['Labour', 1, 'hr', 45]], {approvedBy: 'Grace Okafor', approvedAt: now - day * 30, invoicedAt: now - day * 24, due: now - day * 10, paidAt: now - day * 21})
+  ];
+  list.forEach(j => { if (['job','done','invoiced','paid'].includes(j.stage)) j.tasks = j.items.map(i => ({t: i.desc, done: j.stage !== 'job'})); });
+  const nc = list.find(j => j.no === 1040); nc.tasks.forEach((x, i) => x.done = i < 2);
+  return list;
+}
+let jobs;
+try { jobs = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { jobs = null; }
+if (!Array.isArray(jobs) || !jobs.length) jobs = seed();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(jobs)); } catch (e) {} };
+
+const TAB_OF = {draft: 'quotes', sent: 'quotes', approved: 'quotes', job: 'jobs', done: 'jobs', invoiced: 'invoices', paid: 'invoices'};
+const PFX = {quotes: 'Q', jobs: 'J', invoices: 'INV'};
+const ref = j => `${PFX[TAB_OF[j.stage]]}-${j.no}`;
+const overdue = j => j.stage === 'invoiced' && j.due < Date.now();
+const pill = j => {
+  if (overdue(j)) return `<span class="pill p-overdue">Overdue</span>`;
+  const L = {draft: 'Draft', sent: 'Awaiting approval', approved: 'Approved', job: 'In progress', done: 'Complete', invoiced: 'Unpaid', paid: 'Paid'};
+  return `<span class="pill p-${j.stage}">${L[j.stage]}</span>`;
+};
+const sums = j => {
+  const sub = j.items.reduce((a, i) => a + (+i.qty || 0) * (+i.rate || 0), 0);
+  const vat = sub * (+j.vat || 0) / 100;
+  return {sub, vat, total: sub + vat};
+};
+
+let tab = 'quotes', sel = null;
+
+function renderKpis() {
+  const open = jobs.filter(j => ['sent'].includes(j.stage));
+  const live = jobs.filter(j => ['approved','job','done'].includes(j.stage));
+  const unpaid = jobs.filter(j => j.stage === 'invoiced');
+  const paid = jobs.filter(j => j.stage === 'paid');
+  const tot = a => eur(a.reduce((s, j) => s + sums(j).total, 0));
+  $('#kpis').innerHTML = [
+    ['Awaiting approval', tot(open)], ['Work booked', tot(live)],
+    ['Unpaid', tot(unpaid)], ['Paid this month', tot(paid)]
+  ].map(([l, v]) => `<div class="kpi"><small>${l}</small><b class="num">${v}</b></div>`).join('');
+}
+function renderTabs() {
+  $$('.tab').forEach(b => {
+    const t = b.dataset.tab;
+    b.setAttribute('aria-selected', t === tab);
+    $('.ct', b).textContent = jobs.filter(j => TAB_OF[j.stage] === t).length;
+  });
+  const on = $(`.tab[data-tab="${tab}"]`), ind = $('#tabInd');
+  ind.style.width = on.offsetWidth + 'px';
+  ind.style.transform = `translateX(${on.offsetLeft - 10}px)`;
+}
+function renderList() {
+  const order = {draft: 0, sent: 1, approved: 2, job: 0, done: 1, invoiced: 0, paid: 1};
+  const items = jobs.filter(j => TAB_OF[j.stage] === tab).sort((a, b) => (overdue(b) - overdue(a)) || order[a.stage] - order[b.stage] || b.no - a.no);
+  const ul = $('#list');
+  if (!items.length) {
+    ul.innerHTML = `<li class="empty">${tab === 'quotes' ? 'No quotes yet. Use New quote to write your first one.' : tab === 'jobs' ? 'No jobs yet. Approved quotes become jobs here.' : 'No invoices yet. Finished jobs turn into invoices here.'}</li>`;
+    return items;
+  }
+  ul.innerHTML = items.map((j, i) => `<li><button class="card" type="button" data-no="${j.no}" aria-current="${sel === j.no}" style="animation-delay:${i * 40}ms">
+    <span class="c-no num">${ref(j)}</span>${pill(j)}
+    <span class="c-t">${esc(j.title)}</span><span class="c-amt num">${eur(sums(j).total)}</span>
+    <span class="c-who">${esc(j.customer.name)}</span></button></li>`).join('');
+  return items;
+}
+function render(keepSel) {
+  renderKpis(); renderTabs();
+  const items = renderList();
+  if (!keepSel || !jobs.some(j => j.no === sel && TAB_OF[j.stage] === tab)) sel = items[0]?.no ?? null;
+  $$('.card').forEach(c => c.setAttribute('aria-current', +c.dataset.no === sel));
+  renderDetail();
+}
+const FLOW = ['Quote', 'Approved', 'Job done', 'Paid'];
+const flowIdx = s => ({draft: 0, sent: 0, approved: 1, job: 1, done: 2, invoiced: 2, paid: 3})[s];
+
+function renderDetail() {
+  const d = $('#detail');
+  const j = jobs.find(x => x.no === sel);
+  if (!j) { d.innerHTML = `<div class="empty">Pick something from the list, or start a new quote.</div>`; return; }
+  const {sub, vat, total} = sums(j);
+  const fi = flowIdx(j.stage);
+  const t = TAB_OF[j.stage];
+  const typeL = {quotes: 'QUOTE', jobs: 'JOB SHEET', invoices: 'INVOICE'}[t];
+  let meta = '';
+  if (t === 'quotes') meta = j.stage === 'approved' ? `Approved <b>${fmtD(j.approvedAt)}</b><br>by ${esc(j.approvedBy)}` : j.stage === 'sent' ? `Sent <b>${fmtD(j.sent)}</b><br>Valid 30 days` : `Draft<br>Not sent yet`;
+  if (t === 'jobs') meta = `Approved by ${esc(j.approvedBy)}<br><b>${fmtD(j.approvedAt)}</b>`;
+  if (t === 'invoices') meta = `Issued <b>${fmtD(j.invoicedAt)}</b><br>Due <b>${fmtD(j.due)}</b>`;
+
+  let body;
+  if (t === 'jobs') {
+    const done = j.tasks.filter(x => x.done).length;
+    body = `<div class="prog"><span class="num">${done} of ${j.tasks.length} tasks done</span><span class="meter"><i style="width:${done / j.tasks.length * 100}%"></i></span></div>
+      <div class="tasks">${j.tasks.map((x, i) => `<label class="task"><input type="checkbox" id="task-${j.no}-${i}" data-task="${i}" ${x.done ? 'checked' : ''} ${j.stage === 'done' ? 'disabled' : ''}><span>${esc(x.t)}</span></label>`).join('')}</div>`;
+  } else {
+    body = `<div class="tbl-wrap"><table class="items"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead><tbody>
+      ${j.items.map(i => `<tr><td>${esc(i.desc)}</td><td class="r">${+i.qty} ${esc(i.unit)}</td><td class="r">${eur(+i.rate)}</td><td class="r">${eur(i.qty * i.rate)}</td></tr>`).join('')}
+      </tbody></table></div>`;
+  }
+  const totals = `<div class="totals"><span>Subtotal</span><span>${eur(sub)}</span><span>VAT ${j.vat}%</span><span>${eur(vat)}</span><span class="grand">${t === 'invoices' ? 'Amount due' : 'Total'}</span><span class="grand">${eur(total)}</span></div>`;
+
+  let actions = '';
+  if (j.stage === 'draft') actions = `<button class="btn btn-chalk" data-act="send">Send to customer</button><button class="btn btn-ghost" data-act="edit">Edit quote</button><button class="btn btn-ghost" data-act="del">Delete draft</button>`;
+  if (j.stage === 'sent') actions = `<button class="btn btn-chalk" data-act="cust">Open customer view</button><button class="btn btn-ghost" data-act="edit">Edit quote</button><span class="note">See what ${esc(j.customer.name.split(' ')[0])} sees and approve it as them.</span>`;
+  if (j.stage === 'approved') actions = `<button class="btn btn-chalk" data-act="tojob">Convert to job</button><span class="note">Each line becomes a task on the job sheet.</span>`;
+  if (j.stage === 'job') { const all = j.tasks.every(x => x.done); actions = `<button class="btn btn-chalk" data-act="complete" ${all ? '' : 'disabled'}>Mark job complete</button><span class="note">${all ? 'All tasks done.' : 'Tick every task to complete the job.'}</span>`; }
+  if (j.stage === 'done') actions = `<button class="btn btn-tape" data-act="invoice">Generate invoice</button><span class="note">Same lines and prices, payment due in 14 days.</span>`;
+  if (j.stage === 'invoiced') actions = `<button class="btn btn-chalk" data-act="paid">Mark as paid</button><button class="btn btn-ghost" data-act="remind">Send reminder</button>${overdue(j) ? `<span class="note" style="color:var(--bad)">${Math.ceil((Date.now() - j.due) / day)} days overdue</span>` : ''}`;
+  if (j.stage === 'paid') actions = `<span class="note">Paid ${fmtD(j.paidAt)}. Nothing left to do on this one.</span>`;
+
+  const stamp = j.stage === 'approved' ? `<div class="stamp ok" id="dStamp">APPROVED<small>${esc(j.approvedBy)}</small></div>`
+    : j.stage === 'paid' ? `<div class="stamp chalk" id="dStamp">PAID<small>${fmtD(j.paidAt)}</small></div>` : '';
+
+  d.innerHTML = `<ol class="flow" aria-label="Progress">${FLOW.map((f, i) => `<li class="${i < fi || (i === fi && j.stage === 'paid') ? 'on' : i === fi ? 'on cur' : ''}">${f}</li>`).join('')}</ol>
+    <article class="doc">
+      <div class="doc-head"><div><div class="doc-type num">${typeL} · ${ref(j)}</div><h3>${esc(j.title)}</h3></div><div class="doc-meta">${meta}</div></div>
+      <div class="doc-cust"><div><small>Customer</small>${esc(j.customer.name)}</div><div><small>Site</small>${esc(j.customer.addr || '—')}</div><div><small>Email</small>${esc(j.customer.email || '—')}</div></div>
+      ${body}${t !== 'jobs' ? totals : ''}${stamp}
+    </article>
+    <div class="actions">${actions}</div>`;
+  const st = $('#dStamp'); if (st) requestAnimationFrame(() => requestAnimationFrame(() => st.classList.add('show')));
+}
+
+/* events */
+$('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; tab = b.dataset.tab; render(); });
+$('.tabs').addEventListener('keydown', e => {
+  if (!['ArrowLeft','ArrowRight'].includes(e.key)) return;
+  const T = ['quotes','jobs','invoices']; tab = T[(T.indexOf(tab) + (e.key === 'ArrowRight' ? 1 : 2)) % 3]; render(); $(`#tab-${tab}`).focus();
+});
+$('#list').addEventListener('click', e => {
+  const c = e.target.closest('.card'); if (!c) return;
+  sel = +c.dataset.no;
+  $$('.card').forEach(x => x.setAttribute('aria-current', x === c));
+  renderDetail();
+  if (innerWidth < 900) $('#detail').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+});
+function moveTo(j, stage, msg) {
+  j.stage = stage; save();
+  tab = TAB_OF[stage]; sel = j.no; render(true); toast(msg);
+}
+$('#detail').addEventListener('change', e => {
+  const cb = e.target.closest('[data-task]'); if (!cb) return;
+  const j = jobs.find(x => x.no === sel); j.tasks[+cb.dataset.task].done = cb.checked; save();
+  const done = j.tasks.filter(x => x.done).length;
+  $('.prog .num').textContent = `${done} of ${j.tasks.length} tasks done`;
+  $('.prog .meter i').style.width = done / j.tasks.length * 100 + '%';
+  const all = done === j.tasks.length, b = $('[data-act="complete"]');
+  b.disabled = !all; b.nextElementSibling.textContent = all ? 'All tasks done.' : 'Tick every task to complete the job.';
+});
+let pendingDel = null;
+$('#detail').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const j = jobs.find(x => x.no === sel); const a = b.dataset.act;
+  if (a === 'send') { j.sent = Date.now(); moveTo(j, 'sent', `Quote Q-${j.no} sent to ${j.customer.email || j.customer.name}`); }
+  if (a === 'edit') openEditor(j);
+  if (a === 'del') {
+    if (pendingDel !== j.no) { pendingDel = j.no; b.textContent = 'Tap again to delete'; b.style.color = 'var(--bad)'; setTimeout(() => { if (pendingDel === j.no) { pendingDel = null; renderDetail(); } }, 3000); return; }
+    jobs = jobs.filter(x => x !== j); pendingDel = null; save(); render(); toast(`Draft Q-${j.no} deleted`);
+  }
+  if (a === 'cust') openCustomer(j);
+  if (a === 'tojob') { j.tasks = j.items.map(i => ({t: i.desc, done: false})); j.tasks.push({t: 'Test, tidy up and photos', done: false}); moveTo(j, 'job', `Job J-${j.no} created with ${j.tasks.length} tasks`); }
+  if (a === 'complete') { j.doneAt = Date.now(); moveTo(j, 'done', `Job J-${j.no} marked complete`); }
+  if (a === 'invoice') { j.invoicedAt = Date.now(); j.due = Date.now() + 14 * day; moveTo(j, 'invoiced', `Invoice INV-${j.no} sent for ${eur(sums(j).total)}`); }
+  if (a === 'paid') { j.paidAt = Date.now(); moveTo(j, 'paid', `INV-${j.no} marked as paid`); }
+  if (a === 'remind') toast(`Reminder sent to ${j.customer.name}`);
+});
+$('#resetBtn').addEventListener('click', () => { jobs = seed(); save(); tab = 'quotes'; render(); toast('Examples restored'); });
+$('#newBtn').addEventListener('click', () => openEditor(null));
+
+/* editor */
+const dEdit = $('#dlgEdit');
+function openEditor(j) {
+  const isNew = !j;
+  const draft = j ? JSON.parse(JSON.stringify(j)) : {no: Math.max(1000, ...jobs.map(x => x.no)) + 1, title: '', stage: 'draft', vat: 24, customer: {name: '', email: '', addr: ''}, items: [{desc: '', qty: 1, unit: 'ea', rate: 0}], tasks: null, created: Date.now()};
+  const units = ['ea', 'hr', 'm', 'm²', 'day'];
+  const rowHtml = (i, k) => `<div class="li-row" data-row="${k}">
+    <input class="inp desc" id="li-d-${k}" aria-label="Description" placeholder="e.g. Fit new mixer tap" value="${esc(i.desc)}">
+    <input class="inp" id="li-q-${k}" aria-label="Quantity" type="number" min="0" step="0.5" value="${i.qty}">
+    <select class="inp" id="li-u-${k}" aria-label="Unit">${units.map(u => `<option ${u === i.unit ? 'selected' : ''}>${u}</option>`).join('')}</select>
+    <input class="inp" id="li-r-${k}" aria-label="Rate in euros" type="number" min="0" step="0.5" value="${i.rate}">
+    <button class="rm" type="button" data-rm="${k}" aria-label="Remove line">×</button></div>`;
+  dEdit.innerHTML = `<form class="dlg" id="edForm" novalidate>
+    <div class="dlg-head"><h3 id="edH">${isNew ? 'New quote' : 'Edit quote'} <span class="num" style="color:var(--muted);font-weight:600">Q-${draft.no}</span></h3><button class="x" type="button" data-close aria-label="Close">×</button></div>
+    <div class="dlg-body">
+      <div class="field"><label for="ed-title">Job title</label><input class="inp" id="ed-title" value="${esc(draft.title)}" placeholder="e.g. Replace kitchen mixer tap"></div>
+      <div class="grid2">
+        <div class="field"><label for="ed-name">Customer name</label><input class="inp" id="ed-name" value="${esc(draft.customer.name)}" placeholder="Jane Smith"></div>
+        <div class="field"><label for="ed-email">Customer email</label><input class="inp" id="ed-email" type="email" value="${esc(draft.customer.email)}" placeholder="jane@example.com"></div>
+      </div>
+      <div class="field"><label for="ed-addr">Site address</label><input class="inp" id="ed-addr" value="${esc(draft.customer.addr)}" placeholder="12 High Street"></div>
+      <div class="field"><label>Line items</label>
+        <div class="li-row li-head"><span>Description</span><span>Qty</span><span>Unit</span><span>Rate €</span><span></span></div>
+        <div id="rows" style="display:flex;flex-direction:column;gap:8px">${draft.items.map(rowHtml).join('')}</div>
+        <button class="btn btn-ghost btn-sm" type="button" id="addRow" style="align-self:flex-start;margin-top:6px">Add line</button>
+      </div>
+      <div class="grid2" style="align-items:end">
+        <div class="field"><label for="ed-vat">VAT %</label><input class="inp" id="ed-vat" type="number" min="0" max="30" value="${draft.vat}"></div>
+        <div class="totals" id="edTot" style="padding:0"></div>
+      </div>
+      <p class="err" id="edErr" hidden></p>
+    </div>
+    <div class="dlg-foot"><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-chalk" type="submit">${isNew ? 'Save draft' : 'Save changes'}</button></div>
+  </form>`;
+  let k = draft.items.length;
+  const read = () => {
+    draft.title = $('#ed-title').value.trim();
+    draft.customer = {name: $('#ed-name').value.trim(), email: $('#ed-email').value.trim(), addr: $('#ed-addr').value.trim()};
+    draft.vat = Math.max(0, +$('#ed-vat').value || 0);
+    draft.items = $$('#rows .li-row').map(r => ({desc: $('.desc', r).value.trim(), qty: +$$('input', r)[1].value || 0, unit: $('select', r).value, rate: +$$('input', r)[2].value || 0}));
+  };
+  const tot = () => { read(); const s = sums(draft); $('#edTot').innerHTML = `<span>Subtotal</span><span>${eur(s.sub)}</span><span class="grand">Total</span><span class="grand">${eur(s.total)}</span>`; };
+  tot();
+  const f = $('#edForm');
+  f.addEventListener('input', tot);
+  $('#addRow').onclick = () => { $('#rows').insertAdjacentHTML('beforeend', rowHtml({desc: '', qty: 1, unit: 'ea', rate: 0}, k++)); $('#rows .li-row:last-child .desc').focus(); };
+  f.addEventListener('click', e => {
+    const rm = e.target.closest('[data-rm]');
+    if (rm) { if ($$('#rows .li-row').length > 1) { rm.closest('.li-row').remove(); tot(); } }
+    if (e.target.closest('[data-close]')) dEdit.close();
+  });
+  f.addEventListener('submit', e => {
+    e.preventDefault(); read();
+    draft.items = draft.items.filter(i => i.desc);
+    const err = $('#edErr');
+    const miss = !draft.title ? 'Add a job title so you can find this quote later.' : !draft.customer.name ? 'Add the customer’s name.' : !draft.items.length ? 'Add at least one line item with a description.' : '';
+    if (miss) { err.textContent = miss; err.hidden = false; return; }
+    if (isNew) jobs.push(draft); else Object.assign(j, draft);
+    save(); dEdit.close(); tab = 'quotes'; sel = draft.no; render(true);
+    toast(isNew ? `Draft Q-${draft.no} saved` : `Q-${draft.no} updated`);
+  });
+  dEdit.showModal();
+  setTimeout(() => $('#ed-title').focus(), 50);
+}
+
+/* customer view */
+const dCust = $('#dlgCust');
+function openCustomer(j) {
+  const s = sums(j);
+  dCust.innerHTML = `<div class="dlg">
+    <div class="dlg-head"><div class="cust-brand"><span class="biz-av">R</span><h3 id="cuH">Quote from Reed Plumbing &amp; Heating</h3></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+    <div class="dlg-body">
+      <p class="note">This is the page ${esc(j.customer.name)} opens from the link in their email.</p>
+      <div class="doc" style="animation:none">
+        <div class="doc-head"><div><div class="doc-type num">QUOTE · Q-${j.no}</div><h3>${esc(j.title)}</h3></div><div class="doc-meta">For <b>${esc(j.customer.name)}</b><br>${esc(j.customer.addr)}</div></div>
+        <div class="tbl-wrap" style="margin-top:10px"><table class="items"><tbody>${j.items.map(i => `<tr><td>${esc(i.desc)}<br><span class="note num">${+i.qty} ${esc(i.unit)} × ${eur(+i.rate)}</span></td><td class="r">${eur(i.qty * i.rate)}</td></tr>`).join('')}</tbody></table></div>
+        <div class="totals"><span>Subtotal</span><span>${eur(s.sub)}</span><span>VAT ${j.vat}%</span><span>${eur(s.vat)}</span><span class="grand">Total</span><span class="grand">${eur(s.total)}</span></div>
+      </div>
+      <form class="approve-box" id="apForm" novalidate>
+        <div class="field"><label for="ap-name">Type your full name to approve</label><input class="inp" id="ap-name" value="" placeholder="${esc(j.customer.name)}" autocomplete="name"></div>
+        <p class="err" id="apErr" hidden></p>
+        <div class="actions"><button class="btn btn-chalk" type="submit">Approve quote</button><button class="btn btn-ghost" type="button" id="apChange">Request a change</button></div>
+      </form>
+    </div></div>`;
+  dCust.addEventListener('click', e => { if (e.target.closest('[data-close]')) dCust.close(); });
+  $('#apChange').onclick = () => { dCust.close(); toast(`${j.customer.name.split(' ')[0]} asked for a change. You’ll see their note here.`); };
+  $('#apForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const n = $('#ap-name').value.trim();
+    if (n.length < 2) { const er = $('#apErr'); er.textContent = 'Type your name to approve. It works as your signature.'; er.hidden = false; return; }
+    j.approvedBy = n; j.approvedAt = Date.now();
+    dCust.close();
+    moveTo(j, 'approved', `Q-${j.no} approved by ${n}`);
+  });
+  dCust.showModal();
+}
+[dEdit, dCust].forEach(dl => dl.addEventListener('click', e => { if (e.target === dl) dl.close(); }));
+
+/* toast */
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  $('#toasts').appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }, 2800);
+}
+
+/* pricing toggle */
+const billBtns = $$('[data-bill]'), billInd = $('#billInd');
+function setBill(m) {
+  billBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.bill === m));
+  const on = billBtns.find(b => b.dataset.bill === m);
+  billInd.style.width = on.offsetWidth + 'px'; billInd.style.transform = `translateX(${on.offsetLeft - 4}px)`;
+  $$('.price b').forEach(b => {
+    const v = +b.dataset[m];
+    const txt = '€' + (v % 1 ? v.toFixed(2) : v);
+    if (b.textContent !== txt) {
+      b.animate([{transform: 'translateY(0)', opacity: 1}, {transform: 'translateY(-30%)', opacity: 0}], {duration: reduce ? 1 : 160}).onfinish = () => {
+        b.textContent = txt;
+        b.animate([{transform: 'translateY(30%)', opacity: 0}, {transform: 'none', opacity: 1}], {duration: reduce ? 1 : 260, easing: 'cubic-bezier(.2,.9,.2,1)'});
+      };
+    }
+  });
+  $$('[data-note]').forEach((n, i) => { const y = [150, 220, 300][i]; n.textContent = m === 'y' ? `Billed €${y} once a year` : 'Billed monthly, cancel any time'; });
+}
+billBtns.forEach(b => b.addEventListener('click', () => setBill(b.dataset.bill)));
+
+/* theme toggle */
+$('#themeT').addEventListener('click', () => {
+  const r = document.documentElement;
+  const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+});
+
+addEventListener('resize', () => { renderTabs(); setBill(billBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.bill); });
+render();
+requestAnimationFrame(() => { setBill('m'); renderTabs(); });
+if (document.fonts) document.fonts.ready.then(() => { renderTabs(); setBill(billBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.bill); initSnap(); });
+})();
+</script>
