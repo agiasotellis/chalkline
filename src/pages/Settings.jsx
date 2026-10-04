@@ -4,7 +4,7 @@ import LogoUpload from '../components/LogoUpload.jsx';
 import { useData } from '../lib/data.jsx';
 import { useAuth } from '../lib/auth.jsx';
 import { useToast } from '../lib/toast.jsx';
-import { isDemo } from '../lib/store/index.js';
+import { isDemo, store } from '../lib/store/index.js';
 import { Icon } from '../components/ui.jsx';
 
 export default function Settings() {
@@ -13,6 +13,8 @@ export default function Settings() {
   const toast = useToast();
   const [f, setF] = useState(settings || {});
   const [busy, setBusy] = useState(false);
+  const [emailOn, setEmailOn] = useState(null);
+  useEffect(() => { store.emailReady?.().then(setEmailOn).catch(() => setEmailOn(false)); }, []);
   const nav = useNavigate();
   // Logo and tour changes save on their own; don't wipe unsaved edits in the form.
   useEffect(() => { if (settings) setF(prev => ({ ...prev, logoUrl: settings.logoUrl, tourDone: settings.tourDone })); }, [settings]);
@@ -59,6 +61,12 @@ export default function Settings() {
           <li><button type="button" className="row" onClick={replayTour} style={{ width: '100%', border: 0, background: 'none', textAlign: 'left', cursor: 'pointer' }}><span className="r-t">Dashboard tour</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Show the quick walkthrough again</span></button></li>
           <li><Link className="row" to="/customers"><span className="r-t">Customers</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Contacts and job history</span></Link></li>
         </ul>
+      </section>
+      <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div className="panel-h" style={{ marginBottom: 0 }}><h2>Customer emails</h2>{emailOn !== null && <span className={`pill ${emailOn ? 't-ok' : 't-muted'}`}>{emailOn ? 'On' : 'Off'}</span>}</div>
+        <p className="note">{isDemo ? 'In the demo, emails are simulated and nothing is sent.'
+          : emailOn ? `Quotes, invoices and reminders are emailed to your customers. Replies go to ${f.email || 'the email above'}.`
+          : 'Emails aren’t set up yet, so share the customer link yourself. Setup steps are in the README.'}</p>
       </section>
       <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div className="panel-h" style={{ marginBottom: 0 }}><h2>Account</h2></div>

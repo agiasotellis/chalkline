@@ -5,6 +5,8 @@ import { useToast } from '../lib/toast.jsx';
 import { eur } from '../lib/format.js';
 import { totals, transitions } from '../lib/workflow.js';
 import { Icon } from '../components/ui.jsx';
+import { validEmail } from '../lib/links.js';
+import { useSendEmail } from '../lib/useSendEmail.js';
 
 const UNITS = ['ea', 'hr', 'm', 'm²', 'day', 'kg', 'l'];
 const blank = () => ({ desc: '', qty: 1, unit: 'ea', rate: 0, key: Math.random() });
@@ -51,6 +53,8 @@ export default function Editor() {
   const [notes, setNotes] = useState(existing?.notes || '');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const [emailIt, setEmailIt] = useState(!existing || existing.stage === 'draft');
+  const sendE = useSendEmail();
 
   if (id && !existing) return <div className="page"><div className="panel empty">This quote doesn’t exist.<Link className="btn btn-ghost btn-sm" to="/quotes">Back to quotes</Link></div></div>;
   if (existing && !['draft', 'sent'].includes(existing.stage)) return <div className="page"><div className="panel empty">Approved quotes can’t be edited, so the customer’s approval stays valid.<Link className="btn btn-ghost btn-sm" to={`/work/${existing.id}`}>Back</Link></div></div>;
@@ -59,6 +63,8 @@ export default function Editor() {
   const draft = { items, vat };
   const t = totals(draft);
   const isNewCust = customerId === '__new';
+  const target = isNewCust ? newCust.email.trim() : customers.find(c => c.id === customerId)?.email || '';
+  const canEmail = validEmail(target);
 
   const submit = async (send) => {
     setErr('');
@@ -75,8 +81,10 @@ export default function Editor() {
       if (existing) Object.assign(payload, { id: existing.id }, existing.stage === 'sent' ? { changeRequest: null } : {});
       if (send && (!existing || existing.stage === 'draft')) Object.assign(payload, transitions.send());
       const w = await saveWork(payload);
-      toast(send ? `Quote Q-${w.no} sent` : existing ? `Q-${w.no} saved` : `Draft Q-${w.no} saved`);
+      const label = send ? `Quote Q-${w.no} sent` : existing ? `Q-${w.no} saved` : `Draft Q-${w.no} saved`;
       nav(`/work/${w.id}`, { replace: true });
+      const emailNow = emailIt && canEmail && (send || existing?.stage === 'sent');
+      if (emailNow) sendE(w, 'quote', label); else toast(label);
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
 
@@ -138,6 +146,12 @@ export default function Editor() {
               <span>Subtotal</span><span>{eur(t.sub)}</span><span>VAT</span><span>{eur(t.vat)}</span>
               <span className="grand">Total</span><span className="grand">{eur(t.total)}</span>
             </div>
+            {customerId && (canEmail ? (
+              <label className="check" htmlFor="q-email">
+                <input type="checkbox" id="q-email" checked={emailIt} onChange={e => setEmailIt(e.target.checked)} />
+                <span>{existing?.stage === 'sent' ? 'Email the updated quote to' : 'Email the quote to'} <b>{target}</b></span>
+              </label>
+            ) : <p className="note">{target ? 'That email address doesn’t look right.' : 'No email for this customer.'} You can copy the customer link after sending.</p>)}
             {err && <p className="err" role="alert">{err}</p>}
             {(!existing || existing.stage === 'draft') && <button className="btn btn-chalk" type="button" disabled={busy} onClick={() => submit(true)}><Icon name="send" />Save and send</button>}
             <button className={`btn ${existing?.stage === 'sent' ? 'btn-chalk' : 'btn-ghost'}`} type="submit" disabled={busy}>{existing?.stage === 'sent' ? 'Save changes' : 'Save draft'}</button>

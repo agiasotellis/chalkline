@@ -373,3 +373,12 @@ dialog[open] .dlg{animation:dlgIn .35s cubic-bezier(.2,.9,.2,1)}
 .av-img img{width:100%;height:100%;object-fit:contain}
 @media (max-width:640px){.doc-logo{margin-left:0}}
 @media print{.doc-logo{margin-left:auto}}
+
+/* email checkbox */
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer;line-height:1.4}
+.check input{appearance:none;-webkit-appearance:none;width:20px;height:20px;flex:none;border-radius:6px;box-shadow:inset 0 0 0 1.6px var(--muted);margin:0;display:grid;place-items:center;cursor:pointer;transition:background .2s,box-shadow .2s}
+.check input:checked{background:var(--chalk);box-shadow:none}
+.check input:checked::after{content:"";width:5px;height:10px;border:solid var(--on-chalk);border-width:0 2.4px 2.4px 0;transform:rotate(45deg) translate(-1px,-1px);animation:pop .3s cubic-bezier(.3,1.6,.5,1)}
+.check b{font-weight:650;overflow-wrap:anywhere}
+.sent-line{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ok);font-weight:600}
+.sent-line svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;flex:none}

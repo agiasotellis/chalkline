@@ -57,6 +57,18 @@ export const localStore = {
   },
   deletePrice(id) { const d = load(); d.prices = d.prices.filter(p => p.id !== id); persist(); return tick(true); },
 
+  // Demo: pretend to send, nothing leaves the browser.
+  sendEmail(workId, kind) {
+    const d = load(); const w = d.work.find(x => x.id === workId);
+    const c = w && d.customers.find(x => x.id === w.customerId);
+    if (!c?.email) return Promise.reject(new Error('Add an email address for this customer first.'));
+    const at = new Date().toISOString();
+    Object.assign(w, kind === 'quote' ? { emailedAt: at } : kind === 'invoice' ? { invoiceEmailedAt: at } : { remindedAt: at });
+    persist(); return tick({ ok: true, to: c.email, demo: true });
+  },
+  emailResult: () => tick({ status: 201 }),
+  emailReady: () => tick(true),
+
   getPublicQuote(token) {
     const d = load(); const w = d.work.find(x => x.token === token && x.stage !== 'draft');
     if (!w) return tick(null);

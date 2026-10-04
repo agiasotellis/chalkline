@@ -7,7 +7,9 @@ import { DOC_TYPE, FLOW, GROUP, flowStep, isOverdue, ref, totals } from '../lib/
 import { Confirm, Icon, Pill, copyText } from '../components/ui.jsx';
 import { isDemo } from '../lib/store/index.js';
 
-export const customerLink = w => `${location.origin}${location.pathname}#/q/${w.token}`;
+import { customerLink, validEmail } from '../lib/links.js';
+import { useSendEmail } from '../lib/useSendEmail.js';
+export { customerLink };
 const inFrame = (() => { try { return window.self !== window.top; } catch { return true; } })();
 
 export function Document({ w, customer, settings, children }) {
@@ -57,6 +59,8 @@ export default function WorkDetail() {
   const nav = useNavigate();
   const [busy, setBusy] = useState(false);
   const [confirm, setConfirm] = useState(null);
+  const [alsoEmail, setAlsoEmail] = useState(true);
+  const sendE = useSendEmail();
   const w = work.find(x => x.id === id);
   if (!w) return <div className="page"><div className="panel empty">This item doesn’t exist or was deleted.<Link className="btn btn-ghost btn-sm" to="/">Back to home</Link></div></div>;
   const c = customerById[w.customerId];
@@ -64,12 +68,21 @@ export default function WorkDetail() {
   const fi = flowStep(w.stage);
   const back = { quotes: '/quotes', jobs: '/jobs', invoices: '/invoices' }[g];
 
-  const run = async (action, arg, msg) => {
+  const canEmail = validEmail(c?.email);
+  const run = async (action, arg, msg, emailKind) => {
     setBusy(true);
-    try { const n = await move(w, action, arg); toast(msg(n)); }
+    try {
+      const n = await move(w, action, arg);
+      if (emailKind && alsoEmail && canEmail) sendE(n, emailKind, msg(n)); else toast(msg(n));
+    }
     catch (e) { toast(e.message, 'bad'); }
     finally { setBusy(false); }
   };
+  const emailOnly = async kind => { setBusy(true); try { await sendE(w, kind, null); } finally { setBusy(false); } };
+  const emailBox = text => canEmail
+    ? <label className="check" htmlFor={`also-${w.id}`}><input type="checkbox" id={`also-${w.id}`} checked={alsoEmail} onChange={e => setAlsoEmail(e.target.checked)} /><span>{text} <b>{c.email}</b></span></label>
+    : <p className="note">{c ? <>No email for {c.name}. <Link to={`/customers/${c.id}`}>Add one</Link> to send it by email.</> : 'No customer linked.'}</p>;
+  const sentLine = (at, label) => at ? <p className="sent-line"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 10 17 19 7" /></svg>{label} {fmtDate(at)}</p> : null;
   const toggleTask = async (i, done) => {
     const tasks = w.tasks.map((t, k) => (k === i ? { ...t, done } : t));
     try { await patchWork(w.id, { tasks }); } catch (e) { toast(e.message, 'bad'); }
@@ -79,9 +92,10 @@ export default function WorkDetail() {
   const allDone = w.tasks?.length > 0 && doneN === w.tasks.length;
 
   const timeline = [
-    ['Quote created', w.createdAt], ['Sent to customer', w.sentAt], [`Approved${w.approvedBy ? ` by ${w.approvedBy}` : ''}`, w.approvedAt],
-    ['Job started', w.startedAt], ['Job completed', w.doneAt], ['Invoice sent', w.invoicedAt], ['Paid', w.paidAt]
-  ];
+    ['Quote created', w.createdAt], ['Sent to customer', w.sentAt], ['Quote emailed', w.emailedAt], [`Approved${w.approvedBy ? ` by ${w.approvedBy}` : ''}`, w.approvedAt],
+    ['Job started', w.startedAt], ['Job completed', w.doneAt], ['Invoice created', w.invoicedAt], ['Invoice emailed', w.invoiceEmailedAt],
+    ['Reminder emailed', w.remindedAt], ['Paid', w.paidAt]
+  ].filter(([, t]) => t).sort((a, b) => new Date(a[1]) - new Date(b[1]));
 
   return (
     <div className="page">
@@ -116,7 +130,8 @@ export default function WorkDetail() {
             <div className="panel-h"><h2>Next step</h2></div>
             <div className="act">
               {w.stage === 'draft' && <>
-                <button className="btn btn-chalk" disabled={busy || !w.items.length} onClick={() => run('send', null, () => `Quote ${ref(w)} sent`)}><Icon name="send" />Send to customer</button>
+                <button className="btn btn-chalk" disabled={busy || !w.items.length} onClick={() => run('send', null, () => `Quote ${ref(w)} sent`, 'quote')}><Icon name="send" />Send to customer</button>
+                {emailBox('Also email it to')}
                 <Link className="btn btn-ghost" to={`/work/${w.id}/edit`}><Icon name="edit" />Edit quote</Link>
                 <button className="btn btn-danger" onClick={() => setConfirm('delete')}>Delete draft</button>
                 <p className="note">Sending creates a private link your customer opens to approve.</p>
@@ -125,6 +140,8 @@ export default function WorkDetail() {
                 {w.changeRequest && <div className="callout"><b>{c?.name?.split(' ')[0] || 'Customer'} asked for a change</b>{w.changeRequest}</div>}
                 <label className="lbl" htmlFor="cust-link">Customer link</label>
                 <div className="link-box"><input className="inp" id="cust-link" readOnly value={customerLink(w)} onFocus={e => e.target.select()} /><button className="icon-btn" aria-label="Copy link" onClick={copy}><Icon name="copy" /></button></div>
+                {sentLine(w.emailedAt, `Emailed to ${c?.email}`)}
+                {canEmail && <button className="btn btn-ghost" disabled={busy} onClick={() => emailOnly('quote')}><Icon name="send" />{w.emailedAt ? 'Email it again' : `Email to ${c.email}`}</button>}
                 <a className="btn btn-chalk" href={`#/q/${w.token}`} target={isDemo ? undefined : '_blank'} rel="noreferrer"><Icon name="link" />Open customer view</a>
                 <Link className="btn btn-ghost" to={`/work/${w.id}/edit`}><Icon name="edit" />Edit quote</Link>
                 <button className="btn btn-ghost" disabled={busy} onClick={() => setConfirm('approve')}>Mark approved by phone</button>
@@ -139,12 +156,19 @@ export default function WorkDetail() {
                 <p className="note">{allDone ? 'All tasks done.' : `Tick every task to complete the job. ${w.tasks.length - doneN} left.`}</p>
               </>}
               {w.stage === 'done' && <>
-                <button className="btn btn-tape" disabled={busy} onClick={() => run('invoice', settings?.paymentTermsDays, n => `Invoice ${ref(n)} sent for ${eur(totals(n).total)}`)}>Generate invoice</button>
+                <button className="btn btn-tape" disabled={busy} onClick={() => run('invoice', settings?.paymentTermsDays, n => `Invoice ${ref(n)} created for ${eur(totals(n).total)}`, 'invoice')}>Generate invoice</button>
+                {emailBox('Email the invoice to')}
                 <p className="note">Same lines and prices. Payment due in {settings?.paymentTermsDays || 14} days.</p>
               </>}
               {w.stage === 'invoiced' && <>
                 <button className="btn btn-chalk" disabled={busy} onClick={() => run('paid', null, () => `${ref(w)} marked as paid`)}>Mark as paid</button>
-                <button className="btn btn-ghost" onClick={() => toast(`Reminder sent to ${c?.name || 'customer'}`)}>Send reminder</button>
+                {sentLine(w.invoiceEmailedAt, `Invoice emailed to ${c?.email}`)}
+                {sentLine(w.remindedAt, 'Reminder sent')}
+                {canEmail && !w.invoiceEmailedAt && <button className="btn btn-ghost" disabled={busy} onClick={() => emailOnly('invoice')}><Icon name="send" />Email invoice</button>}
+                {canEmail ? <button className="btn btn-ghost" disabled={busy} onClick={() => emailOnly('reminder')}>Send reminder</button>
+                  : <p className="note">{c ? <>Add an email for {c.name} to send reminders. <Link to={`/customers/${c.id}`}>Edit customer</Link></> : null}</p>}
+                <label className="lbl" htmlFor="inv-link">Invoice link for the customer</label>
+                <div className="link-box"><input className="inp" id="inv-link" readOnly value={customerLink(w)} onFocus={e => e.target.select()} /><button className="icon-btn" aria-label="Copy link" onClick={copy}><Icon name="copy" /></button></div>
                 {isOverdue(w) ? <p className="note" style={{ color: 'var(--bad)' }}>{Math.ceil((Date.now() - new Date(w.dueAt)) / DAY)} days overdue.</p> : <p className="note">Due {fmtDate(w.dueAt)}.</p>}
               </>}
               {w.stage === 'paid' && <p className="note">Paid {fmtDate(w.paidAt)}. Nothing left to do.</p>}
@@ -158,7 +182,7 @@ export default function WorkDetail() {
           <section className="panel">
             <div className="panel-h"><h2>History</h2></div>
             <ul className="timeline">
-              {timeline.filter(([, t]) => t).map(([l, t]) => <li key={l} className="done"><span>{l}<small>{fmtDate(t)}</small></span></li>)}
+              {timeline.map(([l, t]) => <li key={l} className="done"><span>{l}<small>{fmtDate(t)}</small></span></li>)}
             </ul>
           </section>
         </aside>

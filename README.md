@@ -43,6 +43,18 @@ The project is already wired in through `.env` (URL + publishable key, which are
    - Redirect URLs: add `https://agiasotellis.github.io/chalkline/**` and `http://localhost:5173/**`
 3. Optional: **Authentication → Sign In / Providers → Email** — turn off "Confirm email" while testing so sign-ups work instantly.
 
+## Customer emails (Brevo, free: 300 emails a day)
+
+Quotes, invoices and reminders are emailed from the database through Brevo, so no key ever reaches the browser.
+
+1. Sign up at [brevo.com](https://www.brevo.com).
+2. **Senders, domains & IPs → Senders → Add a sender**: use the email customers should see (e.g. your business Gmail) and confirm it from your inbox.
+3. **SMTP & API → API keys → Generate a new API key**, copy it.
+4. Supabase **SQL Editor**: run `supabase/email.sql`, then paste `supabase/email-keys.sql`, put in your key and sender email, and run it. It should answer `email_is_ready = true`.
+5. In the app, Settings → Customer emails shows **On**. Replies go to the business email in Settings.
+
+Tip: emails sent from a free Gmail address through Brevo can land in spam. With your own domain, verify it in Brevo and send from it for the best delivery.
+
 ## Deploy
 
 Every push to `main` builds and publishes to GitHub Pages (`.github/workflows/deploy.yml`).

@@ -66,6 +66,15 @@ export const supabaseStore = {
   },
   async deletePrice(id) { ok(await supabase.from('price_items').delete().eq('id', id)); return true; },
 
+  async sendEmail(workId, kind, link) {
+    return ok(await supabase.rpc('send_work_email', { p_work: workId, p_kind: kind, p_link: link }));
+  },
+  async emailResult(request) { return ok(await supabase.rpc('email_result', { p_request: request })); },
+  async emailReady() {
+    const { data, error } = await supabase.rpc('email_ready');
+    return error ? false : !!data;
+  },
+
   async getPublicQuote(token) { const d = ok(await supabase.rpc('get_public_quote', { p_token: token })); return d ? num(d, ['vat']) : null; },
   async approvePublicQuote(token, name) { return ok(await supabase.rpc('approve_public_quote', { p_token: token, p_name: name })); },
   async requestChange(token, note) { return ok(await supabase.rpc('request_quote_change', { p_token: token, p_note: note })); }

@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { store } from './store/index.js';
 import { transitions } from './workflow.js';
+import { customerLink } from './links.js';
 
 const DataCtx = createContext(null);
 export const useData = () => useContext(DataCtx);
@@ -51,6 +52,24 @@ export function DataProvider({ children }) {
     async savePrice(p) { const n = await store.savePrice(p); setState(s => ({ ...s, prices: replace(s.prices, n) })); return n; },
     async deletePrice(id) { await store.deletePrice(id); setState(s => ({ ...s, prices: s.prices.filter(p => p.id !== id) })); },
     async saveSettings(v) { const n = await store.saveSettings(v); setState(s => ({ ...s, settings: n })); return n; },
+    // Email the customer, then check a moment later that the email service accepted it.
+    async sendEmail(w, kind) {
+      const r = await store.sendEmail(w.id, kind, customerLink(w));
+      const fresh = await store.getWork(w.id);
+      if (fresh) setState(s => ({ ...s, work: replace(s.work, fresh) }));
+      if (r.demo || !r.request) return { to: r.to, ok: true, demo: !!r.demo };
+      for (const wait of [2500, 3500, 5000]) {
+        await new Promise(res => setTimeout(res, wait));
+        const res = await store.emailResult(r.request).catch(() => null);
+        if (res && (res.status || res.error)) {
+          if (res.status >= 200 && res.status < 300) return { to: r.to, ok: true };
+          let msg = res.error || '';
+          try { msg = JSON.parse(res.body).message || msg; } catch { /* not JSON */ }
+          return { to: r.to, ok: false, error: msg || `The email service answered ${res.status}.` };
+        }
+      }
+      return { to: r.to, ok: true, pending: true };
+    },
     async setLogo(blob) {
       const logoUrl = blob ? await store.uploadLogo(blob) : (await store.removeLogo(), '');
       return actions.saveSettings({ logoUrl });

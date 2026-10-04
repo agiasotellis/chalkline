@@ -8,8 +8,9 @@ export function ToastProvider({ children }) {
   const toast = useCallback((msg, tone = 'ink') => {
     const id = Math.random();
     setItems(t => [...t, { id, msg, tone }]);
-    setTimeout(() => setItems(t => t.map(x => (x.id === id ? { ...x, out: true } : x))), 2800);
-    setTimeout(() => setItems(t => t.filter(x => x.id !== id)), 3150);
+    const ms = tone === 'bad' ? 7000 : 3200;
+    setTimeout(() => setItems(t => t.map(x => (x.id === id ? { ...x, out: true } : x))), ms);
+    setTimeout(() => setItems(t => t.filter(x => x.id !== id)), ms + 350);
   }, []);
   return (
     <ToastCtx.Provider value={toast}>
