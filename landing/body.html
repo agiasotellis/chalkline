@@ -2,7 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem("chalkline.theme")==="dark"?"dark":"light";var L=localStorage.getItem("chalkline.locale");if(L==="el"||L==="en")document.documentElement.lang=L}catch(e){document.documentElement.dataset.theme="light"}</script>
+<script>(function(){var r=document.documentElement;function want(){if(window.__chalkTheme)return window.__chalkTheme;try{return localStorage.getItem("chalkline.theme.v2")==="dark"?"dark":"light"}catch(e){return"light"}}r.dataset.theme=want();try{var L=localStorage.getItem("chalkline.locale");if(L==="el"||L==="en")r.lang=L}catch(e){}new MutationObserver(function(){var w=want();if(r.dataset.theme!==w)r.dataset.theme=w}).observe(r,{attributes:true,attributeFilter:["data-theme"]})})()</script>
 <style>
 /* Layout: site-board grid. Left-aligned editorial hero, sticky scroll story, working pipeline app, ruled price table. */
 :root{
@@ -25,7 +25,7 @@
   --r:10px;
   --gutter:clamp(16px,4vw,48px);
   --max:1200px;
-  color-scheme:light;
+  color-scheme:only light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0F141B;--surface:#161D26;--paper:#1B2430;--ink:#E6EBEF;--muted:#94A0AB;--line:#2A3542;
@@ -839,11 +839,13 @@ const root = document.documentElement, themeT = $('#themeT');
 // Light unless the person picked dark.
 const isDark = () => root.dataset.theme === 'dark';
 const labelTheme = () => themeT.setAttribute('aria-label', isDark() ? D.toLight : D.toDark);
-try { root.dataset.theme = localStorage.getItem('chalkline.theme') === 'dark' ? 'dark' : 'light'; } catch (e) { root.dataset.theme = 'light'; }
+try { root.dataset.theme = window.__chalkTheme || (localStorage.getItem('chalkline.theme.v2') === 'dark' ? 'dark' : 'light'); } catch (e) { root.dataset.theme = 'light'; }
 labelTheme();
 themeT.addEventListener('click', () => {
-  root.dataset.theme = isDark() ? 'light' : 'dark';
-  try { localStorage.setItem('chalkline.theme', root.dataset.theme); } catch (e) {}
+  const next = isDark() ? 'light' : 'dark';
+  window.__chalkTheme = next;
+  try { localStorage.setItem('chalkline.theme.v2', next); } catch (e) {}
+  root.dataset.theme = next;
   labelTheme();
 });
 

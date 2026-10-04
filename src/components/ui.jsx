@@ -79,11 +79,13 @@ export function LangButton({ onClick }) {
 export function ThemeButton() {
   const { t } = useT();
   const root = document.documentElement;
-  const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
+  const isDark = () => root.dataset.theme === 'dark';
   const [dark, setDark] = useState(isDark);
   const toggle = () => {
-    root.dataset.theme = isDark() ? 'light' : 'dark';
-    try { localStorage.setItem('chalkline.theme', root.dataset.theme); } catch { /* ignore */ }
+    const next = isDark() ? 'light' : 'dark';
+    window.__chalkTheme = next;
+    try { localStorage.setItem('chalkline.theme.v2', next); } catch { /* ignore */ }
+    root.dataset.theme = next;
     setDark(isDark());
   };
   return (

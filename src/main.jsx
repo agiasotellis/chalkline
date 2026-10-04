@@ -5,7 +5,7 @@ import './styles.css';
 
 // Light by default; dark only when the person picks it.
 let theme = 'light';
-try { theme = localStorage.getItem('chalkline.theme') === 'dark' ? 'dark' : 'light'; } catch { /* ignore */ }
+try { theme = window.__chalkTheme || (localStorage.getItem('chalkline.theme.v2') === 'dark' ? 'dark' : 'light'); } catch { /* ignore */ }
 document.documentElement.dataset.theme = theme;
 
 // Scroll to top on every page change.

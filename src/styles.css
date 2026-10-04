@@ -6,7 +6,7 @@
   --shadow:0 1px 0 rgba(22,32,42,.04),0 12px 32px -18px rgba(22,32,42,.35);
   --f:"Archivo","Roboto Flex",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --side:244px; --nav-h:64px;
-  color-scheme:light;
+  color-scheme:only light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0F141B;--surface:#161D26;--paper:#1B2430;--ink:#E6EBEF;--muted:#94A0AB;--line:#2A3542;
