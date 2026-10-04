@@ -45,7 +45,7 @@
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.55;font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.55;font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background-color .4s,color .4s}
 h1,h2,h3{text-wrap:balance;margin:0;line-height:1.02}
 p{margin:0}
 a{color:inherit}
@@ -60,6 +60,7 @@ button,input,select{font:inherit;color:inherit}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:19px;font-variation-settings:"wdth" 118;letter-spacing:-.01em}
 .logo svg{width:28px;height:28px}
 .nav{display:flex;gap:4px;margin-left:auto}
+.bar-end{display:flex;align-items:center;gap:10px}
 .nav a{text-decoration:none;padding:8px 12px;border-radius:999px;color:var(--muted);font-weight:500;transition:color .2s,background .2s}
 .nav a:hover{color:var(--ink);background:var(--surface)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;text-decoration:none;font-weight:650;border-radius:999px;padding:12px 20px;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s,box-shadow .25s,color .2s;white-space:nowrap}
@@ -74,6 +75,17 @@ button,input,select{font:inherit;color:inherit}
 .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .bar .btn{padding:10px 16px;font-size:14px}
 
+.theme-t{width:42px;height:42px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;position:relative;overflow:hidden;transition:background .25s,border-color .25s,transform .25s}
+.theme-t:hover{border-color:var(--ink);transform:rotate(-12deg)}
+.theme-t svg{grid-area:1/1;width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .55s cubic-bezier(.3,1.4,.5,1),opacity .3s}
+.theme-t .i-moon{fill:var(--ink);stroke:none}
+.theme-t .i-moon{transform:translateY(120%) rotate(-90deg);opacity:0}
+:root[data-theme="dark"] .theme-t .i-sun{transform:translateY(-120%) rotate(90deg);opacity:0}
+:root[data-theme="dark"] .theme-t .i-moon{transform:none;opacity:1}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-t .i-sun{transform:translateY(-120%) rotate(90deg);opacity:0}
+  :root:not([data-theme="light"]) .theme-t .i-moon{transform:none;opacity:1}}
+.cta-short{display:none}
 /* tape measure progress */
 .tape{height:12px;position:relative;background:
   repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 10px) bottom/100% 5px no-repeat,
@@ -85,7 +97,7 @@ button,input,select{font:inherit;color:inherit}
 .tape-fill::after{content:"";position:absolute;right:-1px;top:-3px;bottom:-3px;width:3px;background:var(--bad);border-radius:2px}
 
 /* ---------- hero ---------- */
-.hero{padding-block:clamp(48px,9vw,112px) clamp(32px,6vw,72px);position:relative}
+.hero{padding-block:clamp(40px,8vw,104px) clamp(32px,6vw,72px);position:relative}
 .hero-kicker{display:inline-flex;align-items:center;gap:10px;font-weight:550;color:var(--muted);margin-bottom:clamp(20px,3vw,32px)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2.4s infinite}
 @keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
@@ -106,7 +118,7 @@ button,input,select{font:inherit;color:inherit}
 .hero-sub p{font-size:clamp(1.08rem,1.6vw,1.3rem);max-width:34em;color:var(--muted)}
 .hero-sub p strong{color:var(--ink);font-weight:650}
 .cta-row{display:flex;gap:10px;flex-wrap:wrap}
-@media (max-width:760px){.hero-sub{grid-template-columns:1fr}.nav{display:none}.bar .btn{margin-left:auto}}
+@media (max-width:760px){.hero-sub{grid-template-columns:1fr}}
 
 .marquee{border-block:1px solid var(--line);overflow:hidden;padding-block:16px;background:var(--surface)}
 .mq-track{display:flex;gap:40px;width:max-content;animation:mq 38s linear infinite;font-weight:650;font-variation-settings:"wdth" 112;font-size:clamp(1rem,1.7vw,1.25rem);color:var(--muted)}
@@ -316,8 +328,53 @@ dialog[open] .dlg{animation:dlgIn .4s cubic-bezier(.2,.9,.2,1)}
 .close h2{font-size:clamp(2.4rem,8vw,6.4rem);font-weight:800;font-variation-settings:"wdth" 125;letter-spacing:-.04em;line-height:.92;max-width:12ch}
 .close-row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
 .foot{padding-block:28px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.theme-t{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px}
 
+
+/* ---------- responsive tuning ---------- */
+@media (min-width:1600px){:root{--max:1360px}.headline{font-size:10.5rem}}
+@media (max-width:1024px){.nav a{padding:8px 9px}}
+@media (max-width:860px){.nav{display:none}.bar-end{margin-left:auto}}
+@media (max-width:640px){
+  .bar-in{height:58px;gap:12px}
+  .bar .btn{padding:9px 14px}
+  .theme-t{width:38px;height:38px}
+  .hero{padding-block:36px 32px}
+  .snap-wrap{height:36px;margin-block:2px 14px}
+  .cta-row .btn{flex:1 1 160px}
+  .sec-head h2{font-size:clamp(1.9rem,8.5vw,2.6rem)}
+  .app{border-radius:14px}
+  .app-top .biz small{display:none}
+  .tab{font-size:14px;gap:5px;padding:9px 4px}
+  .detail{gap:14px}
+  .actions .btn{flex:1 1 auto}
+  .doc-meta{text-align:left}
+  .totals{justify-content:stretch;grid-template-columns:1fr auto}
+  .plan{padding-inline:4px}
+  .close-row .btn{width:100%}
+  .foot{flex-direction:column;gap:4px}
+  dialog{max-width:100vw;margin:auto 0 0;width:100vw}
+  dialog .dlg{border-radius:18px 18px 0 0;max-height:92vh}
+  dialog[open] .dlg{animation:sheetUp .4s cubic-bezier(.2,.9,.2,1)}
+  .dlg-head,.dlg-body,.dlg-foot{padding-inline:16px}
+  .dlg-foot .btn{flex:1}
+}
+@keyframes sheetUp{from{transform:translateY(100%)}}
+@media (max-width:400px){
+  .cta-long{display:none}.cta-short{display:inline}
+  .logo{font-size:17px}
+  .headline{font-size:clamp(2.6rem,13.4vw,3.4rem)}
+  .tab .ct{display:none}
+  .kpi{padding:12px}
+  .card{padding:11px 10px}
+}
+@media (max-width:340px){.logo span,.logo{gap:6px}.bar .btn{padding:8px 11px;font-size:13px}}
+/* short landscape phones: don't pin the story sheet */
+@media (max-height:520px) and (orientation:landscape){
+  .stage{position:relative;top:0;height:auto}
+  .step{min-height:auto;padding-block:32px}
+  .story-grid{grid-template-columns:1fr}
+}
+@media (hover:none){.card:hover,.plan:hover,.task:hover{background:inherit}.card[aria-current="true"]{background:var(--paper)}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   html{scroll-behavior:auto}
@@ -338,14 +395,19 @@ dialog[open] .dlg{animation:dlgIn .4s cubic-bezier(.2,.9,.2,1)}
       <a href="#workspace">Workspace</a>
       <a href="#pricing">Pricing</a>
     </nav>
-    <a class="btn btn-chalk" href="#pricing">Start free trial</a>
+    <div class="bar-end">
+      <button class="theme-t" id="themeT" type="button" aria-label="Switch to dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+      </button>
+      <a class="btn btn-chalk bar-cta" href="#pricing"><span class="cta-long">Start free trial</span><span class="cta-short">Try free</span></a>
+    </div>
   </div>
   <div class="tape" aria-hidden="true"><div class="tape-fill" id="tapeFill"></div></div>
 </header>
 
 <main>
   <section class="hero wrap" aria-labelledby="hl">
-    <div class="hero-kicker"><span class="dot"></span>Quotes, jobs and invoices for tradespeople</div>
     <h1 class="headline" id="hl" aria-label="Quote it. Do it. Get paid.">
       <span class="hl-line" data-depth="0.10"><span class="hl-inner" data-split>Quote it.</span></span>
       <span class="hl-line" data-depth="0.18"><span class="hl-inner" data-split>Do it.</span></span>
@@ -483,7 +545,7 @@ dialog[open] .dlg{animation:dlgIn .4s cubic-bezier(.2,.9,.2,1)}
 </main>
 <footer class="wrap foot">
   <span>Chalkline · built for the trades</span>
-  <button class="theme-t" id="themeT" type="button">Switch theme</button>
+  <span>© 2026 Chalkline</span>
 </footer>
 
 <dialog id="dlgEdit" aria-labelledby="edH"></dialog>
@@ -951,11 +1013,17 @@ function setBill(m) {
 billBtns.forEach(b => b.addEventListener('click', () => setBill(b.dataset.bill)));
 
 /* theme toggle */
-$('#themeT').addEventListener('click', () => {
-  const r = document.documentElement;
-  const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-  r.dataset.theme = dark ? 'light' : 'dark';
+const root = document.documentElement, themeT = $('#themeT');
+const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+const labelTheme = () => themeT.setAttribute('aria-label', isDark() ? 'Switch to light mode' : 'Switch to dark mode');
+try { const t = localStorage.getItem('chalkline.theme'); if (t) root.dataset.theme = t; } catch (e) {}
+labelTheme();
+themeT.addEventListener('click', () => {
+  root.dataset.theme = isDark() ? 'light' : 'dark';
+  try { localStorage.setItem('chalkline.theme', root.dataset.theme); } catch (e) {}
+  labelTheme();
 });
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', labelTheme);
 
 addEventListener('resize', () => { renderTabs(); setBill(billBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.bill); });
 render();
