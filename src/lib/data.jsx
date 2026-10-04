@@ -3,6 +3,7 @@ import { store } from './store/index.js';
 import { transitions } from './workflow.js';
 import { customerLink } from './links.js';
 import { tr } from './i18n-core.js';
+import { useBilling } from './billing.jsx';
 
 const DataCtx = createContext(null);
 export const useData = () => useContext(DataCtx);
@@ -11,6 +12,15 @@ export function DataProvider({ children }) {
   const [state, setState] = useState({ loading: true, error: null, work: [], customers: [], prices: [], settings: null });
   const settingsRef = useRef(null);
   settingsRef.current = state.settings;
+  // Read-only after the trial, and Trade-only features on Solo. The database enforces the same rules.
+  const billingRef = useRef(null);
+  billingRef.current = useBilling();
+  const guard = feature => {
+    const b = billingRef.current;
+    if (!b) return;
+    if (!b.canWrite) throw new Error(tr('bi.readOnly'));
+    if (feature && !b.can(feature)) throw new Error(tr(`bi.locked.${feature}`));
+  };
 
   const load = useCallback(async () => {
     try {
@@ -28,12 +38,14 @@ export function DataProvider({ children }) {
     reload: load,
     async reset() { await store.reset?.(); await load(); },
     async saveWork(data) {
+      guard();
       const w = data.id ? await store.updateWork(data.id, data) : await store.createWork(data);
       setState(s => ({ ...s, work: replace(s.work, w) }));
       return w;
     },
     async patchWork(id, patch) {
       // Optimistic: show the change at once, roll back if saving fails.
+      guard();
       let before;
       setState(s => { before = s.work; return { ...s, work: s.work.map(w => (w.id === id ? { ...w, ...patch } : w)) }; });
       try {
@@ -50,14 +62,15 @@ export function DataProvider({ children }) {
       return actions.patchWork(w.id, patch);
     },
     async deleteWork(id) { await store.deleteWork(id); setState(s => ({ ...s, work: s.work.filter(w => w.id !== id) })); },
-    async saveCustomer(c) { const n = await store.saveCustomer(c); setState(s => ({ ...s, customers: replace(s.customers, n) })); return n; },
+    async saveCustomer(c) { guard(); const n = await store.saveCustomer(c); setState(s => ({ ...s, customers: replace(s.customers, n) })); return n; },
     async deleteCustomer(id) { await store.deleteCustomer(id); setState(s => ({ ...s, customers: s.customers.filter(c => c.id !== id) })); },
-    async savePrice(p) { const n = await store.savePrice(p); setState(s => ({ ...s, prices: replace(s.prices, n) })); return n; },
+    async savePrice(p) { guard('prices'); const n = await store.savePrice(p); setState(s => ({ ...s, prices: replace(s.prices, n) })); return n; },
     async deletePrice(id) { await store.deletePrice(id); setState(s => ({ ...s, prices: s.prices.filter(p => p.id !== id) })); },
     // Always save the full settings so a first partial save doesn't fall back to database defaults.
     async saveSettings(v) { const n = await store.saveSettings({ ...(settingsRef.current || {}), ...v }); setState(s => ({ ...s, settings: n })); return n; },
     // Email the customer, then check a moment later that the email service accepted it.
     async sendEmail(w, kind) {
+      guard('email');
       const r = await store.sendEmail(w.id, kind, customerLink(w));
       const fresh = await store.getWork(w.id);
       if (fresh) setState(s => ({ ...s, work: replace(s.work, fresh) }));
@@ -75,6 +88,7 @@ export function DataProvider({ children }) {
       return { to: r.to, ok: true, pending: true };
     },
     async setLogo(blob) {
+      if (blob) guard('logo');
       const logoUrl = blob ? await store.uploadLogo(blob) : (await store.removeLogo(), '');
       return actions.saveSettings({ logoUrl });
     }

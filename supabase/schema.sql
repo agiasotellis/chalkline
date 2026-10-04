@@ -101,9 +101,14 @@ alter table public.work enable row level security;
 
 do $$ begin
   create policy "own settings" on public.settings for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
-  create policy "own customers" on public.customers for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
-  create policy "own prices" on public.price_items for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
-  create policy "own work" on public.work for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+exception when duplicate_object then null; end $$;
+-- Once billing.sql has run it owns the policies below (read-only after the trial), so don't add these back.
+do $$ begin
+  if to_regclass('public.subscriptions') is null then
+    create policy "own customers" on public.customers for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+    create policy "own prices" on public.price_items for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+    create policy "own work" on public.work for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+  end if;
 exception when duplicate_object then null; end $$;
 
 -- ---------- public customer link ----------

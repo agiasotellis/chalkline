@@ -1,0 +1,7 @@
+# Only used if you deploy with the Supabase CLI. In the dashboard, switch
+# "Enforce JWT verification" off for paddle-webhook instead.
+[functions.paddle-webhook]
+verify_jwt = false
+
+[functions.paddle-billing]
+verify_jwt = true

@@ -401,3 +401,38 @@ dialog[open] .dlg{animation:dlgIn .35s cubic-bezier(.2,.9,.2,1)}
 .bn-l{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-inline:2px}
 .flag,.flag *{stroke:none!important}
 .icon-btn svg.flag{width:18px;height:auto}
+
+/* ---------- billing ---------- */
+.bill-banner{max-width:1180px;margin:0 auto 18px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px 12px;flex-wrap:wrap;background:var(--chalk-soft);color:var(--ink);font-size:13.5px;font-weight:600;padding:8px 16px;text-align:center}
+.bill-banner a,.bill-banner button{border:0;background:var(--chalk);color:var(--on-chalk);font:inherit;font-weight:700;border-radius:999px;padding:4px 12px;cursor:pointer;text-decoration:none;font-size:12.5px;min-height:28px;display:inline-flex;align-items:center}
+.bill-banner.bb-warn{background:var(--warn-soft);color:var(--warn)}
+.bill-banner.bb-bad{background:var(--bad-soft);color:var(--bad)}
+.bill-banner.bb-bad a,.bill-banner.bb-bad button{background:var(--bad);color:#fff}
+.upsell{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;background:var(--chalk-soft);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:550;color:var(--ink);margin-bottom:12px}
+.plan-status{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap;border-left:0;box-shadow:inset 4px 0 0 var(--chalk)}
+.plan-status h2{font-size:1.25rem;font-weight:750;font-variation-settings:"wdth" 112;margin-bottom:4px}
+.plan-status>div{flex:1 1 320px;min-width:0}
+.plan-status.ps-ok{box-shadow:inset 4px 0 0 var(--ok)}
+.plan-status.ps-warn{box-shadow:inset 4px 0 0 var(--warn)}
+.plan-status.ps-bad{box-shadow:inset 4px 0 0 var(--bad)}
+.spin.spin-sm{width:14px;height:14px;border-width:2px;display:inline-block;vertical-align:-2px}
+.plan-period{display:inline-flex;align-self:flex-start;gap:4px;padding:4px;border-radius:999px;background:var(--paper);border:1px solid var(--line)}
+.plan-period button{border:0;background:none;border-radius:999px;padding:8px 16px;min-height:40px;font:inherit;font-weight:650;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.plan-period button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.plan-card{display:flex;flex-direction:column;gap:10px}
+.plan-card.hot{box-shadow:inset 0 0 0 2px var(--chalk);border-color:transparent}
+.plan-card.current{box-shadow:inset 0 0 0 2px var(--ok);border-color:transparent}
+.plan-card.soon{opacity:.72}
+.pc-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pc-top h2{font-size:1.35rem;font-weight:780;font-variation-settings:"wdth" 115}
+.pc-price{display:flex;align-items:baseline;gap:6px;margin-top:4px}
+.pc-price b{font-size:2.6rem;font-weight:820;letter-spacing:-.03em;font-variation-settings:"wdth" 120;line-height:1}
+.pc-price span{color:var(--muted);font-weight:600}
+.pc-feat{list-style:none;margin:6px 0 8px;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px;flex:1}
+.pc-feat li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px;align-items:start}
+.pc-feat svg{width:16px;height:16px;margin-top:2px;fill:none;stroke:var(--chalk);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.plan-card .btn{width:100%}
+.plan-foot{max-width:760px}
+.plan-foot a{color:var(--chalk);font-weight:600}
+@media (max-width:980px){.plan-grid{grid-template-columns:1fr}.plan-period{align-self:stretch}.plan-period button{flex:1;justify-content:center}}

@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { useData } from '../lib/data.jsx';
 import { useToast } from '../lib/toast.jsx';
 import { Confirm } from './ui.jsx';
+import { Upsell } from './Billing.jsx';
+import { useBilling } from '../lib/billing.jsx';
 import { useT } from '../lib/i18n.jsx';
 import { tr } from '../lib/i18n-core.js';
 
@@ -36,6 +38,7 @@ export default function LogoUpload() {
   const [err, setErr] = useState('');
   const [confirm, setConfirm] = useState(false);
   const logo = settings?.logoUrl;
+  const canLogo = useBilling().can('logo');
 
   const take = async file => {
     setErr('');
@@ -52,6 +55,7 @@ export default function LogoUpload() {
     try { await setLogo(null); toast(t('lo.removed')); } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
 
+  if (!canLogo) return <Upsell feature="logo" />;
   return (
     <div className="logo-row">
       <button type="button" className={`logo-drop${over ? ' over' : ''}${busy ? ' busy' : ''}`} aria-label={logo ? t('lo.replace') : t('lo.upload')}

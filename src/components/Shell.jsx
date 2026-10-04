@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Icon, LangButton, LangDialog, Logo, ThemeButton } from './ui.jsx';
+import { BillingBanner } from './Billing.jsx';
 import { useAuth } from '../lib/auth.jsx';
 import { useData } from '../lib/data.jsx';
 import { useT } from '../lib/i18n.jsx';
@@ -15,7 +16,8 @@ const NAV = [
   { to: '/invoices', key: 'nav.invoices', icon: 'invoice', tour: 'flow' },
   { to: '/customers', key: 'nav.customers', icon: 'users' },
   { to: '/prices', key: 'nav.prices', icon: 'tag' },
-  { to: '/settings', key: 'nav.settings', icon: 'cog', tour: 'settings' }
+  { to: '/settings', key: 'nav.settings', icon: 'cog', tour: 'settings' },
+  { to: '/plan', key: 'nav.plan', icon: 'card' }
 ];
 
 export default function Shell() {
@@ -74,6 +76,7 @@ export default function Shell() {
 
         <main className="main">
           {isDemo && <div className="demo-banner"><span><b>{t('demo.banner')}</b><span className="hide-sm">{t('demo.bannerMore')}</span></span><button type="button" onClick={doReset}>{t('demo.reset')}</button></div>}
+          <BillingBanner />
           <Outlet />
         </main>
 

@@ -21,11 +21,11 @@ const P = {
   edit: 'M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',
   print: 'M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z',
   send: 'M22 2 11 13M22 2l-7 20-4-9-9-4z',
+  card: 'M3 6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5zM3 10h18M7 15h3',
   link: 'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'
 };
 export const Icon = ({ name, ...p }) => <svg viewBox="0 0 24 24" aria-hidden="true" {...p}><path d={P[name]} /></svg>;
 
-// Ergo logotype; ink follows the text colour, the crossbar is chalk blue.
 // Ergo logo: the "therefore" mark (quote, job, paid in blue) beside the wordmark.
 export function Logo({ height = 24, title = 'Ergo' }) {
   return (

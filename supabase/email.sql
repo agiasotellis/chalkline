@@ -67,6 +67,16 @@ begin
   if not found then raise exception 'This item doesn’t exist. / Αυτό δεν υπάρχει.'; end if;
   select * into s from public.settings where owner_id = w.owner_id;
   loc := coalesce(s.locale, 'en'); gr := loc = 'el';
+  -- Billing (supabase/billing.sql): emailing customers is part of the trial and the Trade plan.
+  if to_regprocedure('public.can_use(text)') is not null then
+    declare allowed boolean; begin
+      execute 'select public.can_use($1)' into allowed using 'email';
+      if not allowed then
+        raise exception '%', case when gr then 'Η αποστολή email περιλαμβάνεται στο πακέτο Trade. Αντιγράψτε τον σύνδεσμο και στείλτε τον εσείς, ή αλλάξτε πακέτο.'
+          else 'Emailing customers is part of the Trade plan. Copy the link and send it yourself, or upgrade.' end;
+      end if;
+    end;
+  end if;
 
   if p_kind not in ('quote', 'invoice', 'reminder') then raise exception 'Unknown email type.'; end if;
   if p_link is null or p_link !~ '^https?://' then

@@ -8,6 +8,7 @@ import { FLOW, GROUP, flowStep, isOverdue, ref, totals } from '../lib/workflow.j
 import { Confirm, Icon, Pill, copyText } from '../components/ui.jsx';
 import { isDemo } from '../lib/store/index.js';
 import { customerLink, validEmail } from '../lib/links.js';
+import { useBilling } from '../lib/billing.jsx';
 import { useSendEmail } from '../lib/useSendEmail.js';
 
 export { customerLink };
@@ -15,6 +16,7 @@ const inFrame = (() => { try { return window.self !== window.top; } catch { retu
 
 export function Document({ w, customer, settings, children }) {
   const { t } = useT();
+  const showLogo = useBilling()?.can('logo') ?? true;
   const g = GROUP[w.stage];
   const { sub, vat, total } = totals(w);
   const meta = g === 'invoices'
@@ -25,7 +27,7 @@ export function Document({ w, customer, settings, children }) {
     <article className="doc">
       <div className="doc-head">
         <div><div className="doc-type num">{t(`doc.${g}`)} · {ref(w)}</div><h2>{w.title}</h2></div>
-        <div className="doc-biz">{settings?.logoUrl && <img className="doc-logo" src={settings.logoUrl} alt={settings.businessName} />}<b>{settings?.businessName}</b><br />{settings?.address}{settings?.vatNumber ? <><br />{t('taxId')} {settings.vatNumber}</> : null}</div>
+        <div className="doc-biz">{settings?.logoUrl && showLogo && <img className="doc-logo" src={settings.logoUrl} alt={settings.businessName} />}<b>{settings?.businessName}</b><br />{settings?.address}{settings?.vatNumber ? <><br />{t('taxId')} {settings.vatNumber}</> : null}</div>
       </div>
       <div className="doc-meta">
         <div><small>{t('d.customer')}</small>{customer?.name || '—'}</div>

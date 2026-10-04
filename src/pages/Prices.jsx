@@ -5,6 +5,8 @@ import { useT } from '../lib/i18n.jsx';
 import { money, unitLabel } from '../lib/format.js';
 import { Confirm, Icon, Modal } from '../components/ui.jsx';
 import { UNITS } from './Editor.jsx';
+import { Upsell } from '../components/Billing.jsx';
+import { useBilling } from '../lib/billing.jsx';
 
 export default function Prices() {
   const { prices, savePrice, deletePrice } = useData();
@@ -14,6 +16,7 @@ export default function Prices() {
   const [del, setDel] = useState(null);
   const [err, setErr] = useState('');
   const [q, setQ] = useState('');
+  const locked = !useBilling().can('prices');
   const list = prices.filter(p => p.description.toLowerCase().includes(q.toLowerCase())).sort((a, b) => a.description.localeCompare(b.description, locale.intl));
   const units = u => (UNITS[lang].includes(u) ? UNITS[lang] : [...UNITS[lang], u]);
   const save = async () => {
@@ -25,8 +28,9 @@ export default function Prices() {
     <div className="page">
       <div className="page-head">
         <div><h1>{t('pr.title')}</h1><p>{t('pr.sub')}</p></div>
-        <div className="head-actions"><button className="btn btn-chalk" onClick={() => { setErr(''); setForm({ description: '', unit: 'ea', rate: '' }); }}><Icon name="plus" />{t('pr.add')}</button></div>
+        <div className="head-actions"><button className="btn btn-chalk" disabled={locked} onClick={() => { setErr(''); setForm({ description: '', unit: 'ea', rate: '' }); }}><Icon name="plus" />{t('pr.add')}</button></div>
       </div>
+      {locked && <Upsell feature="prices" />}
       <div className="toolbar"><label className="search"><Icon name="search" /><input className="inp" id="price-search" placeholder={t('pr.search')} value={q} onChange={e => setQ(e.target.value)} aria-label={t('pr.search')} /></label></div>
       <section className="panel">
         {list.length ? (

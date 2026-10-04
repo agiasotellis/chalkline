@@ -6,6 +6,7 @@ import { isDemo } from './lib/store/index.js';
 import { LangDialog } from './components/ui.jsx';
 import { AuthProvider, useAuth } from './lib/auth.jsx';
 import { DataProvider, useData } from './lib/data.jsx';
+import { BillingProvider } from './lib/billing.jsx';
 import { ToastProvider } from './lib/toast.jsx';
 import Shell from './components/Shell.jsx';
 import Dashboard from './pages/Dashboard.jsx';
@@ -15,6 +16,7 @@ import Editor from './pages/Editor.jsx';
 import { Customers, CustomerDetail } from './pages/Customers.jsx';
 import Prices from './pages/Prices.jsx';
 import Settings from './pages/Settings.jsx';
+import Plan from './pages/Plan.jsx';
 import Login, { SetPassword } from './pages/Login.jsx';
 import PublicQuote from './pages/PublicQuote.jsx';
 
@@ -40,6 +42,7 @@ function Private() {
   if (!user) return <Login />;
   return (
     <>
+    <BillingProvider user={user}>
     <DataProvider key={isDemo ? `${user.id}-${lang}` : user.id}>
       <Loaded>
         <Routes>
@@ -55,11 +58,13 @@ function Private() {
             <Route path="customers/:id" element={<CustomerDetail />} />
             <Route path="prices" element={<Prices />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="plan" element={<Plan />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
       </Loaded>
     </DataProvider>
+    </BillingProvider>
     <LangDialog open={askLang} required onClose={() => setAskLang(false)} />
     </>
   );

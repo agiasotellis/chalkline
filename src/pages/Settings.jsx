@@ -69,6 +69,7 @@ export default function Settings() {
       </form>
       <section className="panel">
         <ul className="rows">
+          <li><Link className="row" to="/plan"><span className="r-t">{t('se.plan')}</span><span className="r-r"><Chev /></span><span className="r-s">{t('se.planSub')}</span></Link></li>
           <li><Link className="row" to="/prices"><span className="r-t">{t('se.prices')}</span><span className="r-r"><Chev /></span><span className="r-s">{t('se.pricesSub')}</span></Link></li>
           <li><button type="button" className="row" onClick={replayTour} style={{ width: '100%', border: 0, background: 'none', textAlign: 'left', cursor: 'pointer' }}><span className="r-t">{t('se.tour')}</span><span className="r-r"><Chev /></span><span className="r-s">{t('se.tourSub')}</span></button></li>
           <li><Link className="row" to="/customers"><span className="r-t">{t('se.customers')}</span><span className="r-r"><Chev /></span><span className="r-s">{t('se.customersSub')}</span></Link></li>

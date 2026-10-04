@@ -285,6 +285,9 @@ section{scroll-margin-top:80px}
 /* ---------- closing ---------- */
 .close{padding-block:clamp(64px,10vw,120px);border-top:1px solid var(--line)}
 .close h2{font-size:clamp(2.4rem,8vw,6.4rem);font-weight:800;font-variation-settings:"wdth" 125;letter-spacing:-.04em;line-height:.92;max-width:12ch}
+.btn-soon{opacity:.55;cursor:default;pointer-events:none}
+.soon-tag{display:inline-block;vertical-align:middle;margin-left:8px;font-size:12px;font-weight:650;letter-spacing:0;padding:3px 9px;border-radius:999px;background:var(--line);color:var(--muted);font-variation-settings:normal}
+.foot-links{display:flex;gap:18px;flex-wrap:wrap}.foot-links a{color:inherit;text-decoration:none;font-weight:600}.foot-links a:hover{color:var(--ink);text-decoration:underline}
 .close-row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
 .foot{padding-block:28px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
@@ -503,12 +506,12 @@ section{scroll-margin-top:80px}
         <a class="btn btn-tape" href="app.html" data-i18n="ctaTrial">Start free trial</a>
       </div>
       <div class="plan">
-        <h3>Crew</h3>
+        <h3>Crew <span class="soon-tag" data-i18n="soon">Coming soon</span></h3>
         <p class="who" data-i18n="who3">Up to 5 people. Hand out jobs and see who’s where.</p>
         <div class="price"><b class="num" data-m="30" data-y="25">€30</b><span data-i18n="perMonth">/ month</span></div>
         <p class="price-note" data-note></p>
         <ul class="feat" data-i18n-list="feat3"></ul>
-        <a class="btn btn-ghost" href="app.html" data-i18n="ctaTrial">Start free trial</a>
+        <span class="btn btn-ghost btn-soon" aria-disabled="true" data-i18n="soon">Coming soon</span>
       </div>
     </div>
   </section>
@@ -522,6 +525,7 @@ section{scroll-margin-top:80px}
 </main>
 <footer class="wrap foot">
   <span data-i18n="foot">Ergo · built for the trades</span>
+  <nav class="foot-links" aria-label="Legal"><a href="legal.html#terms" data-i18n="terms">Terms</a><a href="legal.html#refunds" data-i18n="refunds">Refunds</a><a href="legal.html#privacy" data-i18n="privacy">Privacy</a></nav>
   <span>© 2026 Ergo</span>
 </footer>
 
@@ -574,11 +578,11 @@ const LX = {
     pause: 'Pause', play: 'Play', pauseAria: 'Pause the screen tour', playAria: 'Play the screen tour', openDemo: 'Open the live demo',
     prH: 'Priced like a tool, not a contract', prP: 'Every plan includes unlimited quotes, online approval and invoices. Try any plan free for 14 days. No card needed, cancel from your phone.',
     billAria: 'Billing period', monthly: 'Monthly', yearly: 'Yearly', save2: '2 months free',
-    who1: 'One person, one truck. Everything you need to quote and get paid.', who2: 'For busy pros who want payments and reminders on autopilot.', who3: 'Up to 5 people. Hand out jobs and see who’s where.',
-    perMonth: '/ month', popular: 'Most popular',
-    feat1: ['Unlimited quotes, jobs and invoices', 'Online approval with signature', 'Job checklists from quote lines', 'Tax and payment terms filled in'],
-    feat2: ['Everything in Solo', 'Card payments and deposits on approval', 'Automatic overdue reminders', 'Saved price list and job photos', 'Export to QuickBooks and Xero'],
-    feat3: ['Everything in Trade', 'Up to 5 team members', 'Assign jobs and tasks', 'Weekly schedule board', 'Profit per job'],
+    who1: 'One person, one truck. Everything you need to quote and get paid.', who2: 'For busy pros who want emails, reminders and their own brand on autopilot.', who3: 'For teams of up to 5. Hand out jobs and see who’s where.',
+    perMonth: '/ month', popular: 'Most popular', soon: 'Coming soon', terms: 'Terms', refunds: 'Refunds', privacy: 'Privacy',
+    feat1: ['Unlimited quotes, jobs and invoices', 'Online approval with signature', 'Job checklists from quote lines', 'Tax and payment terms filled in', 'Share each customer link yourself'],
+    feat2: ['Everything in Solo', 'Quotes and invoices emailed to customers', 'Overdue reminders in one tap', 'Your logo on every document', 'Saved price list for faster quotes'],
+    feat3: ['Everything in Trade', 'Up to 5 team members', 'Assign jobs and tasks', 'Weekly schedule board'],
     billedYear: y => `Billed ${y} once a year`, billedMonth: 'Billed monthly, cancel any time',
     closeH: 'Straight line from quote to paid.', closeCta: 'Send your first quote', foot: 'Ergo · built for the trades'
   },
@@ -612,11 +616,11 @@ const LX = {
     pause: 'Παύση', play: 'Αναπαραγωγή', pauseAria: 'Παύση της παρουσίασης', playAria: 'Αναπαραγωγή της παρουσίασης', openDemo: 'Ανοίξτε το demo',
     prH: 'Τιμή εργαλείου, όχι συμβολαίου', prP: 'Κάθε πακέτο περιλαμβάνει απεριόριστες προσφορές, online έγκριση και τιμολόγια. Δοκιμάστε δωρεάν για 14 ημέρες. Χωρίς κάρτα, ακύρωση από το κινητό.',
     billAria: 'Περίοδος χρέωσης', monthly: 'Μηνιαία', yearly: 'Ετήσια', save2: '2 μήνες δωρεάν',
-    who1: 'Ένας τεχνικός, ένα βανάκι. Ό,τι χρειάζεστε για προσφορές και πληρωμές.', who2: 'Για πολυάσχολους επαγγελματίες που θέλουν πληρωμές και υπενθυμίσεις στον αυτόματο.', who3: 'Έως 5 άτομα. Μοιράστε εργασίες και δείτε ποιος είναι πού.',
-    perMonth: '/ μήνα', popular: 'Δημοφιλέστερο',
-    feat1: ['Απεριόριστες προσφορές, εργασίες και τιμολόγια', 'Online έγκριση με υπογραφή', 'Λίστες ελέγχου από τις γραμμές της προσφοράς', 'ΦΠΑ και όροι πληρωμής αυτόματα'],
-    feat2: ['Όλα όσα έχει το Solo', 'Πληρωμή με κάρτα και προκαταβολή στην έγκριση', 'Αυτόματες υπενθυμίσεις για ληξιπρόθεσμα', 'Τιμοκατάλογος και φωτογραφίες εργασιών', 'Εξαγωγή για τον λογιστή σας'],
-    feat3: ['Όλα όσα έχει το Trade', 'Έως 5 μέλη ομάδας', 'Ανάθεση εργασιών', 'Εβδομαδιαίο πρόγραμμα', 'Κέρδος ανά εργασία'],
+    who1: 'Ένας τεχνικός, ένα βανάκι. Ό,τι χρειάζεστε για προσφορές και πληρωμές.', who2: 'Για πολυάσχολους επαγγελματίες που θέλουν email, υπενθυμίσεις και το δικό τους λογότυπο στον αυτόματο.', who3: 'Για συνεργεία έως 5 ατόμων. Μοιράστε εργασίες και δείτε ποιος είναι πού.',
+    perMonth: '/ μήνα', popular: 'Δημοφιλέστερο', soon: 'Σύντομα', terms: 'Όροι', refunds: 'Επιστροφές', privacy: 'Απόρρητο',
+    feat1: ['Απεριόριστες προσφορές, εργασίες και τιμολόγια', 'Online έγκριση με υπογραφή', 'Λίστες ελέγχου από τις γραμμές της προσφοράς', 'ΦΠΑ και όροι πληρωμής αυτόματα', 'Στέλνετε εσείς τον σύνδεσμο στον πελάτη'],
+    feat2: ['Όλα όσα έχει το Solo', 'Προσφορές και τιμολόγια με email στον πελάτη', 'Υπενθυμίσεις ληξιπρόθεσμων με ένα πάτημα', 'Το λογότυπό σας σε κάθε έγγραφο', 'Αποθηκευμένος τιμοκατάλογος για γρηγορότερες προσφορές'],
+    feat3: ['Όλα όσα έχει το Trade', 'Έως 5 μέλη ομάδας', 'Ανάθεση εργασιών', 'Εβδομαδιαίο πρόγραμμα'],
     billedYear: y => `Χρέωση ${y} μία φορά τον χρόνο`, billedMonth: 'Μηνιαία χρέωση, ακύρωση οποτεδήποτε',
     closeH: 'Ίσια γραμμή από την προσφορά στην πληρωμή.', closeCta: 'Στείλτε την πρώτη σας προσφορά', foot: 'Ergo · φτιαγμένο για τεχνίτες'
   }

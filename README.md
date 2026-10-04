@@ -65,19 +65,26 @@ Tip: emails sent from a free Gmail address through Brevo can land in spam. With 
 
 Every push to `main` builds and publishes to GitHub Pages (`.github/workflows/deploy.yml`).
 
-## Pricing (planned)
-| Plan | Monthly | For |
-|---|---|---|
-| Solo | €15 | One person, unlimited quotes, online approval, invoices |
-| Trade | €22 | Card payments, deposits, automatic reminders, accounting export |
-| Crew | €30 | Up to 5 users, job assignment, schedule board |
+## Plans and payments (Paddle)
+Every account starts with a 14-day free trial, no card needed. Paddle is the checkout and Merchant of Record (it handles VAT, receipts, refunds and payouts). Setup, step by step: **[docs/PADDLE.md](docs/PADDLE.md)**.
+
+| Plan | Monthly | Yearly | Includes |
+|---|---|---|---|
+| Solo | $15 / €15 | $150 / €150 | Unlimited quotes, jobs and invoices, online approval, checklists, tax and payment terms |
+| Trade | $22 / €22 | $220 / €220 | Solo + quotes and invoices emailed to customers, reminders, your logo, saved price list |
+| Crew | $30 / €30 | coming soon | Trade + up to 5 team members, job assignment, schedule board |
+
+- `supabase/billing.sql`: trial, subscriptions, and read-only mode after the trial (enforced in the database).
+- `supabase/functions/paddle-webhook`: Paddle → Ergo, records subscriptions.
+- `supabase/functions/paddle-billing`: opens Paddle's customer portal and switches plans.
+- `legal.html`: terms, refund policy and privacy policy (fill in the `COMPANY` block).
 
 ## Roadmap
-1. Email delivery for quotes, invoices and reminders (Resend or Postmark via a Supabase Edge Function)
-2. Notifications when a customer approves
-3. Stripe: subscriptions for tradespeople, card payments and deposits for customers
-4. Job photos (Supabase Storage)
-5. Crew plan: team members and job assignment
+1. Notifications when a customer approves
+2. Card payments and deposits for customers on approval
+3. Job photos (Supabase Storage)
+4. Crew plan: team members, job assignment and schedule board
+5. Accounting export (QuickBooks, Xero, myDATA)
 
 ## Brand
 
