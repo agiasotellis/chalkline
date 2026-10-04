@@ -1,0 +1,196 @@
+// English (United States)
+const pl = (n, one, many) => (n === 1 ? one : many);
+
+export default {
+  // common
+  'c.cancel': 'Cancel', 'c.close': 'Close', 'c.back': 'Back', 'c.edit': 'Edit', 'c.view': 'View', 'c.loading': 'Loading',
+  'c.customer': 'Customer', 'tax': 'Tax', 'taxId': 'Tax ID', 'task.final': 'Test, tidy up and photos',
+  'ago.today': 'today', 'ago.yesterday': 'yesterday', 'ago.days': ({ n }) => `${n} days ago`,
+  'u.ea': 'ea', 'u.hr': 'hr', 'u.m': 'm', 'u.m²': 'm²', 'u.ft': 'ft', 'u.sqft': 'sq ft', 'u.day': 'day', 'u.kg': 'kg', 'u.lb': 'lb', 'u.l': 'l', 'u.gal': 'gal',
+
+  // nav & shell
+  'nav.home': 'Home', 'nav.quotes': 'Quotes', 'nav.jobs': 'Jobs', 'nav.invoices': 'Invoices', 'nav.customers': 'Customers',
+  'nav.prices': 'Price list', 'nav.settings': 'Settings', 'nav.main': 'Main', 'nav.signOut': 'Sign out',
+  'nav.attn': ({ n }) => `${n} need attention`, 'biz.default': 'My business',
+  'demo.banner': 'Demo mode', 'demo.bannerMore': ': example data, saved only in this browser', 'demo.reset': 'Reset examples', 'demo.restored': 'Example data restored',
+  'theme.toDark': 'Switch to dark mode', 'theme.toLight': 'Switch to light mode',
+  'lang.switch': 'Change language', 'lang.title': 'Choose your version', 'lang.sub': 'Language and currency for the app, your quotes and your emails.',
+  'lang.us': 'United States', 'lang.usSub': 'English · US dollars ($)', 'lang.gr': 'Ελλάδα', 'lang.grSub': 'Ελληνικά · Ευρώ (€)',
+
+  // statuses & documents
+  'st.draft': 'Draft', 'st.sent': 'Awaiting approval', 'st.approved': 'Approved', 'st.job': 'In progress', 'st.done': 'Ready to invoice',
+  'st.invoiced': 'Unpaid', 'st.paid': 'Paid', 'st.overdue': 'Overdue', 'st.change': 'Change requested',
+  'doc.quotes': 'Quote', 'doc.jobs': 'Job sheet', 'doc.invoices': 'Invoice',
+  'flow.0': 'Quote', 'flow.1': 'Approved', 'flow.2': 'Job done', 'flow.3': 'Paid',
+
+  // dashboard
+  'dash.morning': 'Good morning', 'dash.afternoon': 'Good afternoon', 'dash.evening': 'Good evening',
+  'dash.attnCount': ({ n }) => `${n} ${pl(n, 'thing needs', 'things need')} your attention.`,
+  'dash.clear': 'Nothing waiting on you. Nice.', 'dash.newQuote': 'New quote',
+  'kpi.awaiting': 'Awaiting approval', 'kpi.booked': 'Work booked', 'kpi.unpaid': 'Unpaid', 'kpi.paid30': 'Paid, last 30 days',
+  'kpi.quotes': ({ n }) => `${n} ${pl(n, 'quote', 'quotes')}`, 'kpi.jobs': ({ n }) => `${n} ${pl(n, 'job', 'jobs')}`,
+  'kpi.invoices': ({ n }) => `${n} ${pl(n, 'invoice', 'invoices')}`, 'kpi.overdue': ({ n }) => `${n} overdue`,
+  'dash.attention': 'Needs attention', 'dash.caughtUp': 'You’re all caught up.',
+  'att.overdue': ({ ref, n }) => `${ref} is ${n} ${pl(n, 'day', 'days')} overdue`,
+  'att.change': ({ name }) => `${name} asked for a change`,
+  'att.ready': ({ ref }) => `${ref} is ready to invoice`,
+  'att.approved': ({ ref }) => `${ref} approved, not started`,
+  'att.approvedSub': ({ name, ago }) => `${name} approved ${ago}`,
+  'att.noReply': ({ ref }) => `No reply on ${ref}`,
+  'att.noReplySub': ({ name, ago }) => `Sent to ${name} ${ago}`,
+  'dash.chart': 'Paid per month', 'dash.last6': 'Last 6 months',
+  'dash.inProgress': 'Jobs in progress', 'dash.allJobs': 'All jobs', 'dash.noJobs': 'No jobs on the go. Approved quotes turn into jobs.',
+  'dash.latest': 'Latest', 'dash.allQuotes': 'All quotes',
+
+  // tour
+  'tour.welcome.t': 'Welcome to Chalkline', 'tour.welcome.b': 'Here’s a one-minute look around your dashboard, so you know where everything is.', 'tour.welcome.p': 'Show me around',
+  'tour.kpis.t': 'Your money at a glance', 'tour.kpis.b': 'What’s waiting on customers, what’s booked, what you’re owed and what’s been paid. Tap any figure to see what’s behind it.',
+  'tour.attn.t': 'Needs attention', 'tour.attn.b': 'Overdue invoices, change requests and jobs ready to bill land here first. Tap one to deal with it.',
+  'tour.quote.t': 'Start with a quote', 'tour.quote.b': 'Add line items or pick from your price list, then send it. Your customer gets a private link and approves it with their name.',
+  'tour.flow.t': 'Quotes, jobs, invoices', 'tour.flow.b': 'Approved quotes become jobs with a checklist. When the last task is ticked, turn the job into an invoice in one tap.',
+  'tour.settings.t': 'Make it yours', 'tour.settings.b': 'Add your logo, tax ID and payment details in Settings. They appear on every quote and invoice you send.',
+  'tour.done.t': 'You’re ready', 'tour.done.b': 'Write your first quote now, or look around first. You can replay this tour any time from Settings.', 'tour.done.p': 'Write a quote',
+  'tour.skip': 'Skip tour', 'tour.finish': 'Finish', 'tour.back': 'Back', 'tour.next': 'Next', 'tour.last': 'Last step', 'tour.close': 'Close tour',
+  'tour.count': ({ i, n }) => `${i} of ${n}`,
+
+  // lists
+  'list.quotes.sub': 'Drafts, quotes waiting on customers, and approvals.', 'list.jobs.sub': 'Approved work. Tick off tasks, then invoice.',
+  'list.invoices.sub': 'What you’re owed and what’s been paid.',
+  'f.all': 'All', 'f.draft': 'Drafts', 'f.sent': 'Awaiting approval', 'f.approved': 'Approved', 'f.job': 'In progress', 'f.done': 'Ready to invoice',
+  'f.invoiced': 'Unpaid', 'f.overdue': 'Overdue', 'f.paid': 'Paid', 'list.filter': 'Filter',
+  'list.date': 'Date', 'list.started': 'Started', 'list.due': 'Due', 'list.search': 'Search by job, customer or number',
+  'list.noMatch': ({ q }) => `Nothing matches “${q}”.`, 'list.emptyQuotes': 'No quotes here yet.',
+  'list.emptyJobs': 'No jobs here. Approved quotes become jobs.', 'list.emptyInvoices': 'No invoices here. Finished jobs become invoices.',
+  'list.write': 'Write a quote', 'list.noCustomer': 'No customer',
+  'th.number': 'Number', 'th.job': 'Job', 'th.status': 'Status', 'th.total': 'Total',
+
+  // document
+  'd.invoiceDate': 'Invoice date', 'd.due': 'Due', 'd.approved': 'Approved', 'd.by': ({ name }) => ` by ${name}`, 'd.started': 'Started',
+  'd.quoteDate': 'Quote date', 'd.validFor': 'Valid for', 'd.days': ({ n }) => `${n} days`, 'd.customer': 'Customer', 'd.site': 'Site',
+  'd.desc': 'Description', 'd.qty': 'Qty', 'd.rate': 'Rate', 'd.amount': 'Amount', 'd.subtotal': 'Subtotal', 'd.total': 'Total',
+  'd.amountDue': 'Amount due', 'd.howToPay': 'How to pay', 'd.reference': ({ ref }) => `Please use ${ref} as the reference.`,
+  'd.stampApproved': 'APPROVED', 'd.stampPaid': 'PAID',
+
+  // work detail
+  'w.missing': 'This item doesn’t exist or was deleted.', 'w.backHome': 'Back to home', 'w.progress': 'Progress',
+  'w.tasksDone': ({ d, n }) => `${d} of ${n} tasks done`, 'w.jobValue': 'Job value', 'w.next': 'Next step',
+  'w.sendCustomer': 'Send to customer', 'w.alsoEmail': 'Also email it to', 'w.editQuote': 'Edit quote', 'w.deleteDraft': 'Delete draft',
+  'w.sendNote': 'Sending creates a private link your customer opens to approve.',
+  'w.noEmail': ({ name }) => `No email for ${name}.`, 'w.addOne': 'Add one', 'w.toSendEmail': ' to send it by email.', 'w.noCustomer': 'No customer linked.',
+  'w.askedChange': ({ name }) => `${name} asked for a change`,
+  'w.custLink': 'Customer link', 'w.copyLink': 'Copy link', 'w.copied': 'Customer link copied', 'w.selectCopy': 'Select the link and copy it',
+  'w.emailedTo': ({ email }) => `Emailed to ${email}`, 'w.emailAgain': 'Email it again', 'w.emailTo': ({ email }) => `Email to ${email}`,
+  'w.openCustomer': 'Open customer view', 'w.markPhone': 'Mark approved by phone',
+  'w.sentNote': ({ date, name }) => `Sent ${date}. You’ll see it here as soon as ${name} approves.`, 'w.they': 'they',
+  'w.toJob': 'Convert to job', 'w.toJobNote': 'Each quote line becomes a task on the job sheet.',
+  'w.complete': 'Mark job complete', 'w.allDone': 'All tasks done.', 'w.tickAll': ({ n }) => `Tick every task to complete the job. ${n} left.`,
+  'w.genInvoice': 'Generate invoice', 'w.emailInvoiceTo': 'Email the invoice to',
+  'w.invoiceNote': ({ n }) => `Same lines and prices. Payment due in ${n} days.`,
+  'w.markPaid': 'Mark as paid', 'w.invEmailedTo': ({ email }) => `Invoice emailed to ${email}`, 'w.reminderSent': 'Reminder sent',
+  'w.emailInvoice': 'Email invoice', 'w.sendReminder': 'Send reminder',
+  'w.addEmailReminders': ({ name }) => `Add an email for ${name} to send reminders.`, 'w.editCustomer': 'Edit customer',
+  'w.invLink': 'Invoice link for the customer', 'w.overdueDays': ({ n }) => `${n} ${pl(n, 'day', 'days')} overdue.`, 'w.dueOn': ({ date }) => `Due ${date}.`,
+  'w.paidNote': ({ date }) => `Paid ${date}. Nothing left to do.`, 'w.print': 'Print or save PDF', 'w.history': 'History',
+  'w.byPhone': ({ name }) => `${name} (by phone)`,
+  'tl.created': 'Quote created', 'tl.sent': 'Sent to customer', 'tl.emailed': 'Quote emailed', 'tl.approved': 'Approved', 'tl.started': 'Job started',
+  'tl.done': 'Job completed', 'tl.invoiced': 'Invoice created', 'tl.invEmailed': 'Invoice emailed', 'tl.reminded': 'Reminder emailed', 'tl.paid': 'Paid',
+  't.quoteSent': ({ ref }) => `Quote ${ref} sent`, 't.jobCreated': ({ ref, n }) => `Job ${ref} created with ${n} tasks`,
+  't.jobDone': ({ ref }) => `Job ${ref} marked complete`, 't.invCreated': ({ ref, amount }) => `Invoice ${ref} created for ${amount}`,
+  't.paid': ({ ref }) => `${ref} marked as paid`, 't.approved': ({ ref }) => `${ref} marked approved`, 't.draftDeleted': ({ ref }) => `Draft ${ref} deleted`,
+  't.saved': ({ ref }) => `${ref} saved`, 't.draftSaved': ({ ref }) => `Draft ${ref} saved`,
+  'cf.delDraft.t': 'Delete this draft?', 'cf.delDraft.b': ({ ref }) => `${ref} will be removed. This can’t be undone.`,
+  'cf.approve.t': 'Mark as approved?', 'cf.approve.b': ({ name }) => `Use this when ${name} approved by phone or in person.`, 'cf.approve.c': 'Mark approved',
+  'cf.theCustomer': 'the customer',
+
+  // email outcomes
+  'e.failed': ({ done, error }) => (done ? `${done}, but the email didn’t go out: ${error}` : `The email didn’t go out: ${error}`),
+  'e.demo': ({ done, to }) => `${done ? `${done}. ` : ''}Demo mode: no real email was sent to ${to}`,
+  'e.ok': ({ done, to }) => (done ? `${done} and emailed to ${to}` : `Emailed to ${to}`),
+  'e.service': ({ status }) => `The email service answered ${status}.`,
+  'e.noEmail': 'Add an email address for this customer first.',
+
+  // editor
+  'ed.missing': 'This quote doesn’t exist.', 'ed.backQuotes': 'Back to quotes',
+  'ed.locked': 'Approved quotes can’t be edited, so the customer’s approval stays valid.',
+  'ed.titleNew': 'New quote', 'ed.titleEdit': ({ ref }) => `Edit ${ref}`,
+  'ed.subSent': 'Your customer will see the changes on the same link.', 'ed.subNew': 'Save as a draft or send it straight away.',
+  'ed.jobTitle': 'Job title', 'ed.jobPh': 'e.g. Replace kitchen faucet', 'ed.customer': 'Customer', 'ed.choose': 'Choose a customer',
+  'ed.addNew': '+ Add a new customer', 'ed.name': 'Name', 'ed.email': 'Email', 'ed.phone': 'Phone', 'ed.site': 'Site address',
+  'ed.lines': 'Line items', 'ed.fromPrices': 'From price list', 'ed.searchPrices': 'Search your prices',
+  'ed.noPrices': 'No saved prices match. Add them under Price list.',
+  'ed.desc': 'Description', 'ed.qty': 'Qty', 'ed.unit': 'Unit', 'ed.rate': ({ cur }) => `Rate ${cur}`, 'ed.amount': 'Amount',
+  'ed.descPh': 'What you’ll do or supply', 'ed.remove': 'Remove line', 'ed.addLine': 'Add line', 'ed.lineTotal': 'Line total: ',
+  'ed.notes': 'Notes for the customer', 'ed.notesPh': 'e.g. Price includes removal of old fittings. Parking needed on the day.',
+  'ed.taxPct': 'Tax %', 'ed.subtotal': 'Subtotal', 'ed.total': 'Total',
+  'ed.emailUpdated': 'Email the updated quote to', 'ed.emailQuote': 'Email the quote to',
+  'ed.badEmail': 'That email address doesn’t look right.', 'ed.noEmail': 'No email for this customer.', 'ed.copyAfter': ' You can copy the customer link after sending.',
+  'ed.saveSend': 'Save and send', 'ed.saveChanges': 'Save changes', 'ed.saveDraft': 'Save draft',
+  'ed.errTitle': 'Add a job title so you can find this quote later.', 'ed.errCust': 'Choose a customer, or add a new one.',
+  'ed.errNewName': 'Add the new customer’s name.', 'ed.errLines': 'Add at least one line with a description.',
+
+  // customers
+  'cu.title': 'Customers', 'cu.count': ({ n }) => `${n} ${pl(n, 'customer', 'customers')}`, 'cu.add': 'Add customer', 'cu.search': 'Search customers',
+  'cu.jobs': ({ n }) => `${n} ${pl(n, 'job', 'jobs')}`, 'cu.noMatch': ({ q }) => `No customers match “${q}”.`,
+  'cu.empty': 'No customers yet. They’re added when you write a quote, or here.', 'cu.errName': 'Add a name.', 'cu.added': ({ name }) => `${name} added`,
+  'cu.name': 'Name', 'cu.email': 'Email', 'cu.phone': 'Phone', 'cu.site': 'Site address', 'cu.notes': 'Notes', 'cu.notesPh': 'Gate code, parking, pets…',
+  'cu.missing': 'This customer doesn’t exist.', 'cu.all': 'All customers', 'cu.newQuote': 'New quote', 'cu.jobsK': 'Jobs', 'cu.paid': 'Paid to date',
+  'cu.owed': 'Owed', 'cu.history': 'Work history', 'cu.noWork': ({ name }) => `No work for ${name} yet.`, 'cu.delete': 'Delete customer',
+  'cu.editT': 'Edit customer', 'cu.saveBtn': 'Save customer', 'cu.saved': 'Customer saved', 'cu.delT': ({ name }) => `Delete ${name}?`,
+  'cu.delB': 'Their details will be removed. This can’t be undone.', 'cu.deleted': 'Customer deleted',
+
+  // prices
+  'pr.title': 'Price list', 'pr.sub': 'Saved items you can drop into any quote.', 'pr.add': 'Add price', 'pr.search': 'Search prices',
+  'pr.per': ({ unit }) => `per ${unit}`, 'pr.tapEdit': 'Tap to edit', 'pr.noMatch': ({ q }) => `No prices match “${q}”.`,
+  'pr.empty': 'No saved prices yet. Add the things you quote for most.', 'pr.editT': 'Edit price', 'pr.desc': 'Description',
+  'pr.descPh': 'e.g. Install faucet', 'pr.perL': 'Per', 'pr.save': 'Save price', 'pr.errDesc': 'Add a description.', 'pr.updated': 'Price updated',
+  'pr.added': 'Price added', 'pr.delT': 'Delete this price?',
+  'pr.delB': ({ d }) => `“${d}” will be removed from your price list. Existing quotes keep their lines.`, 'pr.delC': 'Delete price', 'pr.deleted': 'Price deleted',
+
+  // settings
+  'se.title': 'Settings', 'se.sub': 'These details appear on your quotes and invoices.', 'se.business': 'Business', 'se.bizName': 'Business name',
+  'se.yourName': 'Your name', 'se.email': 'Email', 'se.phone': 'Phone', 'se.address': 'Business address', 'se.qi': 'Quotes and invoices',
+  'se.taxRate': 'Default tax %', 'se.terms': 'Payment due after (days)', 'se.valid': 'Quotes valid for (days)', 'se.bank': 'How customers pay you',
+  'se.bankPh': 'Bank, account and routing number, or Zelle', 'se.save': 'Save settings', 'se.saved': 'Settings saved',
+  'se.prices': 'Price list', 'se.pricesSub': 'Saved items for faster quotes', 'se.tour': 'Dashboard tour', 'se.tourSub': 'Show the quick walkthrough again',
+  'se.customers': 'Customers', 'se.customersSub': 'Contacts and job history',
+  'se.lang': 'Language and currency', 'se.langSub': 'Used in the app, on your quotes and invoices, and in emails to your customers.',
+  'se.emails': 'Customer emails', 'se.on': 'On', 'se.off': 'Off', 'se.emailDemo': 'In the demo, emails are simulated and nothing is sent.',
+  'se.emailOn': ({ email }) => `Quotes, invoices and reminders are emailed to your customers. Replies go to ${email}.`, 'se.theEmail': 'the email above',
+  'se.emailOff': 'Emails aren’t set up yet, so share the customer link yourself. Setup steps are in the README.',
+  'se.account': 'Account', 'se.demoAcc': 'You’re in demo mode. Connect Supabase to sign in and keep your data safely online. The README explains how.',
+  'se.signedIn': ({ email }) => `Signed in as ${email}`,
+
+  // logo
+  'lo.replace': 'Replace logo', 'lo.upload': 'Upload logo', 'lo.drop': 'Drop logo here', 'lo.alt': 'Your logo', 'lo.uploading': 'Uploading',
+  'lo.title': 'Business logo', 'lo.help': 'Shown on your quotes, invoices and the page customers approve on. PNG with a transparent background looks best.',
+  'lo.remove': 'Remove', 'lo.errType': 'Use a PNG, JPG or WebP image.', 'lo.errSize': 'That image is over 5 MB. Choose a smaller one.',
+  'lo.errRead': 'That file isn’t an image we can read. Try a PNG or JPG.', 'lo.errProc': 'Couldn’t process that image. Try a PNG or JPG.',
+  'lo.updated': 'Logo updated', 'lo.removed': 'Logo removed', 'lo.cfT': 'Remove your logo?', 'lo.cfB': 'Quotes and invoices will show your business name only.',
+  'lo.cfC': 'Remove logo',
+
+  // login
+  'li.h1': 'Quote it.', 'li.h2': 'Do it.', 'li.h3': 'Get paid.',
+  'li.tagline': 'Quotes your customers approve online, jobs with checklists and invoices that write themselves.',
+  'li.in': 'Sign in', 'li.up': 'Start your free trial', 'li.reset': 'Reset password', 'li.email': 'Email', 'li.pw': 'Password',
+  'li.create': 'Create account', 'li.sendReset': 'Send reset link', 'li.new': 'New to Chalkline?', 'li.createLink': 'Create an account',
+  'li.forgot': 'Forgot password', 'li.have': 'Already have an account?', 'li.errEmail': 'Enter a valid email address.',
+  'li.errPw': 'Use a password of at least 8 characters.', 'li.confirm': 'Check your email and tap the link to confirm your account.',
+  'li.resetSent': 'We’ve emailed you a link to reset your password.', 'li.badCreds': 'That email and password don’t match. Check them and try again.',
+  'li.newPw': 'Choose a new password', 'li.newPwL': 'New password', 'li.savePw': 'Save password',
+
+  // customer page
+  'pq.invalid': 'This link isn’t valid any more. Ask your tradesperson to send it again.', 'pq.demo': 'Customer view (demo).',
+  'pq.back': 'Back to your dashboard', 'pq.for': 'For', 'pq.dueRef': ({ date, ref }) => `Due ${date}. Reference ${ref}.`,
+  'pq.nameL': 'Type your full name to approve', 'pq.approve': ({ amount }) => `Approve quote · ${amount}`, 'pq.change': 'Request a change',
+  'pq.valid': ({ n, date }) => `Valid for ${n} days from ${date}.`, 'pq.changeL': 'What would you like changed?',
+  'pq.changePh': 'e.g. Can you quote for a chrome faucet instead?', 'pq.sendReq': 'Send request', 'pq.reqSent': 'Request sent',
+  'pq.reqSentB': ({ biz }) => `${biz} will update the quote and the same link will show the new version.`,
+  'pq.approvedBy': ({ name }) => `Approved by ${name}`, 'pq.approved': 'Approved',
+  'pq.approvedB': ({ date, biz }) => `${date}. ${biz} has been told and will be in touch to book the work.`,
+  'pq.errName': 'Type your full name to approve. It works as your signature.',
+  'pq.errLate': 'This quote can no longer be approved. It may have been changed.', 'pq.errNote': 'Tell them what you’d like changed.',
+
+  // app
+  'app.loadErr': 'Couldn’t load your data', 'app.checkConn': 'Check your connection, then try again.', 'app.retry': 'Try again',
+  'err.gone': 'This item no longer exists.', 'err.read': 'Couldn’t read that image.'
+};

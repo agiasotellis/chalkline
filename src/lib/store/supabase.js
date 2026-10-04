@@ -12,14 +12,15 @@ const fromRow = r => (r ? Object.fromEntries(Object.entries(r).map(([k, v]) => [
 const num = (o, keys) => { keys.forEach(k => { if (o && o[k] != null) o[k] = Number(o[k]); }); return o; };
 const ok = ({ data, error }) => { if (error) throw new Error(error.message); return data; };
 
-const SETTINGS_DEFAULT = { businessName: 'My business', vatRate: 24, paymentTermsDays: 14, quoteValidDays: 30 };
+import { getLang, tr } from '../i18n-core.js';
+const settingsDefault = () => ({ businessName: tr('biz.default'), vatRate: getLang() === 'el' ? 24 : 0, paymentTermsDays: 14, quoteValidDays: 30, locale: getLang() });
 const strip = o => { const { id, ownerId, createdAt, updatedAt, ...rest } = o; return rest; };
 
 export const supabaseStore = {
   mode: 'live',
   async getSettings() {
     const r = ok(await supabase.from('settings').select('*').maybeSingle());
-    return r ? num(fromRow(r), ['vatRate']) : { ...SETTINGS_DEFAULT };
+    return r ? num(fromRow(r), ['vatRate']) : settingsDefault();
   },
   async saveSettings(s) {
     const { ownerId, updatedAt, ...rest } = s;

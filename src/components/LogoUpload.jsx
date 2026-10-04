@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { useData } from '../lib/data.jsx';
 import { useToast } from '../lib/toast.jsx';
 import { Confirm } from './ui.jsx';
+import { useT } from '../lib/i18n.jsx';
+import { tr } from '../lib/i18n-core.js';
 
 const TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 const MAX_IN = 5 * 1024 * 1024;
@@ -17,9 +19,9 @@ function resize(file) {
       const c = document.createElement('canvas'); c.width = w; c.height = h;
       c.getContext('2d').drawImage(img, 0, 0, w, h);
       URL.revokeObjectURL(url);
-      c.toBlob(b => (b ? resolve(b) : reject(new Error('Couldn’t process that image. Try a PNG or JPG.'))), 'image/webp', 0.92);
+      c.toBlob(b => (b ? resolve(b) : reject(new Error(tr('lo.errProc')))), 'image/webp', 0.92);
     };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('That file isn’t an image we can read. Try a PNG or JPG.')); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error(tr('lo.errRead'))); };
     img.src = url;
   });
 }
@@ -27,6 +29,7 @@ function resize(file) {
 export default function LogoUpload() {
   const { settings, setLogo } = useData();
   const toast = useToast();
+  const { t } = useT();
   const input = useRef(null);
   const [over, setOver] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -37,38 +40,38 @@ export default function LogoUpload() {
   const take = async file => {
     setErr('');
     if (!file) return;
-    if (!TYPES.includes(file.type)) return setErr('Use a PNG, JPG or WebP image.');
-    if (file.size > MAX_IN) return setErr('That image is over 5 MB. Choose a smaller one.');
+    if (!TYPES.includes(file.type)) return setErr(t('lo.errType'));
+    if (file.size > MAX_IN) return setErr(t('lo.errSize'));
     setBusy(true);
-    try { await setLogo(await resize(file)); toast('Logo updated'); }
+    try { await setLogo(await resize(file)); toast(t('lo.updated')); }
     catch (e) { setErr(e.message); }
     finally { setBusy(false); if (input.current) input.current.value = ''; }
   };
   const remove = async () => {
     setBusy(true);
-    try { await setLogo(null); toast('Logo removed'); } catch (e) { setErr(e.message); } finally { setBusy(false); }
+    try { await setLogo(null); toast(t('lo.removed')); } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
 
   return (
     <div className="logo-row">
-      <button type="button" className={`logo-drop${over ? ' over' : ''}${busy ? ' busy' : ''}`} aria-label={logo ? 'Replace logo' : 'Upload logo'}
+      <button type="button" className={`logo-drop${over ? ' over' : ''}${busy ? ' busy' : ''}`} aria-label={logo ? t('lo.replace') : t('lo.upload')}
         onClick={() => input.current?.click()}
         onDragOver={e => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)}
         onDrop={e => { e.preventDefault(); setOver(false); take(e.dataTransfer.files?.[0]); }}>
-        {logo ? <img src={logo} alt="Your logo" key={logo} />
-          : <span className="ph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg>Drop logo here</span>}
-        {busy && <span className="spin" aria-label="Uploading" />}
+        {logo ? <img src={logo} alt={t('lo.alt')} key={logo} />
+          : <span className="ph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg>{t('lo.drop')}</span>}
+        {busy && <span className="spin" aria-label={t('lo.uploading')} />}
       </button>
       <div className="logo-info">
-        <div><b>Business logo</b><p className="note">Shown on your quotes, invoices and the page customers approve on. PNG with a transparent background looks best.</p></div>
+        <div><b>{t('lo.title')}</b><p className="note">{t('lo.help')}</p></div>
         <div className="logo-btns">
-          <button type="button" className="btn btn-ghost btn-sm" disabled={busy} onClick={() => input.current?.click()}>{logo ? 'Replace logo' : 'Upload logo'}</button>
-          {logo && <button type="button" className="btn btn-danger btn-sm" disabled={busy} onClick={() => setConfirm(true)}>Remove</button>}
+          <button type="button" className="btn btn-ghost btn-sm" disabled={busy} onClick={() => input.current?.click()}>{logo ? t('lo.replace') : t('lo.upload')}</button>
+          {logo && <button type="button" className="btn btn-danger btn-sm" disabled={busy} onClick={() => setConfirm(true)}>{t('lo.remove')}</button>}
         </div>
         {err && <p className="err" role="alert">{err}</p>}
       </div>
       <input ref={input} id="logo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={e => take(e.target.files?.[0])} />
-      <Confirm open={confirm} title="Remove your logo?" body="Quotes and invoices will show your business name only." confirmLabel="Remove logo" danger onConfirm={remove} onClose={() => setConfirm(false)} />
+      <Confirm open={confirm} title={t('lo.cfT')} body={t('lo.cfB')} confirmLabel={t('lo.cfC')} danger onConfirm={remove} onClose={() => setConfirm(false)} />
     </div>
   );
 }

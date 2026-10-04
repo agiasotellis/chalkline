@@ -26,6 +26,7 @@ create table if not exists public.settings (
 -- columns added after the first release (safe to re-run on existing projects)
 alter table public.settings add column if not exists logo_url text default '';
 alter table public.settings add column if not exists tour_done boolean not null default false;
+alter table public.settings add column if not exists locale text not null default 'en';
 
 -- ---------- customers ----------
 create table if not exists public.customers (
@@ -114,7 +115,7 @@ returns json language sql security definer set search_path = public stable as $$
     'sentAt', w.sent_at, 'approvedAt', w.approved_at, 'approvedBy', w.approved_by,
     'invoicedAt', w.invoiced_at, 'dueAt', w.due_at, 'paidAt', w.paid_at, 'changeRequest', w.change_request,
     'customer', json_build_object('name', c.name, 'address', c.address),
-    'business', json_build_object('logo', s.logo_url, 'name', s.business_name, 'email', s.email, 'phone', s.phone,
+    'business', json_build_object('locale', coalesce(s.locale, 'en'), 'logo', s.logo_url, 'name', s.business_name, 'email', s.email, 'phone', s.phone,
                                   'address', s.address, 'vatNumber', s.vat_number, 'bank', s.bank_details,
                                   'validDays', s.quote_valid_days)
   )

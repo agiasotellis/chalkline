@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { isDemo, supabase } from './store/index.js';
+import { tr } from './i18n-core.js';
 
 const AuthCtx = createContext(null);
 export const useAuth = () => useContext(AuthCtx);
@@ -28,7 +29,7 @@ export function AuthProvider({ children }) {
     },
     async signIn(email, password) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw new Error(error.message === 'Invalid login credentials' ? 'That email and password don’t match. Check them and try again.' : error.message);
+      if (error) throw new Error(error.message === 'Invalid login credentials' ? tr('li.badCreds') : error.message);
     },
     async signUp(email, password) {
       const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });

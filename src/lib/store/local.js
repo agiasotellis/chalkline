@@ -1,13 +1,16 @@
 import { seedData } from '../seed.js';
 import { uid } from '../format.js';
+import { getLang, tr } from '../i18n-core.js';
 
 // Demo store: everything lives in this browser's localStorage.
 const KEY = 'chalkline.app.v1';
 let db = null;
+// The demo shows examples in the chosen language; switching language loads that set.
 const load = () => {
+  if (db && db.lang && db.lang !== getLang()) db = null;
   if (db) return db;
   try { db = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { db = null; }
-  if (!db || !Array.isArray(db.work)) db = seedData();
+  if (!db || !Array.isArray(db.work) || (db.lang && db.lang !== getLang())) { db = seedData(getLang()); persist(); }
   return db;
 };
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* storage blocked: keep in memory */ } };
@@ -16,13 +19,13 @@ const tick = v => new Promise(r => setTimeout(() => r(clone(v)), 60));
 
 export const localStore = {
   mode: 'demo',
-  reset() { db = seedData(); persist(); return tick(true); },
+  reset() { db = seedData(getLang()); persist(); return tick(true); },
 
   getSettings: () => tick(load().settings),
   saveSettings: s => { load().settings = { ...db.settings, ...s }; persist(); return tick(db.settings); },
 
   // Demo: keep the (already resized) logo as a data URL.
-  uploadLogo: blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('Couldn’t read that image.')); r.readAsDataURL(blob); }),
+  uploadLogo: blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error(tr('err.read'))); r.readAsDataURL(blob); }),
   removeLogo: () => tick(true),
 
   listWork: () => tick(load().work),
@@ -35,7 +38,7 @@ export const localStore = {
   },
   updateWork(id, patch) {
     const w = load().work.find(x => x.id === id);
-    if (!w) return Promise.reject(new Error('This item no longer exists.'));
+    if (!w) return Promise.reject(new Error(tr('err.gone')));
     Object.assign(w, patch); persist(); return tick(w);
   },
   deleteWork(id) { const d = load(); d.work = d.work.filter(w => w.id !== id); persist(); return tick(true); },
@@ -61,7 +64,7 @@ export const localStore = {
   sendEmail(workId, kind) {
     const d = load(); const w = d.work.find(x => x.id === workId);
     const c = w && d.customers.find(x => x.id === w.customerId);
-    if (!c?.email) return Promise.reject(new Error('Add an email address for this customer first.'));
+    if (!c?.email) return Promise.reject(new Error(tr('e.noEmail')));
     const at = new Date().toISOString();
     Object.assign(w, kind === 'quote' ? { emailedAt: at } : kind === 'invoice' ? { invoiceEmailedAt: at } : { remindedAt: at });
     persist(); return tick({ ok: true, to: c.email, demo: true });
@@ -75,7 +78,7 @@ export const localStore = {
     const c = d.customers.find(x => x.id === w.customerId) || {};
     const s = d.settings;
     return tick({ ...w, customer: { name: c.name, address: c.address },
-      business: { logo: s.logoUrl, name: s.businessName, email: s.email, phone: s.phone, address: s.address, vatNumber: s.vatNumber, bank: s.bankDetails, validDays: s.quoteValidDays } });
+      business: { locale: s.locale, logo: s.logoUrl, name: s.businessName, email: s.email, phone: s.phone, address: s.address, vatNumber: s.vatNumber, bank: s.bankDetails, validDays: s.quoteValidDays } });
   },
   approvePublicQuote(token, name) {
     const w = load().work.find(x => x.token === token && x.stage === 'sent');

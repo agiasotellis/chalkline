@@ -20,6 +20,12 @@ Quote → Job → Invoice for tradespeople. Create a quote, the customer approve
 - Customers with job history, price list, business settings
 - Light/dark mode, phone layout with a bottom tab bar
 
+## Two versions
+
+The first time someone opens the site, they pick **United States** (English, $) or **Ελλάδα** (Greek, €). The choice is remembered and can be changed any time from the flag button in the header (landing page and app) or in Settings. It sets the language of the app, the currency, and the language of the customer page and customer emails (stored per business in `settings.locale`). Light mode is the default; dark mode is a toggle.
+
+Translations live in `src/lib/locales/en.js` and `src/lib/locales/el.js` (app) and in the `LX` object in `landing/body.html` (landing page).
+
 ## Pages
 - `/` landing page
 - `/app.html` the real app (sign up, data saved in Supabase)

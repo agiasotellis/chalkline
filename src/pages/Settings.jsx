@@ -4,20 +4,24 @@ import LogoUpload from '../components/LogoUpload.jsx';
 import { useData } from '../lib/data.jsx';
 import { useAuth } from '../lib/auth.jsx';
 import { useToast } from '../lib/toast.jsx';
+import { useT } from '../lib/i18n.jsx';
 import { isDemo, store } from '../lib/store/index.js';
-import { Icon } from '../components/ui.jsx';
+import { FlagGR, FlagUS, Icon } from '../components/ui.jsx';
+
+const Chev = () => <Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} />;
 
 export default function Settings() {
   const { settings, saveSettings } = useData();
   const { user, signOut } = useAuth();
+  const { t, lang, setLang } = useT();
   const toast = useToast();
   const [f, setF] = useState(settings || {});
   const [busy, setBusy] = useState(false);
   const [emailOn, setEmailOn] = useState(null);
   useEffect(() => { store.emailReady?.().then(setEmailOn).catch(() => setEmailOn(false)); }, []);
   const nav = useNavigate();
-  // Logo and tour changes save on their own; don't wipe unsaved edits in the form.
-  useEffect(() => { if (settings) setF(prev => ({ ...prev, logoUrl: settings.logoUrl, tourDone: settings.tourDone })); }, [settings]);
+  // Logo, tour and language save on their own; don't wipe unsaved edits in the form.
+  useEffect(() => { if (settings) setF(prev => ({ ...prev, logoUrl: settings.logoUrl, tourDone: settings.tourDone, locale: settings.locale })); }, [settings]);
   const replayTour = async () => {
     try { localStorage.removeItem(`chalkline.tourDone.${user?.id}`); } catch { /* ignore */ }
     await saveSettings({ tourDone: false }).catch(() => {});
@@ -30,49 +34,55 @@ export default function Settings() {
     e.preventDefault(); setBusy(true);
     try {
       await saveSettings({ ...f, vatRate: Number(f.vatRate) || 0, paymentTermsDays: parseInt(f.paymentTermsDays, 10) || 14, quoteValidDays: parseInt(f.quoteValidDays, 10) || 30 });
-      toast('Settings saved');
+      toast(t('se.saved'));
     } catch (er) { toast(er.message, 'bad'); } finally { setBusy(false); }
   };
   return (
     <div className="page">
-      <div className="page-head"><div><h1>Settings</h1><p>These details appear on your quotes and invoices.</p></div></div>
+      <div className="page-head"><div><h1>{t('se.title')}</h1><p>{t('se.sub')}</p></div></div>
+      <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="panel-h" style={{ marginBottom: 0 }}><h2>{t('se.lang')}</h2></div>
+        <p className="note">{t('se.langSub')}</p>
+        <div className="lang-opts" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,220px),1fr))' }}>
+          <button type="button" className={`lang-opt${lang === 'en' ? ' on' : ''}`} aria-pressed={lang === 'en'} onClick={() => setLang('en')} lang="en"><FlagUS /><span><b>{t('lang.us')}</b><small>{t('lang.usSub')}</small></span></button>
+          <button type="button" className={`lang-opt${lang === 'el' ? ' on' : ''}`} aria-pressed={lang === 'el'} onClick={() => setLang('el')} lang="el"><FlagGR /><span><b>{t('lang.gr')}</b><small>{t('lang.grSub')}</small></span></button>
+        </div>
+      </section>
       <form onSubmit={save} style={{ display: 'flex', flexDirection: 'column', gap: 16 }} noValidate>
         <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div className="panel-h" style={{ marginBottom: 0 }}><h2>Business</h2></div>
+          <div className="panel-h" style={{ marginBottom: 0 }}><h2>{t('se.business')}</h2></div>
           <LogoUpload />
-          <div className="grid2">{inp('businessName', 'Business name')}{inp('ownerName', 'Your name')}</div>
-          <div className="grid2">{inp('email', 'Email', { type: 'email' })}{inp('phone', 'Phone', { type: 'tel' })}</div>
-          <div className="grid2">{inp('address', 'Business address')}{inp('vatNumber', 'VAT number')}</div>
+          <div className="grid2">{inp('businessName', t('se.bizName'))}{inp('ownerName', t('se.yourName'))}</div>
+          <div className="grid2">{inp('email', t('se.email'), { type: 'email' })}{inp('phone', t('se.phone'), { type: 'tel' })}</div>
+          <div className="grid2">{inp('address', t('se.address'))}{inp('vatNumber', t('taxId'))}</div>
         </section>
         <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div className="panel-h" style={{ marginBottom: 0 }}><h2>Quotes and invoices</h2></div>
+          <div className="panel-h" style={{ marginBottom: 0 }}><h2>{t('se.qi')}</h2></div>
           <div className="grid2">
-            {inp('vatRate', 'Default VAT %', { type: 'number', min: 0, max: 30 })}
-            {inp('paymentTermsDays', 'Payment due after (days)', { type: 'number', min: 0 })}
-            {inp('quoteValidDays', 'Quotes valid for (days)', { type: 'number', min: 1 })}
+            {inp('vatRate', t('se.taxRate'), { type: 'number', min: 0, max: 30, step: 0.01 })}
+            {inp('paymentTermsDays', t('se.terms'), { type: 'number', min: 0 })}
+            {inp('quoteValidDays', t('se.valid'), { type: 'number', min: 1 })}
           </div>
-          <div className="field"><label htmlFor="s-bank">How customers pay you</label><textarea className="inp" id="s-bank" value={f.bankDetails ?? ''} onChange={e => setF({ ...f, bankDetails: e.target.value })} placeholder="Bank name, IBAN, account name" /></div>
-          <button className="btn btn-chalk" type="submit" disabled={busy} style={{ alignSelf: 'flex-start' }}>Save settings</button>
+          <div className="field"><label htmlFor="s-bank">{t('se.bank')}</label><textarea className="inp" id="s-bank" value={f.bankDetails ?? ''} onChange={e => setF({ ...f, bankDetails: e.target.value })} placeholder={t('se.bankPh')} /></div>
+          <button className="btn btn-chalk" type="submit" disabled={busy} style={{ alignSelf: 'flex-start' }}>{t('se.save')}</button>
         </section>
       </form>
       <section className="panel">
         <ul className="rows">
-          <li><Link className="row" to="/prices"><span className="r-t">Price list</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Saved items for faster quotes</span></Link></li>
-          <li><button type="button" className="row" onClick={replayTour} style={{ width: '100%', border: 0, background: 'none', textAlign: 'left', cursor: 'pointer' }}><span className="r-t">Dashboard tour</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Show the quick walkthrough again</span></button></li>
-          <li><Link className="row" to="/customers"><span className="r-t">Customers</span><span className="r-r"><Icon name="chev" style={{ width: 18, height: 18, stroke: 'var(--muted)', fill: 'none', strokeWidth: 2 }} /></span><span className="r-s">Contacts and job history</span></Link></li>
+          <li><Link className="row" to="/prices"><span className="r-t">{t('se.prices')}</span><span className="r-r"><Chev /></span><span className="r-s">{t('se.pricesSub')}</span></Link></li>
+          <li><button type="button" className="row" onClick={replayTour} style={{ width: '100%', border: 0, background: 'none', textAlign: 'left', cursor: 'pointer' }}><span className="r-t">{t('se.tour')}</span><span className="r-r"><Chev /></span><span className="r-s">{t('se.tourSub')}</span></button></li>
+          <li><Link className="row" to="/customers"><span className="r-t">{t('se.customers')}</span><span className="r-r"><Chev /></span><span className="r-s">{t('se.customersSub')}</span></Link></li>
         </ul>
       </section>
       <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div className="panel-h" style={{ marginBottom: 0 }}><h2>Customer emails</h2>{emailOn !== null && <span className={`pill ${emailOn ? 't-ok' : 't-muted'}`}>{emailOn ? 'On' : 'Off'}</span>}</div>
-        <p className="note">{isDemo ? 'In the demo, emails are simulated and nothing is sent.'
-          : emailOn ? `Quotes, invoices and reminders are emailed to your customers. Replies go to ${f.email || 'the email above'}.`
-          : 'Emails aren’t set up yet, so share the customer link yourself. Setup steps are in the README.'}</p>
+        <div className="panel-h" style={{ marginBottom: 0 }}><h2>{t('se.emails')}</h2>{emailOn !== null && <span className={`pill ${emailOn ? 't-ok' : 't-muted'}`}>{emailOn ? t('se.on') : t('se.off')}</span>}</div>
+        <p className="note">{isDemo ? t('se.emailDemo') : emailOn ? t('se.emailOn', { email: f.email || t('se.theEmail') }) : t('se.emailOff')}</p>
       </section>
       <section className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div className="panel-h" style={{ marginBottom: 0 }}><h2>Account</h2></div>
+        <div className="panel-h" style={{ marginBottom: 0 }}><h2>{t('se.account')}</h2></div>
         {isDemo
-          ? <p className="note">You’re in demo mode. Connect Supabase to sign in and keep your data safely online. The README explains how.</p>
-          : <><p className="note">Signed in as {user?.email}</p><button className="btn btn-ghost" style={{ alignSelf: 'flex-start' }} onClick={signOut}><Icon name="out" />Sign out</button></>}
+          ? <p className="note">{t('se.demoAcc')}</p>
+          : <><p className="note">{t('se.signedIn', { email: user?.email })}</p><button className="btn btn-ghost" style={{ alignSelf: 'flex-start' }} onClick={signOut}><Icon name="out" />{t('nav.signOut')}</button></>}
       </section>
     </div>
   );

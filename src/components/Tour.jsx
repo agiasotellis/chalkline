@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useT } from '../lib/i18n.jsx';
 
 // Spotlight tour. Each step points at elements marked data-tour="<target>".
 // When several match (sidebar and bottom bar), only visible ones count; several visible ones are outlined together.
 export const DASHBOARD_STEPS = [
-  { title: 'Welcome to Chalkline', body: 'Here’s a one-minute look around your dashboard, so you know where everything is.', primary: 'Show me around' },
-  { target: 'kpis', title: 'Your money at a glance', body: 'What’s waiting on customers, what’s booked, what you’re owed and what’s been paid. Tap any figure to see what’s behind it.' },
-  { target: 'attention', title: 'Needs attention', body: 'Overdue invoices, change requests and jobs ready to bill land here first. Tap one to deal with it.' },
-  { target: 'new-quote', title: 'Start with a quote', body: 'Add line items or pick from your price list, then send it. Your customer gets a private link and approves it with their name.' },
-  { target: 'flow', title: 'Quotes, jobs, invoices', body: 'Approved quotes become jobs with a checklist. When the last task is ticked, turn the job into an invoice in one tap.' },
-  { target: 'settings', title: 'Make it yours', body: 'Add your logo, VAT number and bank details in Settings. They appear on every quote and invoice you send.' },
-  { title: 'You’re ready', body: 'Write your first quote now, or look around first. You can replay this tour any time from Settings.', primary: 'Write a quote', secondary: 'Finish' }
+  { id: 'welcome', primary: true },
+  { id: 'kpis', target: 'kpis' },
+  { id: 'attn', target: 'attention' },
+  { id: 'quote', target: 'new-quote' },
+  { id: 'flow', target: 'flow' },
+  { id: 'settings', target: 'settings' },
+  { id: 'done', primary: true, secondary: 'tour.finish' }
 ];
 
 const PAD = 8;
@@ -28,6 +29,7 @@ function targetRect(name) {
 }
 
 export default function Tour({ steps, onFinish, onPrimaryEnd }) {
+  const { t } = useT();
   const [i, setI] = useState(0);
   const [rect, setRect] = useState(null);
   const [card, setCard] = useState({ top: 0, left: 0, placed: false });
@@ -95,17 +97,17 @@ export default function Tour({ steps, onFinish, onPrimaryEnd }) {
       <div className={`tour-dim${rect ? '' : ' full'}`} onClick={e => e.stopPropagation()} />
       {rect && <div className="tour-spot" style={{ top: rect.top, left: rect.left, width: rect.width, height: rect.height }} />}
       <div ref={cardRef} className={`tour-card${card.placed ? ' in' : ''}`} style={{ top: card.top, left: card.left }} key={i}>
-        {step.target && <span className="tour-count num">{i} of {steps.length - 2}</span>}
-        <h3 id="tour-title">{step.title}</h3>
-        <p id="tour-body">{step.body}</p>
+        {step.target && <span className="tour-count num">{t('tour.count', { i, n: steps.length - 2 })}</span>}
+        <h3 id="tour-title">{t(`tour.${step.id}.t`)}</h3>
+        <p id="tour-body">{t(`tour.${step.id}.b`)}</p>
         <div className="tour-dots" aria-hidden="true">{steps.map((_, k) => <i key={k} className={k === i ? 'on' : k < i ? 'done' : ''} />)}</div>
         <div className="tour-actions">
-          {i === 0 ? <button type="button" className="btn btn-ghost btn-sm" onClick={() => finish(false)}>Skip tour</button>
-            : last ? <button type="button" className="btn btn-ghost btn-sm" onClick={() => finish(false)}>{step.secondary || 'Finish'}</button>
-            : <button type="button" className="btn btn-ghost btn-sm" onClick={back}>Back</button>}
-          <button type="button" className="btn btn-chalk btn-sm tour-primary" onClick={next}>{step.primary || (i === steps.length - 2 ? 'Last step' : 'Next')}</button>
+          {i === 0 ? <button type="button" className="btn btn-ghost btn-sm" onClick={() => finish(false)}>{t('tour.skip')}</button>
+            : last ? <button type="button" className="btn btn-ghost btn-sm" onClick={() => finish(false)}>{t(step.secondary || 'tour.finish')}</button>
+            : <button type="button" className="btn btn-ghost btn-sm" onClick={back}>{t('tour.back')}</button>}
+          <button type="button" className="btn btn-chalk btn-sm tour-primary" onClick={next}>{step.primary ? t(`tour.${step.id}.p`) : t(i === steps.length - 2 ? 'tour.last' : 'tour.next')}</button>
         </div>
-        {i > 0 && !last && <button type="button" className="tour-x" aria-label="Close tour" onClick={() => finish(false)}>×</button>}
+        {i > 0 && !last && <button type="button" className="tour-x" aria-label={t('tour.close')} onClick={() => finish(false)}>×</button>}
       </div>
     </div>
   );

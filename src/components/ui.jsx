@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { status } from '../lib/workflow.js';
+import { useT } from '../lib/i18n.jsx';
+import { LOCALES } from '../lib/i18n-core.js';
 
 const P = {
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
@@ -27,11 +29,55 @@ export const Logo = () => (
 );
 
 export function Pill({ work }) {
+  const { t } = useT();
   const s = status(work);
-  return <span className={`pill t-${s.tone}`}>{s.label}</span>;
+  return <span className={`pill t-${s.tone}`}>{t(s.key)}</span>;
+}
+
+// Flags drawn inline so they look the same on every device.
+export const FlagUS = () => (
+  <svg viewBox="0 0 38 20" aria-hidden="true" className="flag">
+    <rect width="38" height="20" fill="#fff" />
+    {[0, 2, 4, 6, 8, 10, 12].map(i => <rect key={i} y={(i * 20) / 13} width="38" height={20 / 13} fill="#B22234" />)}
+    <rect width="15.2" height={(20 * 7) / 13} fill="#3C3B6E" />
+    {[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4].map(c => <circle key={`${r}${c}`} cx={1.6 + c * 3} cy={1.5 + r * 2.6} r=".55" fill="#fff" />))}
+  </svg>
+);
+export const FlagGR = () => (
+  <svg viewBox="0 0 27 18" aria-hidden="true" className="flag">
+    {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => <rect key={i} y={i * 2} width="27" height="2" fill={i % 2 ? '#fff' : '#0D5EAF'} />)}
+    <rect width="10" height="10" fill="#0D5EAF" /><rect x="4" width="2" height="10" fill="#fff" /><rect y="4" width="10" height="2" fill="#fff" />
+  </svg>
+);
+
+// Choose between the US and Greek versions.
+export function LangDialog({ open, onClose, required }) {
+  const { lang, setLang, t } = useT();
+  const ref = useRef(null);
+  useEffect(() => { const d = ref.current; if (!d) return; if (open && !d.open) d.showModal(); if (!open && d.open) d.close(); }, [open]);
+  const pick = l => { setLang(l); onClose(); };
+  return (
+    <dialog ref={ref} className="lang-dlg" onCancel={e => { if (required) { e.preventDefault(); pick(lang); } }} onClose={onClose} aria-labelledby="lang-t">
+      <div className="dlg">
+        <div className="dlg-b" style={{ gap: 18 }}>
+          <div><h3 id="lang-t" style={{ fontSize: '1.35rem' }}>{t('lang.title')}</h3><p className="note" style={{ marginTop: 6 }}>{t('lang.sub')}</p></div>
+          <div className="lang-opts">
+            <button type="button" className={`lang-opt${lang === 'en' ? ' on' : ''}`} onClick={() => pick('en')} lang="en"><FlagUS /><span><b>{t('lang.us')}</b><small>{t('lang.usSub')}</small></span></button>
+            <button type="button" className={`lang-opt${lang === 'el' ? ' on' : ''}`} onClick={() => pick('el')} lang="el"><FlagGR /><span><b>{t('lang.gr')}</b><small>{t('lang.grSub')}</small></span></button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
+export function LangButton({ onClick }) {
+  const { lang, t } = useT();
+  return <button className="icon-btn lang-btn" type="button" onClick={onClick} aria-label={t('lang.switch')} title={t('lang.switch')}>{lang === 'el' ? <FlagGR /> : <FlagUS />}<span>{LOCALES[lang].short}</span></button>;
 }
 
 export function ThemeButton() {
+  const { t } = useT();
   const root = document.documentElement;
   const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
   const [dark, setDark] = useState(isDark);
@@ -41,7 +87,7 @@ export function ThemeButton() {
     setDark(isDark());
   };
   return (
-    <button className="icon-btn theme-btn" type="button" onClick={toggle} aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}>
+    <button className="icon-btn theme-btn" type="button" onClick={toggle} aria-label={dark ? t('theme.toLight') : t('theme.toDark')}>
       <svg className="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" /><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" /></svg>
       <svg className="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z" fill="var(--ink)" stroke="none" /></svg>
     </button>
@@ -50,6 +96,7 @@ export function ThemeButton() {
 
 // In-page confirm (browser confirm() is unreliable in embedded views).
 export function Confirm({ open, title, body, confirmLabel, danger, onConfirm, onClose }) {
+  const { t } = useT();
   const ref = useRef(null);
   useEffect(() => { const d = ref.current; if (!d) return; if (open && !d.open) d.showModal(); if (!open && d.open) d.close(); }, [open]);
   return (
@@ -58,7 +105,7 @@ export function Confirm({ open, title, body, confirmLabel, danger, onConfirm, on
         <div className="dlg-h"><h3>{title}</h3></div>
         <div className="dlg-b"><p className="muted">{body}</p></div>
         <div className="dlg-f">
-          <button className="btn btn-ghost" type="button" onClick={onClose}>Cancel</button>
+          <button className="btn btn-ghost" type="button" onClick={onClose}>{t('c.cancel')}</button>
           <button className={`btn ${danger ? 'btn-danger' : 'btn-chalk'}`} type="button" onClick={() => { onConfirm(); onClose(); }}>{confirmLabel}</button>
         </div>
       </div>
@@ -67,12 +114,13 @@ export function Confirm({ open, title, body, confirmLabel, danger, onConfirm, on
 }
 
 export function Modal({ open, title, children, footer, onClose }) {
+  const { t } = useT();
   const ref = useRef(null);
   useEffect(() => { const d = ref.current; if (!d) return; if (open && !d.open) d.showModal(); if (!open && d.open) d.close(); }, [open]);
   return (
     <dialog ref={ref} onClose={onClose} onClick={e => e.target === ref.current && onClose()}>
       <div className="dlg">
-        <div className="dlg-h"><h3>{title}</h3><button className="icon-btn" type="button" aria-label="Close" onClick={onClose} style={{ width: 34, height: 34 }}>×</button></div>
+        <div className="dlg-h"><h3>{title}</h3><button className="icon-btn" type="button" aria-label={t('c.close')} onClick={onClose} style={{ width: 34, height: 34 }}>×</button></div>
         <div className="dlg-b">{children}</div>
         {footer && <div className="dlg-f">{footer}</div>}
       </div>

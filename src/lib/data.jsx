@@ -1,13 +1,16 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { store } from './store/index.js';
 import { transitions } from './workflow.js';
 import { customerLink } from './links.js';
+import { tr } from './i18n-core.js';
 
 const DataCtx = createContext(null);
 export const useData = () => useContext(DataCtx);
 
 export function DataProvider({ children }) {
   const [state, setState] = useState({ loading: true, error: null, work: [], customers: [], prices: [], settings: null });
+  const settingsRef = useRef(null);
+  settingsRef.current = state.settings;
 
   const load = useCallback(async () => {
     try {
@@ -51,7 +54,8 @@ export function DataProvider({ children }) {
     async deleteCustomer(id) { await store.deleteCustomer(id); setState(s => ({ ...s, customers: s.customers.filter(c => c.id !== id) })); },
     async savePrice(p) { const n = await store.savePrice(p); setState(s => ({ ...s, prices: replace(s.prices, n) })); return n; },
     async deletePrice(id) { await store.deletePrice(id); setState(s => ({ ...s, prices: s.prices.filter(p => p.id !== id) })); },
-    async saveSettings(v) { const n = await store.saveSettings(v); setState(s => ({ ...s, settings: n })); return n; },
+    // Always save the full settings so a first partial save doesn't fall back to database defaults.
+    async saveSettings(v) { const n = await store.saveSettings({ ...(settingsRef.current || {}), ...v }); setState(s => ({ ...s, settings: n })); return n; },
     // Email the customer, then check a moment later that the email service accepted it.
     async sendEmail(w, kind) {
       const r = await store.sendEmail(w.id, kind, customerLink(w));
@@ -65,7 +69,7 @@ export function DataProvider({ children }) {
           if (res.status >= 200 && res.status < 300) return { to: r.to, ok: true };
           let msg = res.error || '';
           try { msg = JSON.parse(res.body).message || msg; } catch { /* not JSON */ }
-          return { to: r.to, ok: false, error: msg || `The email service answered ${res.status}.` };
+          return { to: r.to, ok: false, error: msg || tr('e.service', { status: res.status }) };
         }
       }
       return { to: r.to, ok: true, pending: true };

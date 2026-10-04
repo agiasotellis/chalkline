@@ -1,26 +1,19 @@
 import { DAY } from './format.js';
+import { tr } from './i18n-core.js';
 
 // One record follows the work: draft → sent → approved → job → done → invoiced → paid
 export const STAGES = ['draft', 'sent', 'approved', 'job', 'done', 'invoiced', 'paid'];
 export const GROUP = { draft: 'quotes', sent: 'quotes', approved: 'quotes', job: 'jobs', done: 'jobs', invoiced: 'invoices', paid: 'invoices' };
 export const PREFIX = { quotes: 'Q', jobs: 'J', invoices: 'INV' };
 export const ref = w => `${PREFIX[GROUP[w.stage]]}-${w.no}`;
-export const DOC_TYPE = { quotes: 'Quote', jobs: 'Job sheet', invoices: 'Invoice' };
 
 export const isOverdue = w => w.stage === 'invoiced' && w.dueAt && new Date(w.dueAt) < new Date();
 
 export function status(w) {
-  if (isOverdue(w)) return { label: 'Overdue', tone: 'bad' };
-  if (w.stage === 'sent' && w.changeRequest) return { label: 'Change requested', tone: 'warn' };
-  return {
-    draft: { label: 'Draft', tone: 'muted' },
-    sent: { label: 'Awaiting approval', tone: 'warn' },
-    approved: { label: 'Approved', tone: 'chalk' },
-    job: { label: 'In progress', tone: 'chalk' },
-    done: { label: 'Ready to invoice', tone: 'ok' },
-    invoiced: { label: 'Unpaid', tone: 'warn' },
-    paid: { label: 'Paid', tone: 'ok' }
-  }[w.stage];
+  if (isOverdue(w)) return { key: 'st.overdue', tone: 'bad' };
+  if (w.stage === 'sent' && w.changeRequest) return { key: 'st.change', tone: 'warn' };
+  const tone = { draft: 'muted', sent: 'warn', approved: 'chalk', job: 'chalk', done: 'ok', invoiced: 'warn', paid: 'ok' }[w.stage];
+  return { key: `st.${w.stage}`, tone };
 }
 
 export function totals(w) {
@@ -29,7 +22,7 @@ export function totals(w) {
   return { sub, vat, total: sub + vat };
 }
 
-export const FLOW = ['Quote', 'Approved', 'Job done', 'Paid'];
+export const FLOW = ['flow.0', 'flow.1', 'flow.2', 'flow.3'];
 export const flowStep = s => ({ draft: 0, sent: 0, approved: 1, job: 1, done: 2, invoiced: 2, paid: 3 })[s];
 
 // Each transition returns the patch to save.
@@ -39,7 +32,7 @@ export const transitions = {
   toJob: w => ({
     stage: 'job',
     startedAt: new Date().toISOString(),
-    tasks: [...(w.items || []).map(i => ({ t: i.desc, done: false })), { t: 'Test, tidy up and photos', done: false }]
+    tasks: [...(w.items || []).map(i => ({ t: i.desc, done: false })), { t: tr('task.final'), done: false }]
   }),
   complete: () => ({ stage: 'done', doneAt: new Date().toISOString() }),
   invoice: termsDays => ({

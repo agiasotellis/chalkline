@@ -7,7 +7,8 @@
 <title>Chalkline</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("chalkline.theme")==="dark"?"dark":"light";var L=localStorage.getItem("chalkline.locale");if(L==="el"||L==="en")document.documentElement.lang=L}catch(e){document.documentElement.dataset.theme="light"}</script>
 <style>
 /* Layout: site-board grid. Left-aligned editorial hero, sticky scroll story, working pipeline app, ruled price table. */
 :root{
@@ -26,7 +27,7 @@
   --warn:#9A5B00; --warn-soft:#FBEBCF;
   --bad:#B4302A; --bad-soft:#F8DEDC;
   --shadow:0 1px 0 rgba(22,32,42,.04),0 12px 32px -18px rgba(22,32,42,.35);
-  --f:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f:"Archivo","Roboto Flex",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --r:10px;
   --gutter:clamp(16px,4vw,48px);
   --max:1200px;
@@ -276,6 +277,34 @@ section{scroll-margin-top:80px}
 .foot{padding-block:28px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 
+/* ---------- version switch ---------- */
+.flag-us,.flag-gr{display:inline-block;width:20px;height:13px;border-radius:3px;background:center/cover no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.12);flex:none}
+.flag-us{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2038%2020%22%3E%3Crect%20width%3D%2238%22%20height%3D%2220%22%20fill%3D%22%23fff%22/%3E%3Crect%20y%3D%220.000%22%20width%3D%2238%22%20height%3D%221.538%22%20fill%3D%22%23B22234%22/%3E%3Crect%20y%3D%223.077%22%20width%3D%2238%22%20height%3D%221.538%22%20fill%3D%22%23B22234%22/%3E%3Crect%20y%3D%226.154%22%20width%3D%2238%22%20height%3D%221.538%22%20fill%3D%22%23B22234%22/%3E%3Crect%20y%3D%229.231%22%20width%3D%2238%22%20height%3D%221.538%22%20fill%3D%22%23B22234%22/%3E%3Crect%20y%3D%2212.308%22%20width%3D%2238%22%20height%3D%221.538%22%20fill%3D%22%23B22234%22/%3E%3Crect%20y%3D%2215.385%22%20width%3D%2238%22%20height%3D%221.538%22%20fill%3D%22%23B22234%22/%3E%3Crect%20y%3D%2218.462%22%20width%3D%2238%22%20height%3D%221.538%22%20fill%3D%22%23B22234%22/%3E%3Crect%20width%3D%2215.2%22%20height%3D%2210.769%22%20fill%3D%22%233C3B6E%22/%3E%3Ccircle%20cx%3D%221.6%22%20cy%3D%221.5%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%224.6%22%20cy%3D%221.5%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%227.6%22%20cy%3D%221.5%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2210.6%22%20cy%3D%221.5%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2213.6%22%20cy%3D%221.5%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%221.6%22%20cy%3D%224.1%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%224.6%22%20cy%3D%224.1%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%227.6%22%20cy%3D%224.1%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2210.6%22%20cy%3D%224.1%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2213.6%22%20cy%3D%224.1%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%221.6%22%20cy%3D%226.7%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%224.6%22%20cy%3D%226.7%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%227.6%22%20cy%3D%226.7%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2210.6%22%20cy%3D%226.7%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2213.6%22%20cy%3D%226.7%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%221.6%22%20cy%3D%229.3%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%224.6%22%20cy%3D%229.3%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%227.6%22%20cy%3D%229.3%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2210.6%22%20cy%3D%229.3%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%2213.6%22%20cy%3D%229.3%22%20r%3D%22.55%22%20fill%3D%22%23fff%22/%3E%3C/svg%3E")}
+.flag-gr{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2027%2018%22%3E%3Crect%20y%3D%220%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%230D5EAF%22/%3E%3Crect%20y%3D%222%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%23fff%22/%3E%3Crect%20y%3D%224%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%230D5EAF%22/%3E%3Crect%20y%3D%226%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%23fff%22/%3E%3Crect%20y%3D%228%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%230D5EAF%22/%3E%3Crect%20y%3D%2210%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%23fff%22/%3E%3Crect%20y%3D%2212%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%230D5EAF%22/%3E%3Crect%20y%3D%2214%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%23fff%22/%3E%3Crect%20y%3D%2216%22%20width%3D%2227%22%20height%3D%222%22%20fill%3D%22%230D5EAF%22/%3E%3Crect%20width%3D%2210%22%20height%3D%2210%22%20fill%3D%22%230D5EAF%22/%3E%3Crect%20x%3D%224%22%20width%3D%222%22%20height%3D%2210%22%20fill%3D%22%23fff%22/%3E%3Crect%20y%3D%224%22%20width%3D%2210%22%20height%3D%222%22%20fill%3D%22%23fff%22/%3E%3C/svg%3E")}
+.lang-t{height:42px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:7px;cursor:pointer;color:var(--ink);font-weight:700;font-size:13px;transition:border-color .2s,transform .2s}
+.lang-t:hover{border-color:var(--ink)}
+.lang-t .flag-gr{display:none}
+:root[lang="el"] .lang-t .flag-gr{display:inline-block}
+:root[lang="el"] .lang-t .flag-us{display:none}
+.lang-dlg{border:0;padding:0;background:transparent;max-width:min(460px,calc(100vw - 24px));width:100%;color:var(--ink)}
+.lang-dlg::backdrop{background:rgba(10,15,22,.55);backdrop-filter:blur(4px)}
+.lang-dlg[open] .ld{animation:ldIn .45s cubic-bezier(.2,.9,.2,1)}
+@keyframes ldIn{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.ld{background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:24px;display:flex;flex-direction:column;gap:18px}
+.ld h2{font-size:1.35rem;font-weight:760;font-variation-settings:"wdth" 112;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.ld-sep{color:var(--muted)}
+.ld-opts{display:grid;gap:10px}
+.ld-opt{display:flex;align-items:center;gap:16px;text-align:left;padding:16px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;color:var(--ink);transition:border-color .2s,transform .2s,background .2s}
+.ld-opt:hover{border-color:var(--ink);transform:translateY(-2px)}
+.ld-opt.on{border-color:var(--chalk);background:var(--chalk-soft)}
+.ld-opt b{display:block;font-size:1.1rem}
+.ld-opt small{color:var(--muted);font-size:14px}
+.flag-us.big,.flag-gr.big{width:46px;height:30px;border-radius:5px}
+.ld-note{font-size:13px;color:var(--muted)}
+@media (max-width:640px){.lang-t{height:38px;padding:0 9px}.lang-dlg{max-width:100vw;margin:auto 0 0}.ld{border-radius:20px 20px 0 0;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}.lang-dlg[open] .ld{animation:ldUp .4s cubic-bezier(.2,.9,.2,1)}}
+@keyframes ldUp{from{transform:translateY(100%)}}
+@media (max-width:400px){.lang-t b{display:none}}
+
 /* ---------- responsive tuning ---------- */
 @media (min-width:1600px){:root{--max:1360px}.headline{font-size:10.5rem}}
 @media (max-width:1024px){.nav a{padding:8px 9px}}
@@ -332,21 +361,22 @@ section{scroll-margin-top:80px}
 
 <header class="bar" id="top">
   <div class="wrap bar-in">
-    <a class="logo" href="#top" aria-label="Chalkline home">
+    <a class="logo" href="#top" aria-label="Chalkline home" data-i18n-attr="aria-label:home">
       <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="1" y="6" width="16" height="16" rx="4" fill="var(--tape)"/><circle cx="9" cy="14" r="3.2" fill="var(--ink)"/><path d="M17 14H27" stroke="var(--chalk)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="3 2.5"/></svg>
       Chalkline
     </a>
-    <nav class="nav" aria-label="Main">
-      <a href="#how">How it works</a>
-      <a href="#app">The app</a>
-      <a href="#pricing">Pricing</a>
+    <nav class="nav" aria-label="Main" data-i18n-attr="aria-label:navMain">
+      <a href="#how" data-i18n="navHow">How it works</a>
+      <a href="#app" data-i18n="navApp">The app</a>
+      <a href="#pricing" data-i18n="navPricing">Pricing</a>
     </nav>
     <div class="bar-end">
+      <button class="lang-t" id="langT" type="button" aria-label="Change language" data-i18n-attr="aria-label:langSwitch"><span class="flag-us" aria-hidden="true"></span><span class="flag-gr" aria-hidden="true"></span><b id="langShort">EN</b></button>
       <button class="theme-t" id="themeT" type="button" aria-label="Switch to dark mode">
         <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
         <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
       </button>
-      <a class="btn btn-chalk bar-cta" href="app.html"><span class="cta-long">Start free trial</span><span class="cta-short">Try free</span></a>
+      <a class="btn btn-chalk bar-cta" href="app.html"><span class="cta-long" data-i18n="ctaTrial">Start free trial</span><span class="cta-short" data-i18n="ctaShort">Try free</span></a>
     </div>
   </div>
   <div class="tape" aria-hidden="true"><div class="tape-fill" id="tapeFill"></div></div>
@@ -354,63 +384,63 @@ section{scroll-margin-top:80px}
 
 <main>
   <section class="hero wrap" aria-labelledby="hl">
-    <h1 class="headline" id="hl" aria-label="Quote it. Do it. Get paid.">
-      <span class="hl-line" data-depth="0.10"><span class="hl-inner" data-split>Quote it.</span></span>
-      <span class="hl-line" data-depth="0.18"><span class="hl-inner" data-split>Do it.</span></span>
-      <span class="hl-line" data-depth="0.26"><span class="hl-inner" data-split>Get paid.</span></span>
+    <h1 class="headline" id="hl" aria-label="Quote it. Do it. Get paid." data-i18n-attr="aria-label:heroAria">
+      <span class="hl-line" data-depth="0.10"><span class="hl-inner" data-split data-i18n="hero1">Quote it.</span></span>
+      <span class="hl-line" data-depth="0.18"><span class="hl-inner" data-split data-i18n="hero2">Do it.</span></span>
+      <span class="hl-line" data-depth="0.26"><span class="hl-inner" data-split data-i18n="hero3">Get paid.</span></span>
     </h1>
-    <div class="snap-wrap" id="snap" title="Snap the line again" aria-hidden="true">
+    <div class="snap-wrap" id="snap" title="Snap the line again" aria-hidden="true" data-i18n-attr="title:snap">
       <span class="reel"></span><span class="peg"></span>
       <svg id="snapSvg" preserveAspectRatio="none"><path id="snapPath" fill="none" stroke="var(--chalk)" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 2 1.5 2"/></svg>
     </div>
     <div class="hero-sub">
-      <p>Send a quote from the van. Your customer <strong>approves it online</strong>, it becomes a job with a checklist, and when you tick the last box the <strong>invoice writes itself</strong>. One number follows the work from first visit to paid.</p>
+      <p data-i18n-html="heroSub">Send a quote from the van. Your customer <strong>approves it online</strong>, it becomes a job with a checklist, and when you tick the last box the <strong>invoice writes itself</strong>. One number follows the work from first visit to paid.</p>
       <div class="cta-row">
-        <a class="btn btn-chalk" href="app.html">Start free trial</a>
-        <a class="btn btn-ghost" href="demo.html">Try the demo</a>
+        <a class="btn btn-chalk" href="app.html" data-i18n="ctaTrial">Start free trial</a>
+        <a class="btn btn-ghost" href="demo.html" data-i18n="heroDemo">Try the demo</a>
       </div>
     </div>
   </section>
 
-  <div class="marquee" aria-label="Built for plumbers, electricians, joiners, roofers, tilers, plasterers, gas engineers, landscapers, decorators and HVAC fitters">
+  <div class="marquee" aria-label="Built for plumbers, electricians, carpenters, roofers, painters and HVAC techs" data-i18n-attr="aria-label:marqueeAria">
     <div class="mq-track" aria-hidden="true" id="mq"></div>
   </div>
 
   <section class="story wrap" id="how" aria-labelledby="how-h">
     <div class="sec-head">
-      <h2 id="how-h">One job number, start to finish</h2>
-      <p>No retyping the same line items three times. Q-1042 becomes J-1042, then INV-1042, and everyone can see where it stands.</p>
+      <h2 id="how-h" data-i18n="howH">One job number, start to finish</h2>
+      <p data-i18n="howP">No retyping the same line items three times. Q-1042 becomes J-1042, then INV-1042, and everyone can see where it stands.</p>
     </div>
     <div class="story-grid">
       <div class="steps">
         <article class="step on" data-step="0">
           <span class="step-n">1</span>
-          <h3>Quote on site, approved by lunch</h3>
-          <p>Build the quote from your saved price list while you're still at the customer's door. They get a link, read it on their phone and approve with their name. You get a notification and a timestamp you can point to later.</p>
+          <h3 data-i18n="s1h">Quote on site, approved by lunch</h3>
+          <p data-i18n="s1p">Build the quote from your saved price list while you’re still at the customer’s door. They get a link, read it on their phone and approve with their name. You see it on your dashboard, with the time they approved.</p>
         </article>
         <article class="step" data-step="1">
           <span class="step-n">2</span>
-          <h3>The quote turns into the job sheet</h3>
-          <p>Every approved line becomes a task. Tick them off as you go, add photos and materials, and see at a glance which jobs are half done and which are ready to bill.</p>
+          <h3 data-i18n="s2h">The quote turns into the job sheet</h3>
+          <p data-i18n="s2p">Every approved line becomes a task. Tick them off as you go and see at a glance which jobs are half done and which are ready to bill.</p>
         </article>
         <article class="step" data-step="2">
           <span class="step-n">3</span>
-          <h3>Last tick, invoice sent</h3>
-          <p>Mark the job complete and the invoice is ready with the same prices, VAT worked out and payment terms filled in. Unpaid invoices chase themselves with polite reminders.</p>
+          <h3 data-i18n="s3h">Last tick, invoice sent</h3>
+          <p data-i18n="s3p">Mark the job complete and the invoice is ready with the same prices, tax worked out and payment terms filled in. Unpaid invoices get polite reminders in one tap.</p>
         </article>
       </div>
       <div class="stage">
         <div class="sheet" id="sheet" data-s="0">
           <div class="sh-top">
             <div class="sh-type" id="shType">QUOTE</div>
-            <div class="sh-no">Reed Plumbing &amp; Heating<b class="num" id="shNo">Q-1042</b></div>
+            <div class="sh-no"><span data-i18n="shBiz">Reed Plumbing &amp; Heating</span><b class="num" id="shNo">Q-1042</b></div>
           </div>
-          <div class="sh-cust"><span>For <b>Helen Carter</b></span><span id="shDate">Valid 30 days</span></div>
+          <div class="sh-cust"><span><span data-i18n="shFor">For</span> <b data-i18n="shCust">Helen Carter</b></span><span id="shDate">Valid 30 days</span></div>
           <div class="sh-rows" id="shRows"></div>
-          <div class="sh-tot"><span id="shTotL">Total inc. VAT</span><span class="num">€708.04</span></div>
+          <div class="sh-tot"><span id="shTotL">Total inc. VAT</span><span class="num" id="shTotal">$602.95</span></div>
           <div class="sh-foot" id="shFoot"></div>
-          <div class="stamp ok" id="stApproved">APPROVED<small>Helen Carter · 09:14</small></div>
-          <div class="stamp chalk" id="stPaid">PAID<small>Card · same day</small></div>
+          <div class="stamp ok" id="stApproved"><span data-i18n="stApproved">APPROVED</span><small data-i18n="stApprovedS">Helen Carter · 9:14 AM</small></div>
+          <div class="stamp chalk" id="stPaid"><span data-i18n="stPaid">PAID</span><small data-i18n="stPaidS">Zelle · same day</small></div>
         </div>
       </div>
     </div>
@@ -418,90 +448,184 @@ section{scroll-margin-top:80px}
 
 <section class="show wrap" id="app" aria-labelledby="app-h">
     <div class="sec-head">
-      <h2 id="app-h">This is the actual app</h2>
-      <p>Real screens from Chalkline, filled with example jobs for a plumbing business. Follow one job from the first quote to the paid invoice.</p>
+      <h2 id="app-h" data-i18n="appH">This is the actual app</h2>
+      <p data-i18n="appP">Real screens from Chalkline, filled with example jobs for a plumbing business. Follow one job from the first quote to the paid invoice.</p>
     </div>
-    <div class="show-tabs" role="tablist" aria-label="App screens"><button class="st" role="tab" type="button" id="st-dashboard" data-i="0" aria-selected="true" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">1</span><span class="st-t">Dashboard</span></button><button class="st" role="tab" type="button" id="st-quote" data-i="1" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">2</span><span class="st-t">Write a quote</span></button><button class="st" role="tab" type="button" id="st-approve" data-i="2" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">3</span><span class="st-t">Customer approves</span></button><button class="st" role="tab" type="button" id="st-job" data-i="3" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">4</span><span class="st-t">Do the job</span></button><button class="st" role="tab" type="button" id="st-invoice" data-i="4" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">5</span><span class="st-t">Invoice</span></button></div>
+    <div class="show-tabs" role="tablist" aria-label="App screens" data-i18n-attr="aria-label:appTabs"><button class="st" role="tab" type="button" id="st-dashboard" data-i="0" aria-selected="true" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">1</span><span class="st-t" data-i18n="tab1">Dashboard</span></button><button class="st" role="tab" type="button" id="st-quote" data-i="1" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">2</span><span class="st-t" data-i18n="tab2">Write a quote</span></button><button class="st" role="tab" type="button" id="st-approve" data-i="2" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">3</span><span class="st-t" data-i18n="tab3">Customer approves</span></button><button class="st" role="tab" type="button" id="st-job" data-i="3" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">4</span><span class="st-t" data-i18n="tab4">Do the job</span></button><button class="st" role="tab" type="button" id="st-invoice" data-i="4" aria-selected="false" aria-controls="showStage"><span class="st-bar"><i></i></span><span class="st-n">5</span><span class="st-t" data-i18n="tab5">Invoice</span></button></div>
     <div class="show-stage" id="showStage" role="tabpanel">
       <div class="browser">
         <div class="b-bar"><span class="b-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="b-url">chalkline.app/<b id="bUrl">dashboard</b></span></div>
-        <div class="b-screen"><img class="shot t-light on" data-i="0" src="showcase/d-dashboard-light.webp" alt="Chalkline on desktop: Dashboard" decoding="async"><img class="shot t-dark on" data-i="0" src="showcase/d-dashboard-dark.webp" alt="Chalkline on desktop: Dashboard" decoding="async"><img class="shot t-light" data-i="1" src="showcase/d-quote-light.webp" alt="Chalkline on desktop: Write a quote" loading="lazy" decoding="async"><img class="shot t-dark" data-i="1" src="showcase/d-quote-dark.webp" alt="Chalkline on desktop: Write a quote" loading="lazy" decoding="async"><img class="shot t-light" data-i="2" src="showcase/d-approve-light.webp" alt="Chalkline on desktop: Customer approves" loading="lazy" decoding="async"><img class="shot t-dark" data-i="2" src="showcase/d-approve-dark.webp" alt="Chalkline on desktop: Customer approves" loading="lazy" decoding="async"><img class="shot t-light" data-i="3" src="showcase/d-job-light.webp" alt="Chalkline on desktop: Do the job" loading="lazy" decoding="async"><img class="shot t-dark" data-i="3" src="showcase/d-job-dark.webp" alt="Chalkline on desktop: Do the job" loading="lazy" decoding="async"><img class="shot t-light" data-i="4" src="showcase/d-invoice-light.webp" alt="Chalkline on desktop: Invoice" loading="lazy" decoding="async"><img class="shot t-dark" data-i="4" src="showcase/d-invoice-dark.webp" alt="Chalkline on desktop: Invoice" loading="lazy" decoding="async"></div>
+        <div class="b-screen"><img class="shot t-light on" data-i="0" src="showcase/en/d-dashboard-light.webp" alt="Chalkline on desktop: Dashboard" decoding="async"><img class="shot t-dark on" data-i="0" src="showcase/en/d-dashboard-dark.webp" alt="Chalkline on desktop: Dashboard" decoding="async"><img class="shot t-light" data-i="1" src="showcase/en/d-quote-light.webp" alt="Chalkline on desktop: Write a quote" loading="lazy" decoding="async"><img class="shot t-dark" data-i="1" src="showcase/en/d-quote-dark.webp" alt="Chalkline on desktop: Write a quote" loading="lazy" decoding="async"><img class="shot t-light" data-i="2" src="showcase/en/d-approve-light.webp" alt="Chalkline on desktop: Customer approves" loading="lazy" decoding="async"><img class="shot t-dark" data-i="2" src="showcase/en/d-approve-dark.webp" alt="Chalkline on desktop: Customer approves" loading="lazy" decoding="async"><img class="shot t-light" data-i="3" src="showcase/en/d-job-light.webp" alt="Chalkline on desktop: Do the job" loading="lazy" decoding="async"><img class="shot t-dark" data-i="3" src="showcase/en/d-job-dark.webp" alt="Chalkline on desktop: Do the job" loading="lazy" decoding="async"><img class="shot t-light" data-i="4" src="showcase/en/d-invoice-light.webp" alt="Chalkline on desktop: Invoice" loading="lazy" decoding="async"><img class="shot t-dark" data-i="4" src="showcase/en/d-invoice-dark.webp" alt="Chalkline on desktop: Invoice" loading="lazy" decoding="async"></div>
       </div>
-      <div class="phone" aria-hidden="false"><span class="p-notch"></span><div class="p-screen"><img class="shot t-light on" data-i="0" src="showcase/m-dashboard-light.webp" alt="Chalkline on a phone: Dashboard" decoding="async"><img class="shot t-dark on" data-i="0" src="showcase/m-dashboard-dark.webp" alt="Chalkline on a phone: Dashboard" decoding="async"><img class="shot t-light" data-i="1" src="showcase/m-quote-light.webp" alt="Chalkline on a phone: Write a quote" loading="lazy" decoding="async"><img class="shot t-dark" data-i="1" src="showcase/m-quote-dark.webp" alt="Chalkline on a phone: Write a quote" loading="lazy" decoding="async"><img class="shot t-light" data-i="2" src="showcase/m-approve-light.webp" alt="Chalkline on a phone: Customer approves" loading="lazy" decoding="async"><img class="shot t-dark" data-i="2" src="showcase/m-approve-dark.webp" alt="Chalkline on a phone: Customer approves" loading="lazy" decoding="async"><img class="shot t-light" data-i="3" src="showcase/m-job-light.webp" alt="Chalkline on a phone: Do the job" loading="lazy" decoding="async"><img class="shot t-dark" data-i="3" src="showcase/m-job-dark.webp" alt="Chalkline on a phone: Do the job" loading="lazy" decoding="async"><img class="shot t-light" data-i="4" src="showcase/m-invoice-light.webp" alt="Chalkline on a phone: Invoice" loading="lazy" decoding="async"><img class="shot t-dark" data-i="4" src="showcase/m-invoice-dark.webp" alt="Chalkline on a phone: Invoice" loading="lazy" decoding="async"></div></div>
+      <div class="phone" aria-hidden="false"><span class="p-notch"></span><div class="p-screen"><img class="shot t-light on" data-i="0" src="showcase/en/m-dashboard-light.webp" alt="Chalkline on a phone: Dashboard" decoding="async"><img class="shot t-dark on" data-i="0" src="showcase/en/m-dashboard-dark.webp" alt="Chalkline on a phone: Dashboard" decoding="async"><img class="shot t-light" data-i="1" src="showcase/en/m-quote-light.webp" alt="Chalkline on a phone: Write a quote" loading="lazy" decoding="async"><img class="shot t-dark" data-i="1" src="showcase/en/m-quote-dark.webp" alt="Chalkline on a phone: Write a quote" loading="lazy" decoding="async"><img class="shot t-light" data-i="2" src="showcase/en/m-approve-light.webp" alt="Chalkline on a phone: Customer approves" loading="lazy" decoding="async"><img class="shot t-dark" data-i="2" src="showcase/en/m-approve-dark.webp" alt="Chalkline on a phone: Customer approves" loading="lazy" decoding="async"><img class="shot t-light" data-i="3" src="showcase/en/m-job-light.webp" alt="Chalkline on a phone: Do the job" loading="lazy" decoding="async"><img class="shot t-dark" data-i="3" src="showcase/en/m-job-dark.webp" alt="Chalkline on a phone: Do the job" loading="lazy" decoding="async"><img class="shot t-light" data-i="4" src="showcase/en/m-invoice-light.webp" alt="Chalkline on a phone: Invoice" loading="lazy" decoding="async"><img class="shot t-dark" data-i="4" src="showcase/en/m-invoice-dark.webp" alt="Chalkline on a phone: Invoice" loading="lazy" decoding="async"></div></div>
     </div>
     <div class="show-cap">
       <div class="cap-txt" id="capTxt"><h3>Your day on one screen</h3><p>What’s waiting on customers, what’s booked and what you’re owed. The jobs that need you are listed first.</p></div>
-      <div class="cap-actions"><button class="btn btn-ghost btn-sm" id="showHold" type="button" aria-label="Pause the screen tour" hidden>Pause</button><a class="btn btn-chalk" id="demoLink" href="demo.html">Open the live demo</a></div>
+      <div class="cap-actions"><button class="btn btn-ghost btn-sm" id="showHold" type="button" aria-label="Pause the screen tour" hidden>Pause</button><a class="btn btn-chalk" id="demoLink" href="demo.html" data-i18n="openDemo">Open the live demo</a></div>
     </div>
   </section>
 
   <section class="pricing wrap" id="pricing" aria-labelledby="pr-h">
     <div class="sec-head">
-      <h2 id="pr-h">Priced like a tool, not a contract</h2>
-      <p>Every plan includes unlimited quotes, online approval and invoices. Try any plan free for 14 days. No card needed, cancel from your phone.</p>
+      <h2 id="pr-h" data-i18n="prH">Priced like a tool, not a contract</h2>
+      <p data-i18n="prP">Every plan includes unlimited quotes, online approval and invoices. Try any plan free for 14 days. No card needed, cancel from your phone.</p>
     </div>
-    <div class="bill" role="group" aria-label="Billing period">
+    <div class="bill" role="group" aria-label="Billing period" data-i18n-attr="aria-label:billAria">
       <span class="bill-ind" id="billInd"></span>
-      <button type="button" data-bill="m" aria-pressed="true">Monthly</button>
-      <button type="button" data-bill="y" aria-pressed="false">Yearly<span class="save">2 months free</span></button>
+      <button type="button" data-bill="m" aria-pressed="true" data-i18n="monthly">Monthly</button>
+      <button type="button" data-bill="y" aria-pressed="false"><span data-i18n="yearly">Yearly</span><span class="save" data-i18n="save2">2 months free</span></button>
     </div>
     <div class="plans">
       <div class="plan">
         <h3>Solo</h3>
-        <p class="who">One person, one van. Everything you need to quote and get paid.</p>
-        <div class="price"><b class="num" data-m="15" data-y="12.50">€15</b><span>/ month</span></div>
+        <p class="who" data-i18n="who1">One person, one van. Everything you need to quote and get paid.</p>
+        <div class="price"><b class="num" data-m="15" data-y="12.50">€15</b><span data-i18n="perMonth">/ month</span></div>
         <p class="price-note" data-note></p>
-        <ul class="feat"><li>Unlimited quotes, jobs and invoices</li><li>Online approval with signature</li><li>Job checklists from quote lines</li><li>VAT and payment terms filled in</li></ul>
-        <a class="btn btn-ghost" href="app.html">Start free trial</a>
+        <ul class="feat" data-i18n-list="feat1"></ul>
+        <a class="btn btn-ghost" href="app.html" data-i18n="ctaTrial">Start free trial</a>
       </div>
       <div class="plan hot">
-        <span class="hot-tag">Most popular</span>
+        <span class="hot-tag" data-i18n="popular">Most popular</span>
         <h3>Trade</h3>
-        <p class="who">For busy sole traders who want payments and reminders on autopilot.</p>
-        <div class="price"><b class="num" data-m="22" data-y="18.33">€22</b><span>/ month</span></div>
+        <p class="who" data-i18n="who2">For busy pros who want payments and reminders on autopilot.</p>
+        <div class="price"><b class="num" data-m="22" data-y="18.33">€22</b><span data-i18n="perMonth">/ month</span></div>
         <p class="price-note" data-note></p>
-        <ul class="feat"><li>Everything in Solo</li><li>Card payments and deposits on approval</li><li>Automatic overdue reminders</li><li>Saved price list and job photos</li><li>Export to Xero and QuickBooks</li></ul>
-        <a class="btn btn-tape" href="app.html">Start free trial</a>
+        <ul class="feat" data-i18n-list="feat2"></ul>
+        <a class="btn btn-tape" href="app.html" data-i18n="ctaTrial">Start free trial</a>
       </div>
       <div class="plan">
         <h3>Crew</h3>
-        <p class="who">Up to 5 people. Hand out jobs and see who's where.</p>
-        <div class="price"><b class="num" data-m="30" data-y="25">€30</b><span>/ month</span></div>
+        <p class="who" data-i18n="who3">Up to 5 people. Hand out jobs and see who’s where.</p>
+        <div class="price"><b class="num" data-m="30" data-y="25">€30</b><span data-i18n="perMonth">/ month</span></div>
         <p class="price-note" data-note></p>
-        <ul class="feat"><li>Everything in Trade</li><li>Up to 5 team members</li><li>Assign jobs and tasks</li><li>Weekly schedule board</li><li>Profit per job</li></ul>
-        <a class="btn btn-ghost" href="app.html">Start free trial</a>
+        <ul class="feat" data-i18n-list="feat3"></ul>
+        <a class="btn btn-ghost" href="app.html" data-i18n="ctaTrial">Start free trial</a>
       </div>
     </div>
   </section>
 
   <section class="close wrap" aria-labelledby="cl-h">
     <div class="close-row">
-      <h2 id="cl-h">Straight line from quote to paid.</h2>
-      <a class="btn btn-chalk" href="app.html">Send your first quote</a>
+      <h2 id="cl-h" data-i18n="closeH">Straight line from quote to paid.</h2>
+      <a class="btn btn-chalk" href="app.html" data-i18n="closeCta">Send your first quote</a>
     </div>
   </section>
 </main>
 <footer class="wrap foot">
-  <span>Chalkline · built for the trades</span>
+  <span data-i18n="foot">Chalkline · built for the trades</span>
   <span>© 2026 Chalkline</span>
 </footer>
 
+
+<dialog class="lang-dlg" id="langDlg" aria-labelledby="langTitle">
+  <div class="ld">
+    <h2 id="langTitle"><span lang="en">Choose your version</span><span class="ld-sep" aria-hidden="true">·</span><span lang="el">Επιλέξτε έκδοση</span></h2>
+    <div class="ld-opts">
+      <button type="button" class="ld-opt" data-lang="en" lang="en"><span class="flag-us big" aria-hidden="true"></span><span><b>United States</b><small>English · US dollars ($)</small></span></button>
+      <button type="button" class="ld-opt" data-lang="el" lang="el"><span class="flag-gr big" aria-hidden="true"></span><span><b>Ελλάδα</b><small>Ελληνικά · Ευρώ (€)</small></span></button>
+    </div>
+    <p class="ld-note"><span lang="en">You can switch any time from the top of the page.</span> <span lang="el">Μπορείτε να αλλάξετε οποτεδήποτε από το πάνω μέρος.</span></p>
+  </div>
+</dialog>
 
 <script>
 (() => {
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const eur = n => new Intl.NumberFormat('en-IE', {style: 'currency', currency: 'EUR'}).format(n);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const day = 864e5;
-const fmtD = t => new Date(t).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'});
+/* ---------------- two versions: United States (English, $) and Greece (Greek, €) ---------------- */
+const LX = {
+  en: {
+    intl: 'en-US', cur: 'USD', short: 'EN',
+    home: 'Chalkline home', navMain: 'Main', navHow: 'How it works', navApp: 'The app', navPricing: 'Pricing', langSwitch: 'Change language',
+    ctaTrial: 'Start free trial', ctaShort: 'Try free', toDark: 'Switch to dark mode', toLight: 'Switch to light mode',
+    heroAria: 'Quote it. Do it. Get paid.', hero1: 'Quote it.', hero2: 'Do it.', hero3: 'Get paid.', snap: 'Snap the line again',
+    heroSub: 'Send a quote from the truck. Your customer <strong>approves it online</strong>, it becomes a job with a checklist, and when you tick the last box the <strong>invoice writes itself</strong>. One number follows the work from first visit to paid.',
+    heroDemo: 'Try the demo', marqueeAria: 'Built for plumbers, electricians, carpenters, roofers, painters and HVAC techs',
+    trades: ['Plumbers', 'Electricians', 'Carpenters', 'Roofers', 'Tile setters', 'Drywall pros', 'HVAC techs', 'Landscapers', 'Painters', 'Handymen', 'Cabinet installers', 'Locksmiths'],
+    howH: 'One job number, start to finish', howP: 'No retyping the same line items three times. Q-1042 becomes J-1042, then INV-1042, and everyone can see where it stands.',
+    s1h: 'Quote on site, approved by lunch', s1p: 'Build the quote from your saved price list while you’re still at the customer’s door. They get a link, read it on their phone and approve with their name. You see it on your dashboard, with the time they approved.',
+    s2h: 'The quote turns into the job sheet', s2p: 'Every approved line becomes a task. Tick them off as you go and see at a glance which jobs are half done and which are ready to bill.',
+    s3h: 'Last tick, invoice sent', s3p: 'Mark the job complete and the invoice is ready with the same prices, tax worked out and payment terms filled in. Unpaid invoices get polite reminders in one tap.',
+    shBiz: 'Reed Plumbing & Heating', shFor: 'For', shCust: 'Helen Carter', shTypes: ['QUOTE', 'JOB SHEET', 'INVOICE'],
+    shDates: ['Valid 30 days', 'Starts Tue, Oct 6', 'Due in 14 days'], shTotal: 'Total inc. tax', shDue: 'Amount due', shSum: 602.95,
+    shItems: [['Service call and first hour', 95], ['Remove old sink and trap', 60], ['1/2" copper supply, 18 ft', 162], ['Install new sink and faucet', 240], ['Pressure test and clean up', 0]],
+    incl: 'Incl.', shSent: 'Sent to Helen by email', awaiting: 'Awaiting approval', ofDone: n => `${n} of 5 done`, taxIncl: 'Tax 8.25% included', unpaid: 'Unpaid', paid: 'Paid',
+    stApproved: 'APPROVED', stApprovedS: 'Helen Carter · 9:14 AM', stPaid: 'PAID', stPaidS: 'Zelle · same day',
+    appH: 'This is the actual app', appP: 'Real screens from Chalkline, filled with example jobs for a plumbing business. Follow one job from the first quote to the paid invoice.',
+    appTabs: 'App screens', tab1: 'Dashboard', tab2: 'Write a quote', tab3: 'Customer approves', tab4: 'Do the job', tab5: 'Invoice',
+    onDesktop: 'Chalkline on desktop', onPhone: 'Chalkline on a phone',
+    show: [
+      ['Your day on one screen', 'What’s waiting on customers, what’s booked and what you’re owed. The jobs that need you are listed first.'],
+      ['Write a quote in a minute', 'Line items, units and tax add up as you type. Drop in regular items from your saved price list.'],
+      ['Your customer approves on their phone', 'They open a private link, check the price and type their name. It shows on your dashboard straight away.'],
+      ['Tick off the job', 'Every quote line becomes a task. Mark the job complete when the last box is ticked.'],
+      ['Invoice in one tap', 'Same lines, same prices, with your logo and payment details. Mark it paid when the money lands.']
+    ],
+    pause: 'Pause', play: 'Play', pauseAria: 'Pause the screen tour', playAria: 'Play the screen tour', openDemo: 'Open the live demo',
+    prH: 'Priced like a tool, not a contract', prP: 'Every plan includes unlimited quotes, online approval and invoices. Try any plan free for 14 days. No card needed, cancel from your phone.',
+    billAria: 'Billing period', monthly: 'Monthly', yearly: 'Yearly', save2: '2 months free',
+    who1: 'One person, one truck. Everything you need to quote and get paid.', who2: 'For busy pros who want payments and reminders on autopilot.', who3: 'Up to 5 people. Hand out jobs and see who’s where.',
+    perMonth: '/ month', popular: 'Most popular',
+    feat1: ['Unlimited quotes, jobs and invoices', 'Online approval with signature', 'Job checklists from quote lines', 'Tax and payment terms filled in'],
+    feat2: ['Everything in Solo', 'Card payments and deposits on approval', 'Automatic overdue reminders', 'Saved price list and job photos', 'Export to QuickBooks and Xero'],
+    feat3: ['Everything in Trade', 'Up to 5 team members', 'Assign jobs and tasks', 'Weekly schedule board', 'Profit per job'],
+    billedYear: y => `Billed ${y} once a year`, billedMonth: 'Billed monthly, cancel any time',
+    closeH: 'Straight line from quote to paid.', closeCta: 'Send your first quote', foot: 'Chalkline · built for the trades'
+  },
+  el: {
+    intl: 'el-GR', cur: 'EUR', short: 'ΕΛ',
+    home: 'Αρχική Chalkline', navMain: 'Κύριο μενού', navHow: 'Πώς λειτουργεί', navApp: 'Η εφαρμογή', navPricing: 'Τιμές', langSwitch: 'Αλλαγή γλώσσας',
+    ctaTrial: 'Δοκιμάστε δωρεάν', ctaShort: 'Δωρεάν', toDark: 'Σκούρο θέμα', toLight: 'Φωτεινό θέμα',
+    heroAria: 'Προσφορά. Δουλειά. Πληρωμή.', hero1: 'Προσφορά.', hero2: 'Δουλειά.', hero3: 'Πληρωμή.', snap: 'Τινάξτε ξανά τη γραμμή',
+    heroSub: 'Στείλτε προσφορά από το βανάκι. Ο πελάτης <strong>την εγκρίνει online</strong>, γίνεται εργασία με λίστα ελέγχου, και μόλις τσεκάρετε το τελευταίο βήμα <strong>το τιμολόγιο βγαίνει μόνο του</strong>. Ένας αριθμός ακολουθεί τη δουλειά από την πρώτη επίσκεψη ως την πληρωμή.',
+    heroDemo: 'Δείτε το demo', marqueeAria: 'Για υδραυλικούς, ηλεκτρολόγους, ξυλουργούς, ελαιοχρωματιστές και ψυκτικούς',
+    trades: ['Υδραυλικοί', 'Ηλεκτρολόγοι', 'Ξυλουργοί', 'Πλακάδες', 'Σοβατζήδες', 'Ελαιοχρωματιστές', 'Ψυκτικοί', 'Τεχνικοί θέρμανσης', 'Κηποτεχνικοί', 'Τοποθετητές κουζινών', 'Αλουμινάδες', 'Κλειδαράδες'],
+    howH: 'Ένας αριθμός, από την αρχή ως το τέλος', howP: 'Δεν ξαναγράφετε τις ίδιες γραμμές τρεις φορές. Το Q-1042 γίνεται J-1042 και μετά INV-1042, και όλοι βλέπουν σε ποια φάση βρίσκεται.',
+    s1h: 'Προσφορά επί τόπου, έγκριση ως το μεσημέρι', s1p: 'Φτιάξτε την προσφορά από τον τιμοκατάλογό σας ενώ είστε ακόμη στην πόρτα του πελάτη. Λαμβάνει σύνδεσμο, τη διαβάζει στο κινητό και την εγκρίνει με το όνομά του. Τη βλέπετε στην αρχική σας, με την ώρα της έγκρισης.',
+    s2h: 'Η προσφορά γίνεται δελτίο εργασίας', s2p: 'Κάθε εγκεκριμένη γραμμή γίνεται βήμα. Τα τσεκάρετε καθώς προχωράτε και βλέπετε αμέσως ποιες δουλειές είναι στη μέση και ποιες είναι έτοιμες για τιμολόγηση.',
+    s3h: 'Τελευταίο τσεκ, τιμολόγιο σταλμένο', s3p: 'Ολοκληρώνετε την εργασία και το τιμολόγιο είναι έτοιμο, με τις ίδιες τιμές, υπολογισμένο ΦΠΑ και όρους πληρωμής. Για τα απλήρωτα στέλνετε ευγενική υπενθύμιση με ένα πάτημα.',
+    shBiz: 'Ρήγας Υδραυλικά & Θέρμανση', shFor: 'Για', shCust: 'Ελένη Καραγιάννη', shTypes: ['ΠΡΟΣΦΟΡΑ', 'ΔΕΛΤΙΟ ΕΡΓΑΣΙΑΣ', 'ΤΙΜΟΛΟΓΙΟ'],
+    shDates: ['Ισχύει 30 ημέρες', 'Έναρξη Τρίτη 6 Οκτ', 'Λήξη σε 14 ημέρες'], shTotal: 'Σύνολο με ΦΠΑ', shDue: 'Πληρωτέο', shSum: 617.52,
+    shItems: [['Επίσκεψη και πρώτη ώρα', 60], ['Αποξήλωση νιπτήρα και σιφωνιού', 50], ['Χαλκοσωλήνας 15mm, 6 μ', 168], ['Τοποθέτηση νιπτήρα και μπαταρίας', 220], ['Δοκιμή πίεσης και καθάρισμα', 0]],
+    incl: 'Περιλ.', shSent: 'Στάλθηκε στην Ελένη με email', awaiting: 'Αναμένει έγκριση', ofDone: n => `${n} από 5`, taxIncl: 'Με ΦΠΑ 24%', unpaid: 'Απλήρωτο', paid: 'Πληρώθηκε',
+    stApproved: 'ΕΓΚΡΙΘΗΚΕ', stApprovedS: 'Ελένη Καραγιάννη · 09:14', stPaid: 'ΠΛΗΡΩΘΗΚΕ', stPaidS: 'Τραπεζική μεταφορά · αυθημερόν',
+    appH: 'Αυτή είναι η πραγματική εφαρμογή', appP: 'Πραγματικές οθόνες του Chalkline με παραδείγματα από μια υδραυλική επιχείρηση. Ακολουθήστε μια δουλειά από την πρώτη προσφορά ως το εξοφλημένο τιμολόγιο.',
+    appTabs: 'Οθόνες εφαρμογής', tab1: 'Αρχική', tab2: 'Νέα προσφορά', tab3: 'Ο πελάτης εγκρίνει', tab4: 'Η δουλειά', tab5: 'Τιμολόγιο',
+    onDesktop: 'Το Chalkline σε υπολογιστή', onPhone: 'Το Chalkline σε κινητό',
+    show: [
+      ['Η μέρα σας σε μία οθόνη', 'Τι περιμένει τους πελάτες, τι έχει κλείσει και τι σας χρωστούν. Ό,τι θέλει την προσοχή σας εμφανίζεται πρώτο.'],
+      ['Προσφορά σε ένα λεπτό', 'Γραμμές, μονάδες και ΦΠΑ υπολογίζονται καθώς γράφετε. Προσθέστε συχνές εργασίες από τον τιμοκατάλογό σας.'],
+      ['Ο πελάτης εγκρίνει από το κινητό', 'Ανοίγει έναν ιδιωτικό σύνδεσμο, βλέπει την τιμή και γράφει το όνομά του. Το βλέπετε αμέσως στην αρχική σας.'],
+      ['Τσεκάρετε τη δουλειά', 'Κάθε γραμμή της προσφοράς γίνεται βήμα. Ολοκληρώνετε την εργασία με το τελευταίο τσεκ.'],
+      ['Τιμολόγιο με ένα πάτημα', 'Ίδιες γραμμές, ίδιες τιμές, με το λογότυπο και τα στοιχεία πληρωμής σας. Το σημειώνετε πληρωμένο όταν μπουν τα χρήματα.']
+    ],
+    pause: 'Παύση', play: 'Αναπαραγωγή', pauseAria: 'Παύση της παρουσίασης', playAria: 'Αναπαραγωγή της παρουσίασης', openDemo: 'Ανοίξτε το demo',
+    prH: 'Τιμή εργαλείου, όχι συμβολαίου', prP: 'Κάθε πακέτο περιλαμβάνει απεριόριστες προσφορές, online έγκριση και τιμολόγια. Δοκιμάστε δωρεάν για 14 ημέρες. Χωρίς κάρτα, ακύρωση από το κινητό.',
+    billAria: 'Περίοδος χρέωσης', monthly: 'Μηνιαία', yearly: 'Ετήσια', save2: '2 μήνες δωρεάν',
+    who1: 'Ένας τεχνικός, ένα βανάκι. Ό,τι χρειάζεστε για προσφορές και πληρωμές.', who2: 'Για πολυάσχολους επαγγελματίες που θέλουν πληρωμές και υπενθυμίσεις στον αυτόματο.', who3: 'Έως 5 άτομα. Μοιράστε εργασίες και δείτε ποιος είναι πού.',
+    perMonth: '/ μήνα', popular: 'Δημοφιλέστερο',
+    feat1: ['Απεριόριστες προσφορές, εργασίες και τιμολόγια', 'Online έγκριση με υπογραφή', 'Λίστες ελέγχου από τις γραμμές της προσφοράς', 'ΦΠΑ και όροι πληρωμής αυτόματα'],
+    feat2: ['Όλα όσα έχει το Solo', 'Πληρωμή με κάρτα και προκαταβολή στην έγκριση', 'Αυτόματες υπενθυμίσεις για ληξιπρόθεσμα', 'Τιμοκατάλογος και φωτογραφίες εργασιών', 'Εξαγωγή για τον λογιστή σας'],
+    feat3: ['Όλα όσα έχει το Trade', 'Έως 5 μέλη ομάδας', 'Ανάθεση εργασιών', 'Εβδομαδιαίο πρόγραμμα', 'Κέρδος ανά εργασία'],
+    billedYear: y => `Χρέωση ${y} μία φορά τον χρόνο`, billedMonth: 'Μηνιαία χρέωση, ακύρωση οποτεδήποτε',
+    closeH: 'Ίσια γραμμή από την προσφορά στην πληρωμή.', closeCta: 'Στείλτε την πρώτη σας προσφορά', foot: 'Chalkline · φτιαγμένο για τεχνίτες'
+  }
+};
+const LANG_KEY = 'chalkline.locale';
+const storedLang = (() => { try { const v = localStorage.getItem(LANG_KEY); return v === 'en' || v === 'el' ? v : null; } catch (e) { return null; } })();
+let lang = storedLang || (/^el\b/i.test(navigator.language || '') ? 'el' : 'en');
+let D = LX[lang];
+const money = (n, opts = {}) => new Intl.NumberFormat(D.intl, {style: 'currency', currency: D.cur, ...opts}).format(n);
 
 /* ---------------- hero: split letters + variable-font hover ---------------- */
-$$('[data-split]').forEach(el => {
-  el.innerHTML = el.textContent.split(' ').map(w => `<span class="w">${[...w].map(c => `<span class="ch">${c}</span>`).join('')}</span>`).join(' ');
-});
-const chars = $$('.ch');
+let chars = [];
+function splitHero() {
+  $$('[data-split]').forEach(el => {
+    el.innerHTML = el.textContent.split(' ').map(w => `<span class="w">${[...w].map(c => `<span class="ch">${c}</span>`).join('')}</span>`).join(' ');
+  });
+  chars = $$('.ch');
+}
 const hl = $('#hl');
 if (!reduce && matchMedia('(hover:hover)').matches) {
   let raf = 0, mx = -1e4, my = -1e4;
@@ -583,31 +707,33 @@ hl.addEventListener('click', snapLine);
 addEventListener('resize', () => { if (!snapping) initSnap(); });
 
 /* ---------------- marquee ---------------- */
-const trades = ['Plumbers','Electricians','Joiners','Roofers','Tilers','Plasterers','Gas engineers','Landscapers','Decorators','HVAC fitters','Kitchen fitters','Locksmiths'];
-const mqHtml = trades.map(t => `<span>${t}</span>`).join('');
-$('#mq').innerHTML = mqHtml + mqHtml;
+function buildMarquee() {
+  const mqHtml = D.trades.map(t => `<span>${t}</span>`).join('');
+  $('#mq').innerHTML = mqHtml + mqHtml;
+}
 
 /* ---------------- scroll: tape progress, hero parallax, story ---------------- */
 const tapeFill = $('#tapeFill');
 const lines = $$('.hl-line');
 const story = $('#how'), steps = $$('.step'), sheet = $('#sheet');
-const SH_ITEMS = [
-  ['Call-out and first hour', 85], ['Remove old basin and trap', 60], ['15mm copper run, 6 m', 186],
-  ['Fit new basin and mixer tap', 240], ['Pressure test and clean up', 0]
-];
-$('#shRows').innerHTML = SH_ITEMS.map(([d, p]) => `<div class="sh-row"><span class="tick"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9.2 10 3"/></svg></span><span class="rdesc">${d}</span><span class="num">${p ? eur(p) : 'Incl.'}</span></div>`).join('');
-const shRows = $$('.sh-row');
+let shRows = [];
+function buildSheet() {
+  $('#shRows').innerHTML = D.shItems.map(([d, p]) => `<div class="sh-row"><span class="tick"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9.2 10 3"/></svg></span><span class="rdesc">${d}</span><span class="num">${p ? money(p) : D.incl}</span></div>`).join('');
+  shRows = $$('.sh-row');
+  $('#shTotal').textContent = money(D.shSum);
+  $('#shFoot').dataset.k = '';
+}
 let curS = -1;
 function setStage(s, sub) {
   if (s !== curS) {
     curS = s;
     sheet.dataset.s = s;
     steps.forEach((el, i) => el.classList.toggle('on', i === s));
-    const T = ['QUOTE', 'JOB SHEET', 'INVOICE'][s], N = ['Q-1042', 'J-1042', 'INV-1042'][s];
+    const T = D.shTypes[s], N = ['Q-1042', 'J-1042', 'INV-1042'][s];
     $('#shType').innerHTML = `<span class="flip">${T}</span>`;
     $('#shNo').innerHTML = `<span class="flip">${N}</span>`;
-    $('#shDate').textContent = ['Valid 30 days', 'Starts Tue 6 Oct', 'Due in 14 days'][s];
-    $('#shTotL').textContent = s === 2 ? 'Amount due' : 'Total inc. VAT';
+    $('#shDate').textContent = D.shDates[s];
+    $('#shTotL').textContent = s === 2 ? D.shDue : D.shTotal;
     $('#stApproved').classList.toggle('show', s === 1);
   }
   const done = s === 0 ? 0 : s === 2 ? 5 : Math.min(5, Math.floor(sub * 6));
@@ -616,15 +742,16 @@ function setStage(s, sub) {
   const want = s === 0 ? 'q' : s === 1 ? 'j' : 'i';
   if (foot.dataset.k !== want) {
     foot.dataset.k = want;
-    foot.innerHTML = s === 0 ? `<span>Sent to Helen by email</span><span class="pill p-sent">Awaiting approval</span>`
-      : s === 1 ? `<span class="num" id="shPct">0 of 5 done</span><span class="meter"><i id="shMeter"></i></span>`
-      : `<span>VAT 24% included</span><span class="pill p-invoiced" id="shPay">Unpaid</span>`;
+    foot.innerHTML = s === 0 ? `<span>${D.shSent}</span><span class="pill p-sent">${D.awaiting}</span>`
+      : s === 1 ? `<span class="num" id="shPct">${D.ofDone(0)}</span><span class="meter"><i id="shMeter"></i></span>`
+      : `<span>${D.taxIncl}</span><span class="pill p-invoiced" id="shPay">${D.unpaid}</span>`;
   }
-  if (s === 1) { $('#shPct').textContent = `${done} of 5 done`; $('#shMeter').style.width = done / 5 * 100 + '%'; }
+  if (s === 1) { $('#shPct').textContent = D.ofDone(done); $('#shMeter').style.width = done / 5 * 100 + '%'; }
   const paid = s === 2 && sub > .55;
   $('#stPaid').classList.toggle('show', paid);
-  const pay = $('#shPay'); if (pay) { pay.className = 'pill ' + (paid ? 'p-paid' : 'p-invoiced'); pay.textContent = paid ? 'Paid' : 'Unpaid'; }
+  const pay = $('#shPay'); if (pay) { pay.className = 'pill ' + (paid ? 'p-paid' : 'p-invoiced'); pay.textContent = paid ? D.paid : D.unpaid; }
 }
+buildSheet();
 setStage(0, 0);
 
 let ticking = false;
@@ -655,22 +782,16 @@ addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimat
 onScroll();
 
 /* ---------------- app showcase ---------------- */
-const SHOW = [
-  ['dashboard', 'Your day on one screen', 'What’s waiting on customers, what’s booked and what you’re owed. The jobs that need you are listed first.'],
-  ['quotes/new', 'Write a quote in a minute', 'Line items, units and VAT add up as you type. Drop in regular items from your saved price list.'],
-  ['quotes/Q-1043', 'Your customer approves on their phone', 'They open a private link, check the price and type their name. It shows on your dashboard straight away.'],
-  ['jobs/J-1041', 'Tick off the job', 'Every quote line becomes a task. Mark the job complete when the last box is ticked.'],
-  ['invoices/INV-1040', 'Invoice in one tap', 'Same lines, same prices, with your logo and bank details. Mark it paid when the money lands.']
-];
+const SHOW_URLS = ['dashboard', 'quotes/new', 'quotes/Q-1043', 'jobs/J-1041', 'invoices/INV-1040'];
 const show = $('#app'), stTabs = $$('.st'), shots = $$('.shot');
 let cur = 0;
 function setShow(i, fromUser) {
-  cur = (i + SHOW.length) % SHOW.length;
+  cur = (i + SHOW_URLS.length) % SHOW_URLS.length;
   stTabs.forEach((t, k) => { t.setAttribute('aria-selected', k === cur); t.classList.toggle('done', k < cur); });
   shots.forEach(im => im.classList.toggle('on', +im.dataset.i === cur));
-  $('#bUrl').textContent = SHOW[cur][0];
+  $('#bUrl').textContent = SHOW_URLS[cur];
   const cap = $('#capTxt');
-  cap.innerHTML = `<h3>${SHOW[cur][1]}</h3><p>${SHOW[cur][2]}</p>`;
+  cap.innerHTML = `<h3>${D.show[cur][0]}</h3><p>${D.show[cur][1]}</p>`;
   cap.style.animation = 'none'; void cap.offsetWidth; cap.style.animation = '';
   if (fromUser) restartBar();
 }
@@ -695,8 +816,7 @@ if (!reduce && 'IntersectionObserver' in window) {
   hold.hidden = false;
   hold.addEventListener('click', () => {
     const held = show.classList.toggle('held');
-    hold.textContent = held ? 'Play' : 'Pause';
-    hold.setAttribute('aria-label', held ? 'Play the screen tour' : 'Pause the screen tour');
+    labelHold();
   });
 }
 // In the hosted preview, point the demo button at the published demo.
@@ -710,7 +830,7 @@ function setBill(m) {
   billInd.style.width = on.offsetWidth + 'px'; billInd.style.transform = `translateX(${on.offsetLeft - 4}px)`;
   $$('.price b').forEach(b => {
     const v = +b.dataset[m];
-    const txt = '€' + (v % 1 ? v.toFixed(2) : v);
+    const txt = money(v, {minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2});
     if (b.textContent !== txt) {
       b.animate([{transform: 'translateY(0)', opacity: 1}, {transform: 'translateY(-30%)', opacity: 0}], {duration: reduce ? 1 : 160}).onfinish = () => {
         b.textContent = txt;
@@ -718,22 +838,59 @@ function setBill(m) {
       };
     }
   });
-  $$('[data-note]').forEach((n, i) => { const y = [150, 220, 300][i]; n.textContent = m === 'y' ? `Billed €${y} once a year` : 'Billed monthly, cancel any time'; });
+  $$('[data-note]').forEach((n, i) => { const y = [150, 220, 300][i]; n.textContent = m === 'y' ? D.billedYear(money(y, {maximumFractionDigits: 0})) : D.billedMonth; });
 }
 billBtns.forEach(b => b.addEventListener('click', () => setBill(b.dataset.bill)));
 
 /* theme toggle */
 const root = document.documentElement, themeT = $('#themeT');
-const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-const labelTheme = () => themeT.setAttribute('aria-label', isDark() ? 'Switch to light mode' : 'Switch to dark mode');
-try { const t = localStorage.getItem('chalkline.theme'); if (t) root.dataset.theme = t; } catch (e) {}
+// Light unless the person picked dark.
+const isDark = () => root.dataset.theme === 'dark';
+const labelTheme = () => themeT.setAttribute('aria-label', isDark() ? D.toLight : D.toDark);
+try { root.dataset.theme = localStorage.getItem('chalkline.theme') === 'dark' ? 'dark' : 'light'; } catch (e) { root.dataset.theme = 'light'; }
 labelTheme();
 themeT.addEventListener('click', () => {
   root.dataset.theme = isDark() ? 'light' : 'dark';
   try { localStorage.setItem('chalkline.theme', root.dataset.theme); } catch (e) {}
   labelTheme();
 });
-matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', labelTheme);
+
+/* ---------------- apply a version to the whole page ---------------- */
+function labelHold() {
+  const hold = $('#showHold'); if (!hold) return;
+  const held = show.classList.contains('held');
+  hold.textContent = held ? D.play : D.pause;
+  hold.setAttribute('aria-label', held ? D.playAria : D.pauseAria);
+}
+function applyLang(l, first) {
+  lang = l; D = LX[l];
+  root.lang = l;
+  $$('[data-i18n]').forEach(el => { const v = D[el.dataset.i18n]; if (typeof v === 'string') el.textContent = v; });
+  $$('[data-i18n-html]').forEach(el => { el.innerHTML = D[el.dataset.i18nHtml]; });
+  $$('[data-i18n-attr]').forEach(el => el.dataset.i18nAttr.split(';').forEach(pair => { const [a, k] = pair.split(':'); el.setAttribute(a, D[k]); }));
+  $$('[data-i18n-list]').forEach(el => { el.innerHTML = D[el.dataset.i18nList].map(x => `<li>${x}</li>`).join(''); });
+  $('#langShort').textContent = D.short;
+  splitHero();
+  buildMarquee();
+  buildSheet(); curS = -1; onScroll();
+  const names = [D.tab1, D.tab2, D.tab3, D.tab4, D.tab5];
+  shots.forEach(im => {
+    im.src = im.getAttribute('src').replace(/showcase\/(en|el)\//, `showcase/${l}/`);
+    im.alt = `${im.closest('.phone') ? D.onPhone : D.onDesktop}: ${names[+im.dataset.i]}`;
+  });
+  setShow(cur);
+  labelHold(); labelTheme();
+  setBill(billBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.bill);
+  if (!first) { try { localStorage.setItem(LANG_KEY, l); } catch (e) {} }
+}
+const langDlg = $('#langDlg');
+const openLang = () => { $$('.ld-opt').forEach(b => b.classList.toggle('on', b.dataset.lang === lang)); langDlg.showModal(); };
+$$('.ld-opt').forEach(b => b.addEventListener('click', () => { applyLang(b.dataset.lang); langDlg.close(); }));
+langDlg.addEventListener('cancel', () => { try { localStorage.setItem(LANG_KEY, lang); } catch (e) {} });
+langDlg.addEventListener('click', e => { if (e.target === langDlg) { try { localStorage.setItem(LANG_KEY, lang); } catch (er) {} langDlg.close(); } });
+$('#langT').addEventListener('click', openLang);
+applyLang(lang, true);
+if (!storedLang) setTimeout(openLang, reduce ? 0 : 900);
 
 const curBill = () => billBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.bill;
 addEventListener('resize', () => setBill(curBill()));
