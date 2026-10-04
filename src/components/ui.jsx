@@ -26,16 +26,14 @@ const P = {
 export const Icon = ({ name, ...p }) => <svg viewBox="0 0 24 24" aria-hidden="true" {...p}><path d={P[name]} /></svg>;
 
 // Ergo logotype; ink follows the text colour, the crossbar is chalk blue.
-let logoSeq = 0;
+// Ergo logo: the "therefore" mark (quote, job, paid in blue) beside the wordmark.
 export function Logo({ height = 24, title = 'Ergo' }) {
-  const id = useRef(`ergo-bar-${++logoSeq}`).current;
-  const [x, y, w, h] = LOGO.bar;
   return (
     <svg className="logotype" viewBox={LOGO.vb} style={{ height, width: 'auto' }} role="img" aria-label={title}>
-      <clipPath id={id}><rect x={x} y={y} width={w} height={h} /></clipPath>
-      <path d={LOGO.e} fill="currentColor" />
-      <path d={LOGO.e} fill="var(--chalk)" clipPath={`url(#${id})`} />
-      <path d={LOGO.rgo} fill="currentColor" transform={`translate(${LOGO.rgoX},0)`} />
+      <g transform={LOGO.mark}>
+        {LOGO.dots.map(([cx, cy, r], i) => <circle key={i} cx={cx} cy={cy} r={r} fill={i === 2 ? 'var(--chalk)' : 'currentColor'} />)}
+      </g>
+      <path d={LOGO.word} fill="currentColor" transform={LOGO.wordT} />
     </svg>
   );
 }

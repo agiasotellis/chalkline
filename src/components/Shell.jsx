@@ -46,7 +46,7 @@ export default function Shell() {
     <>
       <div className="shell">
         <aside className="side">
-          <NavLink to="/" className="brand" aria-label="Ergo"><Logo height={26} /></NavLink>
+          <NavLink to="/" className="brand" aria-label="Ergo"><Logo height={30} /></NavLink>
           <nav className="side-nav" aria-label={t('nav.main')}>
             {NAV.map(n => (
               <NavLink key={n.to} to={n.to} end={n.end} data-tour={n.tour} className={({ isActive }) => `nav-a${isActive ? ' active' : ''}`}>
@@ -65,7 +65,7 @@ export default function Shell() {
         </aside>
 
         <header className="topbar">
-          <NavLink to="/" className="brand" aria-label="Ergo"><Logo height={26} /></NavLink>
+          <NavLink to="/" className="brand" aria-label="Ergo"><Logo height={30} /></NavLink>
           <span style={{ flex: 1 }} />
           <LangButton onClick={() => setLangOpen(true)} />
           <NavLink to="/settings" className="icon-btn" aria-label={t('nav.settings')} data-tour="settings"><Icon name="cog" /></NavLink>

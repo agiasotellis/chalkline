@@ -81,4 +81,4 @@ Every push to `main` builds and publishes to GitHub Pages (`.github/workflows/de
 
 ## Brand
 
-Logo files live in `brand/ergo/` (SVG + PNG). The mark is Archivo's lowercase e whose crossbar is the chalk line: chalk blue, running on past the letter into chalk dashes with a tape-yellow fleck. `brand/work/ergo.py` regenerates every file. The earlier Chalkline logo is kept in `brand/logo/` for reference.
+Logo files live in `brand/ergo2/` (SVG + PNG; the `A-*` files are the logo in use). The mark is the "therefore" sign ∴, since ergo means therefore: two ink dots for quote and job, and a chalk-blue dot on top for paid. `brand/work/ergo2.py` regenerates every file and `brand/work/apply_a.py` puts the logo into the app, landing page and favicon. Earlier explorations are kept in `brand/ergo/` and `brand/logo/`.
