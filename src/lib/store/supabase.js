@@ -23,6 +23,8 @@ export const supabaseStore = {
   },
   async saveSettings(s) {
     const { ownerId, updatedAt, ...rest } = s;
+    const { data: { session } } = await supabase.auth.getSession();
+    rest.ownerId = session?.user?.id;
     return num(fromRow(ok(await supabase.from('settings').upsert(toRow(rest)).select().single())), ['vatRate']);
   },
 

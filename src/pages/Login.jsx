@@ -47,3 +47,28 @@ export default function Login() {
     </div>
   );
 }
+
+// Shown after the person follows a password reset link.
+export function SetPassword() {
+  const { updatePassword } = useAuth();
+  const [pw, setPw] = useState('');
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
+  const submit = async e => {
+    e.preventDefault(); setErr('');
+    if (pw.length < 8) return setErr('Use a password of at least 8 characters.');
+    setBusy(true);
+    try { await updatePassword(pw); } catch (er) { setErr(er.message); } finally { setBusy(false); }
+  };
+  return (
+    <div className="auth-form" style={{ minHeight: '100dvh' }}>
+      <form className="auth-card" onSubmit={submit} noValidate>
+        <div className="brand" style={{ padding: 0 }}><Logo />Chalkline</div>
+        <h1>Choose a new password</h1>
+        <div className="field"><label htmlFor="np">New password</label><input className="inp" id="np" type="password" autoComplete="new-password" value={pw} onChange={e => setPw(e.target.value)} /></div>
+        {err && <p className="err" role="alert">{err}</p>}
+        <button className="btn btn-chalk" type="submit" disabled={busy}>Save password</button>
+      </form>
+    </div>
+  );
+}

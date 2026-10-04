@@ -10,7 +10,7 @@ import Editor from './pages/Editor.jsx';
 import { Customers, CustomerDetail } from './pages/Customers.jsx';
 import Prices from './pages/Prices.jsx';
 import Settings from './pages/Settings.jsx';
-import Login from './pages/Login.jsx';
+import Login, { SetPassword } from './pages/Login.jsx';
 import PublicQuote from './pages/PublicQuote.jsx';
 
 function Loaded({ children }) {
@@ -26,7 +26,8 @@ function Loaded({ children }) {
 }
 
 function Private() {
-  const { user } = useAuth();
+  const { user, recovery } = useAuth();
+  if (recovery) return <SetPassword />;
   if (user === undefined) return <div className="loading"><div className="spin" aria-label="Loading" /></div>;
   if (!user) return <Login />;
   return (

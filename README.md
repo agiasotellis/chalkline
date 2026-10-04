@@ -20,30 +20,32 @@ Quote → Job → Invoice for tradespeople. Create a quote, the customer approve
 - Customers with job history, price list, business settings
 - Light/dark mode, phone layout with a bottom tab bar
 
+## Pages
+- `/` landing page
+- `/app.html` the real app (sign up, data saved in Supabase)
+- `/demo.html` the demo (example data, saved only in the browser)
+
 ## Run it locally
 
 ```bash
 npm install
 npm run dev
 ```
-Open the app at http://localhost:5173/app.html. With no Supabase keys it runs in **demo mode** with example data saved in your browser.
+Then open http://localhost:5173/app.html (live) or http://localhost:5173/demo.html (demo).
 
-## Go live with Supabase (about 10 minutes)
+## Supabase setup (one time)
 
-1. Create a free project at [supabase.com](https://supabase.com).
-2. In the project, open **SQL Editor → New query**, paste the contents of `supabase/schema.sql`, and click **Run**.
-3. Open **Project Settings → API** and copy the **Project URL** and the **anon public** key.
-4. Locally: copy `.env.example` to `.env.local` and paste both values.
-5. In **Authentication → URL Configuration**, set the Site URL to where the app is hosted (e.g. `https://<you>.github.io/chalkline/app.html`).
+The project is already wired in through `.env` (URL + publishable key, which are safe to ship).
 
-Each tradesperson signs up with email and password and only ever sees their own data (row level security). Customers reach a single quote through its secret link via the `get_public_quote` / `approve_public_quote` functions.
+1. Supabase → **SQL Editor → New query** → paste all of `supabase/schema.sql` → **Run**. Safe to re-run after updates.
+2. **Authentication → URL Configuration**
+   - Site URL: `https://agiasotellis.github.io/chalkline/app.html`
+   - Redirect URLs: add `https://agiasotellis.github.io/chalkline/**` and `http://localhost:5173/**`
+3. Optional: **Authentication → Sign In / Providers → Email** — turn off "Confirm email" while testing so sign-ups work instantly.
 
-## Deploy on GitHub Pages
+## Deploy
 
-1. Push this repo to GitHub.
-2. **Settings → Pages → Source: GitHub Actions.**
-3. **Settings → Secrets and variables → Actions**: add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (skip to deploy the demo).
-4. Every push to `main` deploys. The landing page is at `/` and the app at `/app.html`.
+Every push to `main` builds and publishes to GitHub Pages (`.github/workflows/deploy.yml`).
 
 ## Pricing (planned)
 | Plan | Monthly | For |

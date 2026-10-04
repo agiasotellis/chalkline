@@ -358,8 +358,8 @@ section{scroll-margin-top:80px}
     <div class="hero-sub">
       <p>Send a quote from the van. Your customer <strong>approves it online</strong>, it becomes a job with a checklist, and when you tick the last box the <strong>invoice writes itself</strong>. One number follows the work from first visit to paid.</p>
       <div class="cta-row">
-        <a class="btn btn-chalk" href="app.html">Open the app</a>
-        <a class="btn btn-ghost" href="#pricing">See pricing</a>
+        <a class="btn btn-chalk" href="app.html">Start free trial</a>
+        <a class="btn btn-ghost" href="demo.html">Try the demo</a>
       </div>
     </div>
   </section>
@@ -423,7 +423,7 @@ section{scroll-margin-top:80px}
     </div>
     <div class="show-cap">
       <div class="cap-txt" id="capTxt"><h3>Your day on one screen</h3><p>What’s waiting on customers, what’s booked and what you’re owed. The jobs that need you are listed first.</p></div>
-      <div class="cap-actions"><button class="btn btn-ghost btn-sm" id="showHold" type="button" aria-label="Pause the screen tour" hidden>Pause</button><a class="btn btn-chalk" id="demoLink" href="app.html">Open the live demo</a></div>
+      <div class="cap-actions"><button class="btn btn-ghost btn-sm" id="showHold" type="button" aria-label="Pause the screen tour" hidden>Pause</button><a class="btn btn-chalk" id="demoLink" href="demo.html">Open the live demo</a></div>
     </div>
   </section>
 
@@ -692,7 +692,7 @@ if (!reduce && 'IntersectionObserver' in window) {
   });
 }
 // In the hosted preview, point the demo button at the published demo.
-if (/claude/.test(location.hostname)) $$('a[href="app.html"]').forEach(a => { a.href = 'https://claude.ai/artifact/FF3F53WQmUrLCa1JPdR8rS'; a.target = '_blank'; a.rel = 'noopener'; });
+if (/claude/.test(location.hostname)) $$('a[href="app.html"],a[href="demo.html"]').forEach(a => { a.href = 'https://claude.ai/artifact/FF3F53WQmUrLCa1JPdR8rS'; a.target = '_blank'; a.rel = 'noopener'; });
 
 /* pricing toggle */
 const billBtns = $$('[data-bill]'), billInd = $('#billInd');
