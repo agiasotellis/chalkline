@@ -43,7 +43,7 @@ export default {
   'dash.latest': 'Latest', 'dash.allQuotes': 'All quotes',
 
   // tour
-  'tour.welcome.t': 'Welcome to Chalkline', 'tour.welcome.b': 'Here’s a one-minute look around your dashboard, so you know where everything is.', 'tour.welcome.p': 'Show me around',
+  'tour.welcome.t': 'Welcome to Ergo', 'tour.welcome.b': 'Here’s a one-minute look around your dashboard, so you know where everything is.', 'tour.welcome.p': 'Show me around',
   'tour.kpis.t': 'Your money at a glance', 'tour.kpis.b': 'What’s waiting on customers, what’s booked, what you’re owed and what’s been paid. Tap any figure to see what’s behind it.',
   'tour.attn.t': 'Needs attention', 'tour.attn.b': 'Overdue invoices, change requests and jobs ready to bill land here first. Tap one to deal with it.',
   'tour.quote.t': 'Start with a quote', 'tour.quote.b': 'Add line items or pick from your price list, then send it. Your customer gets a private link and approves it with their name.',
@@ -172,7 +172,7 @@ export default {
   'li.h1': 'Quote it.', 'li.h2': 'Do it.', 'li.h3': 'Get paid.',
   'li.tagline': 'Quotes your customers approve online, jobs with checklists and invoices that write themselves.',
   'li.in': 'Sign in', 'li.up': 'Start your free trial', 'li.reset': 'Reset password', 'li.email': 'Email', 'li.pw': 'Password',
-  'li.create': 'Create account', 'li.sendReset': 'Send reset link', 'li.new': 'New to Chalkline?', 'li.createLink': 'Create an account',
+  'li.create': 'Create account', 'li.sendReset': 'Send reset link', 'li.new': 'New to Ergo?', 'li.createLink': 'Create an account',
   'li.forgot': 'Forgot password', 'li.have': 'Already have an account?', 'li.errEmail': 'Enter a valid email address.',
   'li.errPw': 'Use a password of at least 8 characters.', 'li.confirm': 'Check your email and tap the link to confirm your account.',
   'li.resetSent': 'We’ve emailed you a link to reset your password.', 'li.badCreds': 'That email and password don’t match. Check them and try again.',

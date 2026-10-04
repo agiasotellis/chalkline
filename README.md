@@ -1,4 +1,4 @@
-# Chalkline
+# Ergo
 
 Quote → Job → Invoice for tradespeople. Create a quote, the customer approves it online, it becomes a job with a checklist, and the invoice is generated when the job is done. One number (Q-1042 → J-1042 → INV-1042) follows the work from first visit to paid.
 
@@ -78,3 +78,7 @@ Every push to `main` builds and publishes to GitHub Pages (`.github/workflows/de
 3. Stripe: subscriptions for tradespeople, card payments and deposits for customers
 4. Job photos (Supabase Storage)
 5. Crew plan: team members and job assignment
+
+## Brand
+
+Logo files live in `brand/ergo/` (SVG + PNG). The mark is Archivo's lowercase e whose crossbar is the chalk line: chalk blue, running on past the letter into chalk dashes with a tape-yellow fleck. `brand/work/ergo.py` regenerates every file. The earlier Chalkline logo is kept in `brand/logo/` for reference.

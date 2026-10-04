@@ -1,7 +1,7 @@
 import en from './locales/en.js';
 import el from './locales/el.js';
 
-// Two versions of Chalkline: United States (English, $) and Greece (Greek, €).
+// Two versions of Ergo: United States (English, $) and Greece (Greek, €).
 export const LOCALES = {
   en: { intl: 'en-US', currency: 'USD', symbol: '$', short: 'EN', name: 'English (US)', html: 'en' },
   el: { intl: 'el-GR', currency: 'EUR', symbol: '€', short: 'ΕΛ', name: 'Ελληνικά', html: 'el' }

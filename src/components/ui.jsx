@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { status } from '../lib/workflow.js';
 import { useT } from '../lib/i18n.jsx';
 import { LOCALES } from '../lib/i18n-core.js';
+import { LOGO } from './brand.js';
 
 const P = {
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
@@ -24,9 +25,20 @@ const P = {
 };
 export const Icon = ({ name, ...p }) => <svg viewBox="0 0 24 24" aria-hidden="true" {...p}><path d={P[name]} /></svg>;
 
-export const Logo = () => (
-  <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="1" y="6" width="16" height="16" rx="4" fill="var(--tape)" /><circle cx="9" cy="14" r="3.2" fill="var(--ink)" /><path d="M17 14H27" stroke="var(--chalk)" strokeWidth="2.4" strokeLinecap="round" strokeDasharray="3 2.5" /></svg>
-);
+// Ergo logotype; ink follows the text colour, the crossbar is chalk blue.
+let logoSeq = 0;
+export function Logo({ height = 24, title = 'Ergo' }) {
+  const id = useRef(`ergo-bar-${++logoSeq}`).current;
+  const [x, y, w, h] = LOGO.bar;
+  return (
+    <svg className="logotype" viewBox={LOGO.vb} style={{ height, width: 'auto' }} role="img" aria-label={title}>
+      <clipPath id={id}><rect x={x} y={y} width={w} height={h} /></clipPath>
+      <path d={LOGO.e} fill="currentColor" />
+      <path d={LOGO.e} fill="var(--chalk)" clipPath={`url(#${id})`} />
+      <path d={LOGO.rgo} fill="currentColor" transform={`translate(${LOGO.rgoX},0)`} />
+    </svg>
+  );
+}
 
 export function Pill({ work }) {
   const { t } = useT();

@@ -6,7 +6,7 @@ const AuthCtx = createContext(null);
 export const useAuth = () => useContext(AuthCtx);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(isDemo ? { id: 'demo', email: 'demo@chalkline.app' } : undefined);
+  const [user, setUser] = useState(isDemo ? { id: 'demo', email: 'demo@ergo.app' } : undefined);
   const [recovery, setRecovery] = useState(false);
 
   useEffect(() => {

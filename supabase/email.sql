@@ -1,4 +1,4 @@
--- Chalkline customer emails (quotes, invoices, reminders), in English (US, $) or Greek (€)
+-- Ergo customer emails (quotes, invoices, reminders), in English (US, $) or Greek (€)
 -- Run in Supabase → SQL Editor after schema.sql. Safe to re-run.
 -- Emails go out through Brevo (brevo.com). The API key lives in Supabase Vault, never in the app.
 -- Finish setup with supabase/email-keys.sql.
@@ -181,7 +181,7 @@ begin
       extra, public.esc_html(p_link), button,
       public.esc_html(biz),
       case when coalesce(s.phone, '') <> '' or coalesce(s.email, '') <> '' then ' · ' || public.esc_html(concat_ws(' · ', nullif(s.phone, ''), nullif(s.email, ''))) else '' end,
-      case when gr then 'Στάλθηκε με το Chalkline' else 'Sent with Chalkline' end)
+      case when gr then 'Στάλθηκε με το Ergo' else 'Sent with Ergo' end)
   );
   if coalesce(s.email, '') ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then
     body := body || jsonb_build_object('replyTo', jsonb_build_object('email', s.email, 'name', left(biz, 70)));

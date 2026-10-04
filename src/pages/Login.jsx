@@ -27,7 +27,7 @@ export default function Login() {
   return (
     <div className="auth">
       <div className="auth-art">
-        <div className="brand" style={{ padding: 0, color: 'var(--bg)' }}><Logo />Chalkline</div>
+        <div className="brand" style={{ padding: 0, color: 'var(--bg)' }}><Logo height={30} /></div>
         <div><h2>{t('li.h1')}<br />{t('li.h2')}<br />{t('li.h3')}</h2><div className="line" /></div>
         <p style={{ opacity: .7, maxWidth: 360 }}>{t('li.tagline')}</p>
       </div>
@@ -69,7 +69,7 @@ export function SetPassword() {
   return (
     <div className="auth-form" style={{ minHeight: '100dvh' }}>
       <form className="auth-card" onSubmit={submit} noValidate>
-        <div className="brand" style={{ padding: 0 }}><Logo />Chalkline</div>
+        <div className="brand" style={{ padding: 0 }}><Logo height={28} /></div>
         <h1>{t('li.newPw')}</h1>
         <div className="field"><label htmlFor="np">{t('li.newPwL')}</label><input className="inp" id="np" type="password" autoComplete="new-password" value={pw} onChange={e => setPw(e.target.value)} /></div>
         {err && <p className="err" role="alert">{err}</p>}

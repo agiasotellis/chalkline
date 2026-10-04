@@ -1,4 +1,4 @@
--- Chalkline database schema
+-- Ergo database schema
 -- Run once in Supabase → SQL Editor → New query → paste → Run.
 -- Every table is private to the signed-in tradesperson (row level security).
 -- Customers reach a single quote through its secret token via two security-definer functions.
