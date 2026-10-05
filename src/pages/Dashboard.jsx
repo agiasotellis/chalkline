@@ -50,7 +50,7 @@ function RevenueChart({ work, t }) {
 
 export default function Dashboard() {
   const { work, customerById, settings, saveSettings } = useData();
-  const { t } = useT();
+  const { t, lang } = useT();
   const nav = useNavigate();
   const { user } = useAuth();
   const tourKey = `chalkline.tourDone.${user?.id}`;
@@ -71,7 +71,9 @@ export default function Dashboard() {
   const recent = [...work].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
   const hour = new Date().getHours();
   const hi = t(hour < 12 ? 'dash.morning' : hour < 18 ? 'dash.afternoon' : 'dash.evening');
-  const first = (settings?.ownerName || '').split(' ')[0];
+  // Greek addresses people in the vocative: Αλέξης → Αλέξη, Νίκος → Νίκο, Κώστας → Κώστα.
+  const name0 = (settings?.ownerName || '').split(' ')[0];
+  const first = lang === 'el' ? name0.replace(/ς$/, '') : name0;
 
   return (
     <div className="page">
