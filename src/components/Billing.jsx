@@ -18,6 +18,10 @@ export function BillingBanner() {
   else if (!a.canWrite) { tone = 'bad'; text = t('bi.b.ended'); action = <Link to="/plan">{t('bi.b.choose')}</Link>; }
   else if (a.plan === 'trial') { tone = b.daysLeft <= 3 ? 'warn' : ''; text = t('bi.b.trial', { n: b.daysLeft }); action = <Link to="/plan">{t('bi.b.choose')}</Link>; }
   else if (a.scheduledChange === 'cancel') { tone = 'warn'; text = t('bi.b.ending', { date: fmtDate(a.scheduledChangeAt || a.periodEnd) }); action = <button type="button" onClick={portal}>{t('bi.b.manage')}</button>; }
+  else if (a.status === 'active' && a.periodEnd && new Date(a.periodEnd) - Date.now() < (a.interval === 'year' ? 7 : 3) * 864e5) {
+    text = t('bi.b.renews', { plan: { solo: 'Solo', trade: 'Trade', crew: 'Crew' }[a.paidPlan] || '', date: fmtDate(a.periodEnd) });
+    action = <Link to="/plan">{t('bi.b.manage')}</Link>;
+  }
   else return null;
   return <div className={`bill-banner${tone ? ` bb-${tone}` : ''}`} role="status"><span>{text}</span>{action}</div>;
 }

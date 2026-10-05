@@ -121,12 +121,11 @@ export function BillingProvider({ user, children }) {
         await waitFor(x => x.priceId === id);
       },
       // Paddle's page for card details, receipts and cancelling. Opened in a new tab.
+      // Opens in the same tab: pop-up blockers can't stop it, and Paddle's page links back.
       async portal() {
-        const tab = window.open('', '_blank');
-        try {
-          const { url } = await invoke({ action: 'portal' });
-          if (tab) tab.location.href = url; else location.href = url;
-        } catch (e) { tab?.close(); throw e; }
+        const res = await invoke({ action: 'portal' });
+        if (!res?.url) throw new Error(res?.error || tr('bi.portalErr'));
+        location.assign(res.url);
       }
     };
   }, [access, waiting, load, waitFor, user]);

@@ -237,5 +237,7 @@ export default {
   'bi.b.trial': ({ n }) => `${n} ${n === 1 ? 'day' : 'days'} left of your free trial.`, 'bi.b.ended': 'Your free trial has ended. Your work is safe: choose a plan to keep going.',
   'bi.b.pastDue': 'Your last payment didn’t go through.', 'bi.b.ending': ({ date }) => `Your plan ends on ${date}.`,
   'bi.b.choose': 'Choose a plan', 'bi.b.update': 'Update card', 'bi.b.manage': 'Manage',
-  'se.plan': 'Plan and billing', 'se.planSub': 'Your trial, plan, receipts and card'
+  'se.plan': 'Plan and billing', 'se.planSub': 'Your trial, plan, receipts and card',
+  'bi.opening': 'Opening…', 'bi.portalErr': 'Paddle didn’t return a link.', 'bi.portalFail': 'Couldn’t open subscription settings:',
+  'bi.b.renews': ({ plan, date }) => `Your ${plan} plan renews on ${date}.`
 };

@@ -16,6 +16,7 @@ export default function Plan() {
   const paid = ['active', 'trialing', 'past_due', 'paused'].includes(a.status) && a.hasSubscription;
   const [period, setPeriod] = useState(a.interval === 'year' ? 'year' : 'month');
   const [busy, setBusy] = useState('');
+  const [portalErr, setPortalErr] = useState('');
   const [ask, setAsk] = useState(null);
   useEffect(() => { b.reload(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // Say thanks when a new subscription lands; explain if the confirmation is slow.
@@ -62,11 +63,12 @@ export default function Plan() {
         <div>
           <h2>{head}</h2>
           <p className="note">{body}</p>
+          {portalErr && <p className="err" role="alert">{t('bi.portalFail')} {portalErr}</p>}
           {b.waiting && <p className="note" role="status"><span className="spin spin-sm" aria-hidden="true" /> {t('bi.waiting')}</p>}
         </div>
         {paid && (
-          <button className="btn btn-ghost" type="button" disabled={busy === 'portal'} onClick={() => run('portal', b.portal)}>
-            {t('bi.manage')}
+          <button className="btn btn-ghost" type="button" disabled={busy === 'portal'} onClick={() => { setPortalErr(''); setBusy('portal'); b.portal().catch(e => { setPortalErr(e.message); setBusy(''); }); }}>
+            {busy === 'portal' ? t('bi.opening') : t('bi.manage')}
           </button>
         )}
       </section>
